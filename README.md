@@ -141,4 +141,6 @@ MSA 설계
 
 # 와이어 프레임
 
-<img src="docs/img/wireframe.png">
+<img src="docs/img/wireframe1.png">
+<img src="docs/img/wireframe2.png">
+<img src="docs/img/wireframe3.png">
