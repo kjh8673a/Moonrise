@@ -132,7 +132,7 @@
 
 
 # ERD
-<img src="docs/img/ERD.PNG">
+<img src="docs/img/ERD.png">
 
 # API명세서
 
@@ -144,7 +144,7 @@
 
 # 아키텍쳐 설계
 
-<img src="docs/img/아키텍쳐설계.PNG">
+<img src="docs/img/아키텍쳐설계.png">
 <br>
 <br>
 아키텍쳐 설계
