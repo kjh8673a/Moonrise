@@ -124,9 +124,9 @@
 
 # 기능명세서
 
-<img src="docs/img/기능명세서1.PNG">
-<img src="docs/img/기능명세서2.PNG">
-<img src="docs/img/기능명세서3.PNG">
+<img src="docs/img/func1.png">
+<img src="docs/img/func2.png">
+<img src="docs/img/func3.png">
 
 <a href="https://www.notion.so/d77662c21b244091ba3b8f554236bb8a">기능명세서 링크</a>
 
@@ -137,14 +137,14 @@
 # API명세서
 
 
-<img src="docs/img/API명세서1.PNG">
-<img src="docs/img/API명세서2.PNG">
+<img src="docs/img/API1.png">
+<img src="docs/img/API2.png">
 
 <a href="https://www.notion.so/API-68b0b8dfecb34b4aaafe785eada86e2f">API명세서 링크</a>
 
 # 아키텍쳐 설계
 
-<img src="docs/img/아키텍쳐설계.png">
+<img src="docs/img/arch.png">
 <br>
 <br>
 아키텍쳐 설계
