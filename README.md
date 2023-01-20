@@ -1,8 +1,14 @@
 
 
-# 🌜달뜸 서비스 기획서
+# 🌜달뜸 
 
 <a href="https://www.notion.so/10060a5fedfe44a7aae0b016f46850c1">서비스 기획서 링크</a>
+
+<a href="https://www.notion.so/d77662c21b244091ba3b8f554236bb8a">기능명세서 링크</a>
+
+<a href="https://www.notion.so/API-68b0b8dfecb34b4aaafe785eada86e2f">API명세서 링크</a>
+
+# 서비스 기획서
 
 ## 🤩서비스를 사용하는 사람들
 
@@ -135,3 +141,19 @@
 <img src="docs/img/API명세서2.PNG">
 
 <a href="https://www.notion.so/API-68b0b8dfecb34b4aaafe785eada86e2f">API명세서 링크</a>
+
+# 아키텍쳐 설계
+
+<img src="docs/img/아키텍쳐설계.PNG">
+<br>
+<br>
+아키텍쳐 설계
+
+- 회원(소셜 로그인) 기능이 마비되어도 기존 로그인된 회원의 비즈니스 로직 처리가 가능해야 한다.
+- 토론(채팅) 기능이 마비되어도 영화 검색, 게시글 조회, 소모임 조회가 가능해야 한다.
+
+MSA 설계
+
+- 회원 Auth 인증 서버
+- 영화 검색, 게시글 조회, 소모임 조회, 채팅방 조회 서버
+- 토론(채팅) 서버
