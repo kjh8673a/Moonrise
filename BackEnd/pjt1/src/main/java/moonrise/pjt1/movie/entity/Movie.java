@@ -1,6 +1,7 @@
 package moonrise.pjt1.movie.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import moonrise.pjt1.board.entity.Board;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "movie")
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor
 public class Movie {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "movie_id")

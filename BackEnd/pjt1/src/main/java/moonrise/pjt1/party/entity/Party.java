@@ -1,5 +1,8 @@
 package moonrise.pjt1.party.entity;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.movie.entity.Movie;
 
@@ -9,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter @Setter @NoArgsConstructor
 public class Party {
     @Id @GeneratedValue
     @Column(name = "party_id")

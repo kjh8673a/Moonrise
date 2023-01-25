@@ -2,6 +2,7 @@ package moonrise.pjt1.member.entity;
 
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import moonrise.pjt1.board.entity.Board;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "member")
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -26,4 +27,6 @@ public class Member {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberInfo")
     private MemberInfo memberInfo;
+
+
 }
