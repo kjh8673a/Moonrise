@@ -8,6 +8,8 @@ import moonrise.pjt1.movie.entity.Movie;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "board")
@@ -35,9 +37,25 @@ public class Board {
     @JoinColumn(name = "board_info_id")
     private BoardInfo boardInfo;
 
+    @OneToMany(mappedBy = "board")
+    private List<BoardComment> boardComments = new ArrayList<>();
+
     //business logic
     public void addMember(Member member){
         this.member = member;       // setMember
         member.getBoards().add(this);   // 작성자에게도 board 리스트에 넣어주기
+    }
+
+    public void addMovie(Movie movie){
+        this.movie = movie;
+        movie.getBoards().add(this);
+    }
+
+    public static Board createBoard(String title, String content, LocalDateTime dateTime){
+        Board board = new Board();
+        board.setTitle(title);
+        board.setContent(content);
+        board.setDateTime(dateTime);
+        return board;
     }
 }

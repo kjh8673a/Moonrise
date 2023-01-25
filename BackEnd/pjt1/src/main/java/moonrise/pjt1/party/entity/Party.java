@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter @Setter @NoArgsConstructor
 public class Party {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "party_id")
     private Long id;
 
