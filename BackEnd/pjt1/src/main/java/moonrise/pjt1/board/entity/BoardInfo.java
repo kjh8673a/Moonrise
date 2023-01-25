@@ -12,7 +12,8 @@ public class BoardInfo {
     @Column(name = "board_info_id")
     private Long id;
 
-    @OneToOne(mappedBy = "boardInfo",fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
     private Board board;
 
     private BoardStatus boardStatus;

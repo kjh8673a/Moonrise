@@ -16,6 +16,7 @@ public class MemberInfo {
     private Long id;
 
     @OneToOne(mappedBy = "memberInfo",fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     private MemberStatus memberStatus;
