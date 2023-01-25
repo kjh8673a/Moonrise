@@ -26,4 +26,5 @@ public class Member {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberInfo")
     private MemberInfo memberInfo;
+
 }

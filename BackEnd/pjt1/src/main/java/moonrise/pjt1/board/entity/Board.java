@@ -33,4 +33,10 @@ public class Board {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_info_id")
     private BoardInfo boardInfo;
+
+    //business logic
+    public void addMember(Member member){
+        this.member = member;       // setMember
+        member.getBoards().add(this);   // 작성자에게도 board 리스트에 넣어주기
+    }
 }
