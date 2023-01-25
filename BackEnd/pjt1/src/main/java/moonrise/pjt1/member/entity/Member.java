@@ -17,7 +17,13 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
     private String nickname;
+    private String image;
+    private String gender;
 
     @OneToMany(mappedBy = "member")
     private List<Board> boards = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberInfo")
+    private MemberInfo memberInfo;
 }
