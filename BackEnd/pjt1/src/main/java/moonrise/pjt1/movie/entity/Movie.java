@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import moonrise.pjt1.board.entity.Board;
+import moonrise.pjt1.party.entity.Party;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,4 +22,7 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie")
     private List<Board> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie")
+    private List<Party> parties = new ArrayList<>();
 }

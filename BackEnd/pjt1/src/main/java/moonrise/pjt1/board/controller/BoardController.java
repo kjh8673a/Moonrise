@@ -13,6 +13,6 @@ public class BoardController {
 
     @PostMapping("/board/create")
     public void BoardCreate(@RequestBody BoardForm boardForm){
-        
+
     }
 }
