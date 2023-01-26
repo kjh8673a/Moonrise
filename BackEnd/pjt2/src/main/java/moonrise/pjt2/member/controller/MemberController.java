@@ -111,6 +111,8 @@ public class MemberController {
 
             // 응답 코드
             int responseCode = conn.getResponseCode();
+
+            // success : 200, 유효성 error : 401
             System.out.println("responseCode =" + responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -127,20 +129,24 @@ public class MemberController {
             JsonParser parser = new JsonParser();
             JsonElement element =  parser.parse(result);
 
+            String id = element.getAsJsonObject().get("id").getAsString();
+            logger.info("kakao_id : {}", id);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public HashMap<String, Object> getUserInfo(String accessToken) throws IOException {
-        HashMap<String, Object> userInfo = new HashMap<String, Object>();
-        String reqUrl = "https://kapi.kakao.com/v2/user/me";
-        try {
-            URL url = new URL(reqUrl);
+    @GetMapping("/logout")
+    public void logout(String accessToken){
+        String requestUrl = "https://kapi.kakao.com/v1/user/logout";
+
+        try{
+            URL url = new URL(requestUrl);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 
+            // 응답 코드
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode =" + responseCode);
 
@@ -152,26 +158,9 @@ public class MemberController {
             while((line = br.readLine()) != null) {
                 result += line;
             }
-            System.out.println("response body ="+result);
-
-            JsonParser parser = new JsonParser();
-            JsonElement element =  parser.parse(result);
-//
-//            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-//            JsonObject kakaoAccount = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
-//
-//            String profile_nickname = properties.getAsJsonObject().get("nickname").getAsString();
-//            String profile_image = properties.getAsJsonObject().get("profile_image").getAsString();
-//            String account_email = kakaoAccount.getAsJsonObject().get("email").getAsString();
-//
-//            userInfo.put("profile_nickname", profile_nickname);
-//            userInfo.put("profile_image", profile_image);
-//            userInfo.put("account_email", account_email);
-
-
-        } catch (Exception e) {
+            System.out.println("response body =" + result);
+        }catch (Exception e) {
             e.printStackTrace();
         }
-        return userInfo;
     }
 }
