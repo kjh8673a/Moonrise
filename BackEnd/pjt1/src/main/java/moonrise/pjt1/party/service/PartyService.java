@@ -1,6 +1,12 @@
 package moonrise.pjt1.party.service;
 
 import lombok.RequiredArgsConstructor;
+import moonrise.pjt1.member.entity.Member;
+import moonrise.pjt1.member.repository.MemberRepository;
+import moonrise.pjt1.movie.entity.Movie;
+import moonrise.pjt1.movie.repository.MovieRepository;
+import moonrise.pjt1.party.controller.PartyCommentCreateDto;
+import moonrise.pjt1.party.controller.PartyCreateDto;
 import moonrise.pjt1.party.entity.Party;
 import moonrise.pjt1.party.entity.PartyComment;
 import moonrise.pjt1.party.repository.PartyCommentRepository;
@@ -17,12 +23,40 @@ import java.util.Optional;
 public class PartyService {
     private final PartyRepository partyRepository;
     private final PartyCommentRepository partyCommentRepository;
+    private final MovieRepository movieRepository;
+    private final MemberRepository memberRepository;
     public Map<String,Object> readParty(Long partyId) {
-        Optional<Party> response = partyRepository.findById(partyId);
+        Optional<Party> findParty = partyRepository.findById(partyId);
         Map<String,Object> result = new HashMap<>();
-        if(response.isPresent()){
-            result.put("findParty",response.get());
+        if(findParty.isPresent()){
+            result.put("findParty",findParty.get());
         }
         return result;
+    }
+    public Map<String,Object> listParty(Long movieId) {
+        Optional<Movie> findMoive = movieRepository.findById(movieId);
+        Map<String,Object> result = new HashMap<>();
+        if(findMoive.isPresent()){
+            result.put("findParties",findMoive.get().getParties());
+        }
+        return result;
+    }
+
+    public Long createParty(PartyCreateDto partyCreateDto) {
+        Optional<Member> findMember = memberRepository.findById(partyCreateDto.getMemberId());
+        Optional<Movie> findMovie = movieRepository.findById(partyCreateDto.getMovieId());
+
+        Party party = Party.createParty(partyCreateDto, findMember.get(), findMovie.get());
+        partyRepository.save(party);
+        return party.getId();
+    }
+
+    public Long createComment(PartyCommentCreateDto partyCommentCreateDto) {
+        Optional<Member> findMember = memberRepository.findById(partyCommentCreateDto.getMemberId());
+        Optional<Party> findParty = partyRepository.findById(partyCommentCreateDto.getPartyId());
+
+        PartyComment partyComment = PartyComment.createPartyComment(partyCommentCreateDto, findParty.get(), findMember.get());
+        partyCommentRepository.save(partyComment);
+        return partyComment.getId();
     }
 }

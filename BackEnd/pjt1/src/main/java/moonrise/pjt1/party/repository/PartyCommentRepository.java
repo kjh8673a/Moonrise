@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface PartyCommentRepository extends JpaRepository<PartyComment,Long> {
 
-    List<PartyComment> findByParty(Long partyId);
 }
