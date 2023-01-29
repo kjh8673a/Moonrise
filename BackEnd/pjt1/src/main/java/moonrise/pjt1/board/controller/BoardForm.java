@@ -1,7 +1,9 @@
 package moonrise.pjt1.board.controller;
 
-import java.time.LocalDateTime;
+import lombok.Data;
 
+import java.time.LocalDateTime;
+@Data
 public class BoardForm {
 
     private String title;
