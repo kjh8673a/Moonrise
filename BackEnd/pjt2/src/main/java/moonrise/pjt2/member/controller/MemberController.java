@@ -5,10 +5,7 @@ import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -229,5 +226,10 @@ public class MemberController {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    @PostMapping("/join")
+    public void join(@RequestBody MemberJoinRequestDto memberJoinRequestDto){
+        logger.info("memberJoin Data : {}", memberJoinRequestDto);
+
     }
 }
