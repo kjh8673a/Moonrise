@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -28,13 +29,17 @@ public class BoardController {
     // 게시글 생성
     @PostMapping("")
     public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardForm boardForm){
+        Map<String, Object> result = new HashMap<>();
+        Long boardId = boardService.createBoard(boardForm);
+        result.put("boardId", boardId);
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
 
     }
     // 게시글 수정
-    @PutMapping("")
-    public ResponseEntity<Map<String, Object>> boardUpdate(@RequestBody BoardForm boardForm){
-        return
-    }
+//    @PutMapping("")
+//    public ResponseEntity<Map<String, Object>> boardUpdate(@RequestBody BoardForm boardForm){
+//
+//    }
 
 // 게시글 삭제 -> 글 상태바꾸기
 }
