@@ -39,18 +39,18 @@ public class BoardService {
         return result;
     }
 
-//    public Long createBoard(BoardCreateDto boardCreateDto) {
-//
-//        Optional<Member> findMember = memberRepository.findById(boardCreateDto.getMemberId());
-//        Optional<Movie> findMovie = movieRepository.findById(boardCreateDto.getMovieId());
-//        // 게시글 정보 생성
-//        BoardInfo boardInfo = new BoardInfo();
-//        boardInfo.setBoardStatus(BoardStatus.NORMAL);
-//        boardInfo.setCommentCnt(0);
-//
-//        Board board = Board.createBoard(boardCreateDto, findMember.get(), findMovie.get());
-//        boardRepository.save(board);
-//        return board.getId();
-//
-//    }
+    public Long createBoard(BoardCreateDto boardCreateDto) {
+
+        Optional<Member> findMember = memberRepository.findById(boardCreateDto.getMemberId());
+        Optional<Movie> findMovie = movieRepository.findById(boardCreateDto.getMovieId());
+        // 게시글 정보 생성
+        BoardInfo boardInfo = new BoardInfo();
+        boardInfo.setBoardStatus(BoardStatus.NORMAL);
+        boardInfo.setCommentCnt(0);
+
+        Board board = Board.createBoard(boardCreateDto, findMember.get(), findMovie.get());
+        boardRepository.save(board);
+        return board.getId();
+
+    }
 }

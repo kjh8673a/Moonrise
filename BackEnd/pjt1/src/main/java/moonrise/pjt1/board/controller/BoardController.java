@@ -27,14 +27,14 @@ public class BoardController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
     }
     // 게시글 생성 (0순위)
-//    @PostMapping("")
-//    public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardCreateDto boardCreateDto){
-//        Map<String, Object> result = new HashMap<>();
-//        Long boardId = boardService.createBoard(boardCreateDto);
-//        result.put("boardId", boardId);
-//        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
-//
-//    }
+    @PostMapping("")
+    public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardCreateDto boardCreateDto){
+        Map<String, Object> result = new HashMap<>();
+        Long boardId = boardService.createBoard(boardCreateDto);
+        result.put("boardId", boardId);
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
+
+    }
     // 게시글 수정 (0순위)
 //    @PutMapping("")
 //    public ResponseEntity<Map<String, Object>> boardUpdate(@RequestBody BoardForm boardForm){
