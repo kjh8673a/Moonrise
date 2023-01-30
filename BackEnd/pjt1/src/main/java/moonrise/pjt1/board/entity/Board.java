@@ -52,11 +52,7 @@ public class Board {
         movie.getBoards().add(this);
     }
 
-<<<<<<< HEAD
-    public static Board createBoard(BoardDto boardCreateDto, Member member, Movie movie, BoardInfo boardInfo){
-=======
     public static Board createBoard(BoardDto boardDto, Member member, Movie movie, BoardInfo boardInfo){
->>>>>>> f1e421af21f7a77b1dd3dd4e87b07ab917b4bd91
         Board board = new Board();
         board.setTitle(boardDto.getTitle());
         board.setContent(boardDto.getContent());
