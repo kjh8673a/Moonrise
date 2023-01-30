@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import moonrise.pjt1.member.entity.Member;
-import moonrise.pjt1.party.controller.PartyCommentCreateDto;
+import moonrise.pjt1.party.dto.PartyCommentCreateDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

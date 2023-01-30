@@ -5,7 +5,7 @@ import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
-import moonrise.pjt1.party.controller.PartyCommentCreateDto;
+import moonrise.pjt1.party.dto.PartyCommentCreateDto;
 import moonrise.pjt1.party.dto.PartyCreateDto;
 import moonrise.pjt1.party.dto.PartyListResponseDto;
 import moonrise.pjt1.party.entity.Party;

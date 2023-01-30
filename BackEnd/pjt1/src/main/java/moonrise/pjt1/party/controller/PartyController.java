@@ -2,6 +2,7 @@ package moonrise.pjt1.party.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import moonrise.pjt1.party.dto.PartyCommentCreateDto;
 import moonrise.pjt1.party.dto.PartyCreateDto;
 import moonrise.pjt1.party.service.PartyService;
 import org.springframework.http.HttpStatus;

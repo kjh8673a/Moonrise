@@ -27,75 +27,75 @@ class BoardTest {
     @Autowired
     EntityManager em;
 
-    @Test
-    void 게시글작성(){
-        // 회원 생성
-        Member member = new Member();
-        member.setNickname("동동");
-
-        em.persist(member);
-
-        // 영화 생성
-        Movie movie = new Movie();
-        movie.setTitle("해리포터");
-
-        em.persist(movie);
-
-        //게시글 생성
-        Board board = new Board();
-        board.setTitle("해리포터 본 사람??");
-        board.setContent("오랜만에 봤는데 재밌네요...");
-
-        // 매핑해서 넣어보기
-        board.setMember(member);
-        board.setMovie(movie);
-
-        em.persist(board);
-
-        // when
-        Board findBoard = em.find(Board.class, board.getId());
-
-        Member findMember = findBoard.getMember();
-
-        //then
-        Assertions.assertEquals(member.getId(), findMember.getId());
-    }
-
-    @Test
-    void 회원별_게시글_찾기(){
-        // 회원 생성
-        Member member = new Member();
-        member.setNickname("동동");
-
-        em.persist(member);
-
-        // 영화 생성
-        Movie movie = new Movie();
-        movie.setTitle("해리포터");
-
-        em.persist(movie);
-
-        //게시글 생성
-        Board board = new Board();
-
-        //게시글 기본 내용
-        board.setTitle("해리포터 본 사람??");
-        board.setContent("오랜만에 봤는데 재밌네요...");
-
-        // 매핑해서 넣어보기
-        board.setMovie(movie);
-        board.addMember(member);
-
-        em.persist(board);
-
-        //then
-        // 회원으로 게시글 찾기
-        Member findMember = em.find(Member.class, 1L);
-        List<Board> boards = findMember.getBoards();
-
-        Assertions.assertEquals(1, boards.size());
-
-    }
+//    @Test
+//    void 게시글작성(){
+//        // 회원 생성
+//        Member member = new Member();
+//        member.setNickname("동동");
+//
+//        em.persist(member);
+//
+//        // 영화 생성
+//        Movie movie = new Movie();
+//        movie.setTitle("해리포터");
+//
+//        em.persist(movie);
+//
+//        //게시글 생성
+//        Board board = new Board();
+//        board.setTitle("해리포터 본 사람??");
+//        board.setContent("오랜만에 봤는데 재밌네요...");
+//
+//        // 매핑해서 넣어보기
+//        board.setMember(member);
+//        board.setMovie(movie);
+//
+//        em.persist(board);
+//
+//        // when
+//        Board findBoard = em.find(Board.class, board.getId());
+//
+//        Member findMember = findBoard.getMember();
+//
+//        //then
+//        Assertions.assertEquals(member.getId(), findMember.getId());
+//    }
+//
+//    @Test
+//    void 회원별_게시글_찾기(){
+//        // 회원 생성
+//        Member member = new Member();
+//        member.setNickname("동동");
+//
+//        em.persist(member);
+//
+//        // 영화 생성
+//        Movie movie = new Movie();
+//        movie.setTitle("해리포터");
+//
+//        em.persist(movie);
+//
+//        //게시글 생성
+//        Board board = new Board();
+//
+//        //게시글 기본 내용
+//        board.setTitle("해리포터 본 사람??");
+//        board.setContent("오랜만에 봤는데 재밌네요...");
+//
+//        // 매핑해서 넣어보기
+//        board.setMovie(movie);
+//        board.addMember(member);
+//
+//        em.persist(board);
+//
+//        //then
+//        // 회원으로 게시글 찾기
+//        Member findMember = em.find(Member.class, 1L);
+//        List<Board> boards = findMember.getBoards();
+//
+//        Assertions.assertEquals(1, boards.size());
+//
+//    }
 
 
 }

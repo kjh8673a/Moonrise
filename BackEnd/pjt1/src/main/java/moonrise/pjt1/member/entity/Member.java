@@ -25,8 +25,8 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Board> boards = new ArrayList<>();
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "memberInfo")
-//    private MemberInfo memberInfo;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberInfo")
+    private MemberInfo memberInfo;
 
 }

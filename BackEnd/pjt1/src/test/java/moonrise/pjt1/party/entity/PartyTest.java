@@ -4,6 +4,8 @@ import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
+import moonrise.pjt1.party.dto.PartyCommentCreateDto;
+import moonrise.pjt1.party.dto.PartyCreateDto;
 import moonrise.pjt1.party.repository.PartyRepository;
 import moonrise.pjt1.party.service.PartyService;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,25 +36,10 @@ class PartyTest {
     @Autowired
     PartyService partyService;
     @Test
-    void testParty(){
-        Member member = new Member();
-        member.setNickname("맛덩이");
-        member.setGender("남");
-
-        Movie movie = new Movie();
-        movie.setTitle("하리포타");
-
-        memberRepository.save(member);
-        movieRepository.save(movie);
-        em.flush();
-        em.clear();
-
-        Party party = new Party();
-        party.setMember(member);
-        party.setMovie(movie);
-        party.setTitle("모집합네다~");
-        partyRepository.save(party);
-
+    void writeParty(){
+        PartyCreateDto partyCreateDto = new PartyCreateDto(201611222L,4L,"노실분구합니다","어서오세요",
+                LocalDateTime.now(),5,"대전시유성구",false);
+        partyService.createParty(partyCreateDto);
     }
     @Test
     void listParty(){
@@ -61,7 +49,14 @@ class PartyTest {
 
     @Test
     void readParty(){
-        Map<String, Object> readParty = partyService.readParty(3L);
+        Map<String, Object> readParty = partyService.readParty(13L);
         System.out.println(readParty.get("findParty"));
+    }
+
+    @Test
+    void commentWriteParty(){
+        PartyCommentCreateDto partyCommentCreateDto = new PartyCommentCreateDto(13L,201611222L,
+                "댓글작성~",true);
+        partyService.createComment(partyCommentCreateDto);
     }
 }
