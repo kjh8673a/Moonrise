@@ -8,10 +8,10 @@ export default class Community extends Component {
     return (
       <div>
         <BrowserRouter>
-        <CommunityNav/>
-        <Routes>
-          <Route path="/party" element={<PartyList/>}></Route>
-        </Routes>
+          <CommunityNav/>
+          <Routes>
+            <Route path="/party" element={<PartyList/>}></Route>
+          </Routes>
         </BrowserRouter>
 
       </div>
