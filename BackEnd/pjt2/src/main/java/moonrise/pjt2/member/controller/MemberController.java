@@ -2,11 +2,16 @@ package moonrise.pjt2.member.controller;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import lombok.RequiredArgsConstructor;
+import moonrise.pjt2.member.model.entity.Profile;
+import moonrise.pjt2.member.model.service.MemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Null;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -14,9 +19,10 @@ import java.util.HashMap;
 
 @RestController
 @RequestMapping("/member")
+@RequiredArgsConstructor
 public class MemberController {
     private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
-
+    private final MemberService memberService;
     /**
      *
      * KaKao 서버로 부터 인가 코드를 받아
@@ -74,18 +80,67 @@ public class MemberController {
             logger.info("access_token : {}", access_Token);
             logger.info("refresh_token : {}", refresh_Token);
 
-            resultMap.put("access_token", access_Token);
-            resultMap.put("refresh_token", refresh_Token);
+
 //            HashMap<String, Object> userInfo = getUserInfo(access_Token);
 //            System.out.println("userInfo = " + userInfo.toString());
+
+            //access-token을 파싱 하여 카카오 id가 디비에 있는지 확인
+            Long userId = parseToken(access_Token);
+            if(memberService.check_enroll_member(userId)){  // 회원가입해
+                resultMap.put("kakaoId",userId);
+                return new ResponseEntity<HashMap<String, Object>>(resultMap, HttpStatus.NO_CONTENT);
+
+            }else{  // 회원가입 되어 있어 그냥 token만 반환해
+                resultMap.put("access_token", access_Token);
+                resultMap.put("refresh_token", refresh_Token);
+            }
 
             br.close();
             bw.close();
         }catch(IOException e){
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return ResponseEntity.ok().body(resultMap);
+    }
+
+    private Long parseToken(String token) throws Exception{
+        String requestUrl = "https://kapi.kakao.com/v2/user/me";
+
+        try{
+            URL url = new URL(requestUrl);  // URL 객체
+
+            // KAKAO 서버에 HTTP 요청
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "Bearer " + token);
+
+            // 응답 코드
+            int responseCode = conn.getResponseCode();
+
+            // success : 200, 유효성 error : 401
+            System.out.println("responseCode =" + responseCode);
+
+            if(responseCode == 200){    // 유효성 통과
+
+                JsonElement element = getJsonResponse(conn);
+
+                Long id = Long.parseLong(element.getAsJsonObject().get("id").getAsString());
+                logger.info("kakao_id : {}", id);
+
+                return id;
+            }
+            else if(responseCode == 401){   //access-Token 만료 시
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -228,8 +283,12 @@ public class MemberController {
         }
     }
     @PostMapping("/join")
-    public void join(@RequestBody MemberJoinRequestDto memberJoinRequestDto){
+    public ResponseEntity<?> join(@RequestBody MemberJoinRequestDto memberJoinRequestDto){
         logger.info("memberJoin Data : {}", memberJoinRequestDto);
 
+        // Service에 요청
+        memberService.join(memberJoinRequestDto);
+
+        return ResponseEntity.ok().body(null);
     }
 }
