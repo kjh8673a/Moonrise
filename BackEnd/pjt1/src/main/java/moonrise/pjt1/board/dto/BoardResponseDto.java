@@ -1,4 +1,4 @@
-package moonrise.pjt1.board.controller;
+package moonrise.pjt1.board.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
