@@ -1,10 +1,10 @@
-package moonrise.pjt1.board.controller;
+package moonrise.pjt1.board.dto;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
 @Data
-public class BoardCreateDto {
+public class BoardDto {
     private Long memberId;
     private Long movieId;
     private String title;

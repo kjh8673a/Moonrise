@@ -1,4 +1,4 @@
-package moonrise.pjt1.board.controller;
+package moonrise.pjt1.board.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Getter @Setter
-public class BoardDetailDto {
+public class BoardResponseDto {
     private Long id;
     private Long memberId;
     private Long movieId;
