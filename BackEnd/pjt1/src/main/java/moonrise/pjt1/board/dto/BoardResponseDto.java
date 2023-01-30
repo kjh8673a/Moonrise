@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Getter @Setter
-public class BoardDetailDto {
+public class BoardResponseDto {
     private Long id;
     private Long memberId;
     private Long movieId;

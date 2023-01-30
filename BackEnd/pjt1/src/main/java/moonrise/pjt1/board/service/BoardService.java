@@ -1,7 +1,7 @@
 package moonrise.pjt1.board.service;
 
 import lombok.RequiredArgsConstructor;
-import moonrise.pjt1.board.controller.BoardCreateDto;
+import moonrise.pjt1.board.dto.BoardDto;
 import moonrise.pjt1.board.entity.Board;
 import moonrise.pjt1.board.entity.BoardInfo;
 import moonrise.pjt1.board.entity.BoardStatus;
@@ -39,16 +39,16 @@ public class BoardService {
         return result;
     }
 
-    public Long createBoard(BoardCreateDto boardCreateDto) {
+    public Long createBoard(BoardDto boardDto) {
 
-        Optional<Member> findMember = memberRepository.findById(boardCreateDto.getMemberId());
-        Optional<Movie> findMovie = movieRepository.findById(boardCreateDto.getMovieId());
+        Optional<Member> findMember = memberRepository.findById(boardDto.getMemberId());
+        Optional<Movie> findMovie = movieRepository.findById(boardDto.getMovieId());
         // 게시글 정보 생성
         BoardInfo boardInfo = new BoardInfo();
         boardInfo.setBoardStatus(BoardStatus.NORMAL);
         boardInfo.setCommentCnt(0);
 
-        Board board = Board.createBoard(boardCreateDto, findMember.get(), findMovie.get());
+        Board board = Board.createBoard(boardDto, findMember.get(), findMovie.get(), boardInfo);
         boardRepository.save(board);
         return board.getId();
 
