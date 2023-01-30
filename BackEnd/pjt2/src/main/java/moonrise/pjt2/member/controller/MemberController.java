@@ -52,6 +52,7 @@ public class MemberController {
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=f0b916ceedccef620b4f4a6ab4e6bec5"); // TODO REST_API_KEY 입력
             sb.append("&redirect_uri=http://localhost:9000/auth/member/kakao"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&prompt=login");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -264,6 +265,37 @@ public class MemberController {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+            // 응답 코드
+            int responseCode = conn.getResponseCode();
+            System.out.println("responseCode =" + responseCode);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String line = "";
+            String result = "";
+
+            while((line = br.readLine()) != null) {
+                result += line;
+            }
+            System.out.println("response body =" + result);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @GetMapping("/logout2")
+    public void logout2(String accessToken){
+        StringBuilder sb = new StringBuilder();
+        sb.append("https://kauth.kakao.com/oauth/logout?");
+        sb.append("client_id=" + "f0b916ceedccef620b4f4a6ab4e6bec5");
+        sb.append("&logout_redirect_uri="+"http://localhost:9000/auth/member/logout");
+
+        String requestUrl = sb.toString();
+        try{
+            URL url = new URL(requestUrl);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
             // 응답 코드
             int responseCode = conn.getResponseCode();

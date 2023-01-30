@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import moonrise.pjt1.member.entity.Member;
-import moonrise.pjt1.party.controller.PartyCommentCreateDto;
+import moonrise.pjt1.party.dto.PartyCommentCreateDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PartyComment {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "party_comment_id")
     private Long id;
 

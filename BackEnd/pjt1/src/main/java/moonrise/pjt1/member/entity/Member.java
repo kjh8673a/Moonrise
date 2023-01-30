@@ -28,7 +28,6 @@ public class Member {
     public void addProfile(Profile memberProfile) {
         this.profile = memberProfile;
     }
-
     public void addId(Long userId) {
         this.id = userId;
     }
