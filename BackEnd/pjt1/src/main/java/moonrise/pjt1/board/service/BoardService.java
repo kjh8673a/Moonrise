@@ -39,11 +39,7 @@ public class BoardService {
         return result;
     }
 
-<<<<<<< HEAD
-    public Long createBoard(BoardDto boardCreateDto) {
-=======
     public Long createBoard(BoardDto boardDto) {
->>>>>>> f1e421af21f7a77b1dd3dd4e87b07ab917b4bd91
 
         Optional<Member> findMember = memberRepository.findById(boardDto.getMemberId());
         Optional<Movie> findMovie = movieRepository.findById(boardDto.getMovieId());
@@ -51,14 +47,11 @@ public class BoardService {
         BoardInfo boardInfo = new BoardInfo();
         boardInfo.setBoardStatus(BoardStatus.NORMAL);
         boardInfo.setCommentCnt(0);
-<<<<<<< HEAD
         boardInfo.setViewCnt(0);
         boardInfo.setLikeCnt(0);
-        Board board = Board.createBoard(boardCreateDto, findMember.get(), findMovie.get(), boardInfo);
-=======
 
         Board board = Board.createBoard(boardDto, findMember.get(), findMovie.get(), boardInfo);
->>>>>>> f1e421af21f7a77b1dd3dd4e87b07ab917b4bd91
+
         boardRepository.save(board);
         return board.getId();
     }
