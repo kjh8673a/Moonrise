@@ -9,18 +9,21 @@ import BoardList from '../components/community/board/BoardList';
 export default class Community extends Component {
   render() {
     return (
-      <div>
-        
-        <BrowserRouter>
-        <MovieDetail />
-          <CommunityNav/>
-          <Routes>
-            <Route path="/party" element={<PartyList/>}></Route>
-            <Route path="/board" element={<BoardList/>}></Route>
-
-          </Routes>
-        </BrowserRouter>
-
+      <div className="bg-community bg-cover px-8">
+        <div className="grid grid-cols-3 gap-4">
+          <div className='col-span-1'>
+            <MovieDetail/>
+          </div>
+          <div className='col-span-2'>
+            <CommunityNav/>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/board" element={<BoardList/>}></Route>
+                <Route path="/party" element={<PartyList/>}></Route>
+              </Routes>
+            </BrowserRouter>
+          </div>
+        </div>
       </div>
     )
   }

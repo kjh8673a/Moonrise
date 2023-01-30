@@ -16,7 +16,7 @@ function MovieDetail() {
   const average =
     DUMMY_DATA.rating.reduce((a, c) => a + c) / DUMMY_DATA.rating.length;
   return (
-    <div className="float-left w-1/5 bg-emerald-600">
+    <div className="bg-emerald-600">
       <ul>
         <li>
           <img className="w-2/3 m-auto" src={data.poster} alt="poster" />

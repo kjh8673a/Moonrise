@@ -1,5 +1,6 @@
 import React from "react";
 import BoardCard from "./BoardCard";
+import CommunityHeader from '../CommunityHeader';
 
 const DUMMY_DATA = [
   {
@@ -44,7 +45,8 @@ function BoardList() {
   const data = DUMMY_DATA;
 
   return (
-    <div className="float-left w-4/5 bg-gray-600">
+    <div>
+      <CommunityHeader type="게시글"/>
       <ul>
         {data.map((board) => (
           <BoardCard

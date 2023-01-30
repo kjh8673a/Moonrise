@@ -4,9 +4,9 @@ import CardImg from '../../../assets/img/CardImg.jpg'
 export default class PartyCard extends Component {
   render() {
     return (
-        <div class="rounded overflow-hidden shadow-lg mx-2 my-2">
+        <div class="rounded overflow-hidden shadow-lg mx-1">
         <img src={CardImg} class="h-36 w-full object-cover" alt="뒷풀이 카드 이미지"/>
-        <div class="px-2 py-2">
+        <div class="px-2 py-2 bg-orange-500">
           <div class="font-bold text-l mb-2">{this.props.title}</div>
           <div class="flex">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -26,11 +26,11 @@ export default class PartyCard extends Component {
             <p class="ml-2 text-center w-44 text-sm">서울시 종로구</p>
           </div>
         </div>
-        <div class="flex px-2 py-2">
+        {/* <div class="flex px-2 py-2">
           <p class="flex-1 text-center text-sm ">#소통</p> 
           <p class="flex-1 text-center text-sm ">#사진</p>
           <p class="flex-1 text-center text-sm">#덕질</p>
-        </div>
+        </div> */}
       </div> 
     )
   }

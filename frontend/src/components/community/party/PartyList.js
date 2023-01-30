@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import PartyCard from './PartyCard'
-import PartyHeader from './PartyHeader'
+import CommunityHeader from '../CommunityHeader'
 
 const partyInfo =[
   {
@@ -68,8 +68,8 @@ export default class PartyList extends Component {
       <PartyCard title={pi.title} partyDate={pi.partyDate} partyPeople={pi.partyPeople} partyLocation={pi.partyLocation} key={pi.id} />
     ));
     return (
-      <div class='w-3/5'>
-        <PartyHeader/>
+      <div>
+        <CommunityHeader type="뒷풀이"/>
         <div class="grid grid-cols-4 gap-2">
           {partyList}
         </div>
