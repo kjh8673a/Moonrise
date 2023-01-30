@@ -1,5 +1,9 @@
 package moonrise.pjt1.board.entity;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 /**
@@ -7,6 +11,9 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "board_status")
+@Getter
+@Setter
+@NoArgsConstructor
 public class BoardInfo {
     @Id @GeneratedValue
     @Column(name = "board_info_id")
@@ -15,9 +22,10 @@ public class BoardInfo {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
-
+    @Enumerated(EnumType.STRING)
     private BoardStatus boardStatus;
     private int likeCnt;
     private int viewCnt;
     private int commentCnt;
+
 }
