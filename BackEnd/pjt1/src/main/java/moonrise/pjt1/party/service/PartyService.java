@@ -5,12 +5,15 @@ import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
-import moonrise.pjt1.party.controller.PartyCommentCreateDto;
+import moonrise.pjt1.party.dto.PartyCommentCreateDto;
 import moonrise.pjt1.party.dto.PartyCreateDto;
+import moonrise.pjt1.party.dto.PartyJoinCreateDto;
 import moonrise.pjt1.party.dto.PartyListResponseDto;
 import moonrise.pjt1.party.entity.Party;
 import moonrise.pjt1.party.entity.PartyComment;
+import moonrise.pjt1.party.entity.PartyJoin;
 import moonrise.pjt1.party.repository.PartyCommentRepository;
+import moonrise.pjt1.party.repository.PartyJoinRepository;
 import moonrise.pjt1.party.repository.PartyRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,8 @@ public class PartyService {
     private final PartyCommentRepository partyCommentRepository;
     private final MovieRepository movieRepository;
     private final MemberRepository memberRepository;
+    private final PartyJoinRepository partyJoinRepository;
+
     public Map<String,Object> readParty(Long partyId) {
         Optional<Party> findParty = partyRepository.findById(partyId);
         Map<String,Object> result = new HashMap<>();
@@ -57,5 +62,15 @@ public class PartyService {
         PartyComment partyComment = PartyComment.createPartyComment(partyCommentCreateDto, findParty.get(), findMember.get());
         partyCommentRepository.save(partyComment);
         return partyComment.getId();
+    }
+
+    public Long createJoin(PartyJoinCreateDto partyJoinCreateDto) {
+        Optional<Member> findMember = memberRepository.findById(partyJoinCreateDto.getMemberId());
+        Optional<Party> findParty = partyRepository.findById(partyJoinCreateDto.getPartyId());
+
+        PartyJoin partyJoin = PartyJoin.createPartyJoin(partyJoinCreateDto,findMember.get(),findParty.get());
+        partyJoinRepository.save(partyJoin);
+
+        return partyJoin.getId();
     }
 }
