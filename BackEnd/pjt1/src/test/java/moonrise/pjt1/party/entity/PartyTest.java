@@ -39,7 +39,7 @@ class PartyTest {
     @Test
     void writeParty(){
         PartyCreateDto partyCreateDto = new PartyCreateDto(201611222L,4L,"노실분구합니다","어서오세요",
-                LocalDateTime.now(),5,"대전시유성구",false);
+                5,"대전시유성구",false);
         partyService.createParty(partyCreateDto);
     }
     @Test

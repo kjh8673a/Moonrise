@@ -1,5 +1,6 @@
 package moonrise.pjt1.party.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,17 +30,21 @@ public class Party {
     @Enumerated(EnumType.STRING)
     private PartyStatus partyStatus;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member; //호스트
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "party")
     private List<PartyJoin> partyJoins = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "party")
     private List<PartyComment> partyComments = new ArrayList<>();
 
@@ -47,7 +52,7 @@ public class Party {
         Party party = new Party();
         party.setTitle(partyCreateDto.getTitle());
         party.setContent(partyCreateDto.getContent());
-        party.setPartyDate(partyCreateDto.getLocalDateTime());
+        party.setPartyDate(LocalDateTime.now());
         party.setPartyPeople(partyCreateDto.getPartyPeople());
         party.setLocation(partyCreateDto.getLocation());
         party.setPartyStatus(PartyStatus.모집중);
