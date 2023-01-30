@@ -10,12 +10,14 @@ export default class Community extends Component {
   render() {
     return (
       <div>
-        {/* <MovieDetail />
-        <BoardList /> */}
+        
         <BrowserRouter>
+        <MovieDetail />
           <CommunityNav/>
           <Routes>
             <Route path="/party" element={<PartyList/>}></Route>
+            <Route path="/board" element={<BoardList/>}></Route>
+
           </Routes>
         </BrowserRouter>
 
