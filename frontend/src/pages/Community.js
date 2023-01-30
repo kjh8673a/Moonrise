@@ -13,10 +13,10 @@ export default class Community extends Component {
         {/* <MovieDetail />
         <BoardList /> */}
         <BrowserRouter>
-        <CommunityNav/>
-        <Routes>
-          <Route path="/party" element={<PartyList/>}></Route>
-        </Routes>
+          <CommunityNav/>
+          <Routes>
+            <Route path="/party" element={<PartyList/>}></Route>
+          </Routes>
         </BrowserRouter>
 
       </div>
