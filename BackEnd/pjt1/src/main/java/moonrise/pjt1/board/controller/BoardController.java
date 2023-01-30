@@ -28,10 +28,12 @@ public class BoardController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
     }
     // 게시글 생성 (0순위)
-    @PostMapping("")
+    @PostMapping("/insert")
     public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardDto boardDto){
+        System.out.println("boardDto = " + boardDto.getTitle());
         Map<String, Object> result = new HashMap<>();
         Long boardId = boardService.createBoard(boardDto);
+        result.put("board", boardDto);
         result.put("boardId", boardId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
 

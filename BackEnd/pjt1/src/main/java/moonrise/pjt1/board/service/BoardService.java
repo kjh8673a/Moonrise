@@ -47,10 +47,12 @@ public class BoardService {
         BoardInfo boardInfo = new BoardInfo();
         boardInfo.setBoardStatus(BoardStatus.NORMAL);
         boardInfo.setCommentCnt(0);
+        boardInfo.setViewCnt(0);
+        boardInfo.setLikeCnt(0);
 
         Board board = Board.createBoard(boardDto, findMember.get(), findMovie.get(), boardInfo);
+
         boardRepository.save(board);
         return board.getId();
-
     }
 }

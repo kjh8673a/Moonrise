@@ -1,3 +1,4 @@
+
 package moonrise.pjt1.party.entity;
 
 import moonrise.pjt1.member.entity.Member;
