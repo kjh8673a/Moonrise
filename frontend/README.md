@@ -12,11 +12,11 @@ src
 │	  └── Profile.js
 ├── components // 페이지 안 컴포넌트
 │	  ├── common
-│   │	  ├── ProfileIcon.js
-│		│	  ├── MainNav.js
-│		│	  ├── LogCard.js
-│		│		├── PartyCard.js
-│		│		└── ProfileEdit.js
+│       ├── ProfileIcon.js
+│		├── MainNav.js
+│		├── LogCard.js
+│		│	├── PartyCard.js
+│		│	└── ProfileEdit.js
 │	  ├── main
 │		│	  ├── MainSearch.js
 │		│	  └── MainLog.js
@@ -38,7 +38,7 @@ src
 │		│		│	  ├── TalkList.js
 │		│		│	  ├── TalkCard.js
 │		│		│	  ├── TalkView.js
-│		│		│	  ├── TalkRoom.js
+│		│		│	  ├── TalkRoom.js 
 │		│		│	  └── TalkWrite.js
 │		│	  ├── party
 │		│		│	  ├── PartyList.js
