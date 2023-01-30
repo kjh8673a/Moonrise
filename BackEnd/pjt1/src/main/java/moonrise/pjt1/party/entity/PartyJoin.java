@@ -1,16 +1,21 @@
 package moonrise.pjt1.party.entity;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import moonrise.pjt1.member.entity.Member;
+import moonrise.pjt1.party.dto.PartyJoinCreateDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
+@Entity @Getter @Setter @NoArgsConstructor
 public class PartyJoin {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "party_join_id")
     private Long id;
 
+    private String message;
     private PartyJoinStatus partyJoinStatus;
     private LocalDateTime joinDate;
 
@@ -27,17 +32,13 @@ public class PartyJoin {
         party.getPartyJoins().add(this);
     }
 
-//    public static PartyJoin createPartyJoin(PartyCreateDto partyCreateDto, Member member, Movie movie){
-//        Party party = new Party();
-//        party.setTitle(partyCreateDto.getTitle());
-//        party.setContent(partyCreateDto.getContent());
-//        party.setPartyDate(partyCreateDto.getLocalDateTime());
-//        party.setPartyPeople(partyCreateDto.getPartyPeople());
-//        party.setLocation(partyCreateDto.getLocation());
-//        party.setPartyStatus(PartyStatus.모집중);
-//
-//        party.setMember(member);
-//        party.setMovie(movie);
-//        return party;
-//    }
+    public static PartyJoin createPartyJoin(PartyJoinCreateDto partyJoinCreateDto, Member member, Party party){
+        PartyJoin partyJoin = new PartyJoin();
+        partyJoin.setMessage(partyJoinCreateDto.getMessage());
+        partyJoin.setPartyJoinStatus(PartyJoinStatus.승인대기);
+        partyJoin.setJoinDate(LocalDateTime.now());
+        partyJoin.setMember(member);
+        partyJoin.setParty(party);
+        return partyJoin;
+    }
 }
