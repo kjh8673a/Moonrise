@@ -17,15 +17,16 @@ public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
-    private String nickname;
-    private String image;
-    private String gender;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "id")
+    private Profile profile;
 
     @OneToMany(mappedBy = "member")
     private List<Board> boards = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberInfo")
-    private MemberInfo memberInfo;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "memberInfo")
+//    private MemberInfo memberInfo;
 
 }
