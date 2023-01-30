@@ -1,23 +1,19 @@
 import React, { Component } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import CommunityNav from '../components/community/CommunityNav'
+import PartyList from '../components/community/party/PartyList'
 
 export default class Community extends Component {
   render() {
     return (
       <div>
-        <ul class="flex">
-            <li class="mr-6">
-                <a class="text-blue-500 hover:text-blue-800" href="#">Active</a>
-            </li>
-            <li class="mr-6">
-                <a class="text-blue-500 hover:text-blue-800" href="#">Link</a>
-            </li>
-            <li class="mr-6">
-                <a class="text-blue-500 hover:text-blue-800" href="#">Link</a>
-            </li>
-            <li class="mr-6">
-                <a class="text-gray-400 cursor-not-allowed" href="#">Disabled</a>
-            </li>
-        </ul>
+        <BrowserRouter>
+        <CommunityNav/>
+        <Routes>
+          <Route path="/party" element={<PartyList/>}></Route>
+        </Routes>
+        </BrowserRouter>
+
       </div>
     )
   }
