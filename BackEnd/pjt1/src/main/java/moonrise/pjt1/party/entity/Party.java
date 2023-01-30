@@ -3,9 +3,10 @@ package moonrise.pjt1.party.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.movie.entity.Movie;
-import moonrise.pjt1.party.controller.PartyCreateDto;
+import moonrise.pjt1.party.dto.PartyCreateDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @ToString
 public class Party {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "party_id")
@@ -24,6 +25,8 @@ public class Party {
     private LocalDateTime partyDate;
     private int partyPeople;
     private String location;
+
+    @Enumerated(EnumType.STRING)
     private PartyStatus partyStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)

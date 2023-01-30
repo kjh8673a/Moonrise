@@ -1,8 +1,6 @@
 package moonrise.pjt1.party.entity;
 
 import moonrise.pjt1.member.entity.Member;
-import moonrise.pjt1.movie.entity.Movie;
-import moonrise.pjt1.party.controller.PartyCreateDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

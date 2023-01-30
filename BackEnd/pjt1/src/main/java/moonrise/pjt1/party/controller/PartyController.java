@@ -2,13 +2,12 @@ package moonrise.pjt1.party.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import moonrise.pjt1.party.entity.Party;
+import moonrise.pjt1.party.dto.PartyCreateDto;
 import moonrise.pjt1.party.service.PartyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +21,6 @@ public class PartyController {
     @GetMapping("/read")
     public ResponseEntity<Map<String, Object>> read(@RequestParam(value = "partyId") Long partyId){
         Map<String, Object> result = partyService.readParty(partyId);
-        result.put("gd","gd");
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
     @GetMapping("/list")

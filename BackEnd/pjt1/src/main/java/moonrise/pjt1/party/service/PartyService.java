@@ -6,7 +6,8 @@ import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.party.controller.PartyCommentCreateDto;
-import moonrise.pjt1.party.controller.PartyCreateDto;
+import moonrise.pjt1.party.dto.PartyCreateDto;
+import moonrise.pjt1.party.dto.PartyListResponseDto;
 import moonrise.pjt1.party.entity.Party;
 import moonrise.pjt1.party.entity.PartyComment;
 import moonrise.pjt1.party.repository.PartyCommentRepository;
@@ -34,11 +35,9 @@ public class PartyService {
         return result;
     }
     public Map<String,Object> listParty(Long movieId) {
-        Optional<Movie> findMoive = movieRepository.findById(movieId);
         Map<String,Object> result = new HashMap<>();
-        if(findMoive.isPresent()){
-            result.put("findParties",findMoive.get().getParties());
-        }
+        List<PartyListResponseDto> partyList = partyRepository.findPartyList(movieId);
+        result.put("findParties",partyList);
         return result;
     }
 
