@@ -52,13 +52,13 @@ public class Board {
         movie.getBoards().add(this);
     }
 
-    public static Board createBoard(BoardDto boardDto, Member member, Movie movie, BoardInfo boardInfo){
+    public static Board createBoard(BoardDto boardDto, Member member, Movie movie){
         Board board = new Board();
         board.setTitle(boardDto.getTitle());
         board.setContent(boardDto.getContent());
         board.setDateTime(boardDto.getDateTime());
         board.setMember(member);
-        board.setBoardInfo(boardInfo);
+        //board.setBoardInfo(boardInfo);
         board.setMovie(movie);
         return board;
     }

@@ -28,9 +28,9 @@ public class BoardController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
     }
     // 게시글 생성 (0순위)
-    @PostMapping("/insert")
+    @PostMapping("")
     public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardDto boardDto){
-        System.out.println("boardDto = " + boardDto.getTitle());
+        System.out.println("boardDto = " + boardDto.getMemberId());
         Map<String, Object> result = new HashMap<>();
         Long boardId = boardService.createBoard(boardDto);
         result.put("board", boardDto);
@@ -39,6 +39,7 @@ public class BoardController {
 
     }
     // 게시글 수정 (0순위)
+
 //    @PutMapping("")
 //    public ResponseEntity<Map<String, Object>> boardUpdate(@RequestBody BoardForm boardForm){
 //

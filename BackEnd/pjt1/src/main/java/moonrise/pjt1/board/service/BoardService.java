@@ -43,6 +43,13 @@ public class BoardService {
 
         Optional<Member> findMember = memberRepository.findById(boardDto.getMemberId());
         Optional<Movie> findMovie = movieRepository.findById(boardDto.getMovieId());
+
+        if(!findMovie.isPresent()){
+            throw new IllegalStateException("존재 하지 않는 영화입니다.");
+        }
+        if (!findMember.isPresent()){
+            throw new IllegalStateException("존재 하지 않는 멤버입니다.");
+        }
         // 게시글 정보 생성
         BoardInfo boardInfo = new BoardInfo();
         boardInfo.setBoardStatus(BoardStatus.NORMAL);
@@ -50,7 +57,9 @@ public class BoardService {
         boardInfo.setViewCnt(0);
         boardInfo.setLikeCnt(0);
 
-        Board board = Board.createBoard(boardDto, findMember.get(), findMovie.get(), boardInfo);
+        // e
+
+        Board board = Board.createBoard(boardDto, findMember.get(), findMovie.get());
 
         boardRepository.save(board);
         return board.getId();
