@@ -11,9 +11,10 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class BoardDetailDto {
     private Long id;
+    private Long memberId;
+    private Long movieId;
     private String title;
     private String content;
-    private Member writer;
     private LocalDateTime dateTime;
 
 }

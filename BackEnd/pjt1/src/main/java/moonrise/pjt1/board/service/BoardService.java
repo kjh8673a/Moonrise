@@ -1,9 +1,10 @@
 package moonrise.pjt1.board.service;
 
 import lombok.RequiredArgsConstructor;
-import moonrise.pjt1.board.controller.BoardDetailDto;
-import moonrise.pjt1.board.controller.BoardForm;
+import moonrise.pjt1.board.controller.BoardCreateDto;
 import moonrise.pjt1.board.entity.Board;
+import moonrise.pjt1.board.entity.BoardInfo;
+import moonrise.pjt1.board.entity.BoardStatus;
 import moonrise.pjt1.board.repository.BoardRepository;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
@@ -38,11 +39,16 @@ public class BoardService {
         return result;
     }
 
-    public Long createBoard(BoardForm boardForm) {
-        Optional<Member> findMember = memberRepository.findById(boardForm.getMemberId());
-        Optional<Movie> findMovie = movieRepository.findById(boardForm.getMovieId());
+    public Long createBoard(BoardCreateDto boardCreateDto) {
 
-        Board board = Board.createBoard(boardForm, findMember.get(), findMovie.get());
+        Optional<Member> findMember = memberRepository.findById(boardCreateDto.getMemberId());
+        Optional<Movie> findMovie = movieRepository.findById(boardCreateDto.getMovieId());
+        // 게시글 정보 생성
+        BoardInfo boardInfo = new BoardInfo();
+        boardInfo.setBoardStatus(BoardStatus.NORMAL);
+        boardInfo.setCommentCnt(0);
+
+        Board board = Board.createBoard(boardCreateDto, findMember.get(), findMovie.get());
         boardRepository.save(board);
         return board.getId();
 
