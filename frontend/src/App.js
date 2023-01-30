@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Community from './pages/Community';
 import './App.css';
 
