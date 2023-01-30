@@ -3,7 +3,7 @@ package moonrise.pjt1.board.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import moonrise.pjt1.board.controller.BoardCreateDto;
+import moonrise.pjt1.board.dto.BoardDto;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.movie.entity.Movie;
 
@@ -52,7 +52,7 @@ public class Board {
         movie.getBoards().add(this);
     }
 
-    public static Board createBoard(BoardCreateDto boardCreateDto, Member member, Movie movie, BoardInfo boardInfo){
+    public static Board createBoard(BoardDto boardCreateDto, Member member, Movie movie, BoardInfo boardInfo){
         Board board = new Board();
         board.setTitle(boardCreateDto.getTitle());
         board.setContent(boardCreateDto.getContent());

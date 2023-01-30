@@ -1,6 +1,7 @@
 package moonrise.pjt1.board.controller;
 
 import lombok.RequiredArgsConstructor;
+import moonrise.pjt1.board.dto.BoardDto;
 import moonrise.pjt1.board.service.BoardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +28,12 @@ public class BoardController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
     }
     // 게시글 생성 (0순위)
-    @PostMapping("")
-    public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardCreateDto boardCreateDto){
+    @PostMapping("/insert")
+    public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardDto boardDto){
+        System.out.println("boardDto = " + boardDto.getTitle());
         Map<String, Object> result = new HashMap<>();
-        Long boardId = boardService.createBoard(boardCreateDto);
+        Long boardId = boardService.createBoard(boardDto);
+        result.put("board", boardDto);
         result.put("boardId", boardId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
 
