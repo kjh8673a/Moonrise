@@ -1,7 +1,8 @@
 package moonrise.pjt1.board.service;
 
 import lombok.RequiredArgsConstructor;
-import moonrise.pjt1.board.dto.BoardDto;
+import moonrise.pjt1.board.dto.BoardDetailDto;
+import moonrise.pjt1.board.dto.BoardListResponseDto;
 import moonrise.pjt1.board.entity.Board;
 import moonrise.pjt1.board.entity.BoardInfo;
 import moonrise.pjt1.board.entity.BoardStatus;
@@ -24,25 +25,47 @@ public class BoardService {
     public Map<String, Object> listBoard(Long movieId){
         Optional<Movie> findMovie = movieRepository.findById(movieId);
         Map<String,Object> result = new HashMap<>();
-        if(findMovie.isPresent()){
-            result.put("findBoards",findMovie.get().getBoards());
-        }
+        List<BoardListResponseDto> boardList = boardRepository.findBoardList(movieId);
+        System.out.println(boardList.getClass());
+        result.put("findBoards", boardList);
+//        List<Board> findboards = findMovie.get().getBoards();
+//        if(!findMovie.isPresent()){
+//            throw new IllegalStateException("존재 하지 않는 영화입니다.");
+//        }
+//        if(!findboards.isEmpty()){
+//            throw new IllegalStateException("게시글 목록이 없습니다.");
+//        }
+//        result.put("findBoards",findboards);
         return result;
     }
 
     public Map<String, Object> detailBoard(Long boardId){
         Optional<Board> findBoard = boardRepository.findById(boardId);
         Map<String, Object> result = new HashMap<>();
-        if (findBoard.isPresent()){
-            result.put("findBoard",findBoard.get());
-        }
+//        if (findBoard.isPresent()){
+//            result.put("findBoard",findBoard.get());
+//        }
+//        return result;
+        if(!findBoard.isPresent()) throw new IllegalStateException("존재하지 않는 게시글 입니다");
+
+        Board board = findBoard.get();
+        // 이거 왜 안되는지?
+        //String name = board.getMember().getProfile().getUsername();
+//        if (name.isBlank()){
+//            System.out.println("이름이 없다");
+//        }
+//        System.out.println(name);
+
+        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), "writer");
+        result.put("findBoard", boardDetailDto);
+
         return result;
     }
 
-    public Long createBoard(BoardDto boardDto) {
+    public Long createBoard(BoardDetailDto boardDetailDto) {
 
-        Optional<Member> findMember = memberRepository.findById(boardDto.getMemberId());
-        Optional<Movie> findMovie = movieRepository.findById(boardDto.getMovieId());
+        Optional<Member> findMember = memberRepository.findById(boardDetailDto.getMemberId());
+        Optional<Movie> findMovie = movieRepository.findById(boardDetailDto.getMovieId());
 
         if(!findMovie.isPresent()){
             throw new IllegalStateException("존재 하지 않는 영화입니다.");
@@ -51,7 +74,7 @@ public class BoardService {
             throw new IllegalStateException("존재 하지 않는 멤버입니다.");
         }
         // 게시글 정보 생성
-        BoardInfo boardInfo = new BoardInfo();
+        BoardInfo boardInfo = new BoardInfo("");
         boardInfo.setBoardStatus(BoardStatus.NORMAL);
         boardInfo.setCommentCnt(0);
         boardInfo.setViewCnt(0);
@@ -59,7 +82,7 @@ public class BoardService {
 
         // e
 
-        Board board = Board.createBoard(boardDto, findMember.get(), findMovie.get());
+        Board board = Board.createBoard(boardDetailDto, findMember.get(), findMovie.get());
 
         boardRepository.save(board);
         return board.getId();

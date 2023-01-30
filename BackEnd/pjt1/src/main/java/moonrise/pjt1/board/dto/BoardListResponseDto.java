@@ -3,18 +3,16 @@ package moonrise.pjt1.board.dto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import moonrise.pjt1.member.entity.Member;
 
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Getter @Setter
-public class BoardResponseDto {
+public class BoardListResponseDto {
     // 게시판 목록 및 상세보기
 
     private Long id;
-    private Long memberId;
-    private Long movieId;
+//    private Long memberId;
     private String title;
     private String content;
     private LocalDateTime dateTime;
@@ -24,6 +22,13 @@ public class BoardResponseDto {
 //    private int like;
 //    private int mark;
     // 사용자 이름? 모르겠음
-//    private String nickname;
+    private String writer;
 
+    public BoardListResponseDto(Long id, String title, String content, LocalDateTime dateTime, String writer) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.dateTime = dateTime;
+        this.writer = writer;
+    }
 }

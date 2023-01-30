@@ -19,13 +19,13 @@ public class BoardInfo {
     @Column(name = "board_info_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
+    @OneToOne(mappedBy = "boardInfo", fetch = FetchType.LAZY)
     private Board board;
     @Enumerated(EnumType.STRING)
     private BoardStatus boardStatus;
     private int likeCnt;
     private int viewCnt;
     private int commentCnt;
+
 
 }
