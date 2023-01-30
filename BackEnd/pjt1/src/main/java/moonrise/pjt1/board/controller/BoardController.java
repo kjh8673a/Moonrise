@@ -30,8 +30,8 @@ public class BoardController {
     @PostMapping("")
     public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardCreateDto boardCreateDto){
         Map<String, Object> result = new HashMap<>();
-        Long boardId = boardService.createBoard(boardCreateDto);
-        result.put("boardId", boardId);
+//        Long boardId = boardService.createBoard(boardCreateDto);
+//        result.put("boardId", boardId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
 
     }
