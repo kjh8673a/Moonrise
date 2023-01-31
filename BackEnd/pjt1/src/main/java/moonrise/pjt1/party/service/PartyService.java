@@ -30,14 +30,15 @@ public class PartyService {
 
     public Map<String,Object> readParty(Long partyId) {
         Optional<Party> findParty = partyRepository.findById(partyId);
-        List<PartyComment> partyComments = findParty.get().getPartyComments();
+        Party party = findParty.get();
+        List<PartyComment> partyComments = party.getPartyComments();
+        List<PartyJoin> partyJoins = party.getPartyJoins();
 //        System.out.println(partyComments);
         Map<String,Object> result = new HashMap<>();
         if(findParty.isPresent()){
-            Party party = findParty.get();
             PartyReadResponseDto partyReadResponseDto = new PartyReadResponseDto(party.getId(),party.getTitle(),party.getContent(),party.getPartyDate(),
                     party.getPartyPeople(),party.getLocation(),party.getPartyStatus(),party.getMember().getId(),
-                    party.getMovie().getId(),party.getPartyJoins(),partyComments,party.getDeadLine());
+                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine());
             result.put("findParty",partyReadResponseDto);
         }
         return result;

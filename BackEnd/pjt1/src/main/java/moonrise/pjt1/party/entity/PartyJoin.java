@@ -25,6 +25,7 @@ public class PartyJoin {
     @JoinColumn(name = "party_id")
     private Party party;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
