@@ -1,13 +1,11 @@
 
 package moonrise.pjt1.party.entity;
 
-import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
-import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.party.dto.PartyCommentCreateDto;
 import moonrise.pjt1.party.dto.PartyCreateDto;
-import moonrise.pjt1.party.repository.PartyRepository;
+import moonrise.pjt1.party.repository.PartyRepositoryTest;
 import moonrise.pjt1.party.service.PartyService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +18,12 @@ import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Transactional
 @Rollback(value = false)
 class PartyTest {
     @Autowired
-    PartyRepository partyRepository;
+    PartyRepositoryTest partyRepository;
     @Autowired
     MemberRepository memberRepository;
     @Autowired
