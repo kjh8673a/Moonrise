@@ -1,5 +1,6 @@
 package moonrise.pjt1.party.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,7 @@ public class PartyJoin {
     private PartyJoinStatus partyJoinStatus;
     private LocalDateTime joinDate;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "party_id")
     private Party party;

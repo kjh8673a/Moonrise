@@ -1,9 +1,7 @@
 package moonrise.pjt1.party.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.party.dto.PartyCommentCreateDto;
 
@@ -11,7 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Getter @Setter @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PartyComment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +20,12 @@ public class PartyComment {
     private LocalDateTime commentWriteTime;
     private boolean showPublic;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "party_id")
     private Party party;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
