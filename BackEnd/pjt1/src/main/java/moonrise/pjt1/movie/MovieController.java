@@ -20,14 +20,19 @@ public class MovieController {
     private final MovieService movieService;
     private final Logger logger = LoggerFactory.getLogger(MovieController.class);
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody MovieInsertRequestDto movieDto){
-        logger.info("movieDto : {}", movieDto);
+    public ResponseEntity<?> save(@RequestBody MovieInsertRequestDto requestDto){
+        logger.info("movieDto : {}", requestDto);
+
+        movieService.insertMovie(requestDto);
 
         return new ResponseEntity<Null>(HttpStatus.OK);
     }
     @GetMapping("/{movieId}")
     public ResponseEntity<?> getMovie(@PathVariable Long movieId){
         logger.info("movieId : {}", movieId);
-        return new ResponseEntity<Null>(HttpStatus.OK);
+
+        MovieResponseDto movie = movieService.findMovie(movieId);
+        //null 처리 해야함.
+        return new ResponseEntity<MovieResponseDto>(movie, HttpStatus.OK);
     }
 }
