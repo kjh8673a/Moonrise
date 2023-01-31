@@ -5,13 +5,13 @@ function CommunityNav() {
   const movePage = useNavigate();
   
   function changeBoard(){
-    movePage('/community/');
+    movePage('/community/list/');
   }
   function changeTalk(){
-    movePage('/community/talk');
+    movePage('/community/list/talk');
   }
   function changeParty(){
-    movePage('/community/party');
+    movePage('/community/list/party');
   }
 
   return (

@@ -5,7 +5,7 @@ function Main() {
   const movePage = useNavigate();
   
   function goCommunity(){
-    movePage('/community');
+    movePage('/community/list');
   }
 
   return (
