@@ -13,7 +13,7 @@ public class Profile {
     @Id @GeneratedValue
     @Column(name = "profile_id")
     private Long id;
-    
+
     @Column(name = "user_name")
     private String username;
 

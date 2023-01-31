@@ -20,36 +20,45 @@ import java.util.Map;
 public class PartyController {
 
     private final PartyService partyService;
-    @GetMapping("/read/{partyId}")
+    @GetMapping("/read/{partyId}") // 파티 상세보기
     public ResponseEntity<Map<String, Object>> read(@PathVariable Long partyId){
         System.out.println(partyId);
         Map<String, Object> result = partyService.readParty(partyId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
-    @GetMapping("/list")
+    @GetMapping("/list") // 파티 목록 조회
     public ResponseEntity<Map<String, Object>> list(@RequestParam(value = "movieId") Long movieId){
         System.out.println(movieId);
         Map<String, Object> result = partyService.listParty(movieId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
-    @PostMapping("/write")
+    @PostMapping("/write") // 파티 생성
     public ResponseEntity<Map<String, Object>> createParty(@RequestBody PartyCreateDto partyCreateDto){
         Map<String, Object> result = new HashMap<>();
         Long partyId = partyService.createParty(partyCreateDto);
         result.put("partyId",partyId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
-    @PostMapping("/comment/write")
+    @PostMapping("/comment/write") // 댓글 작성
     public ResponseEntity<Map<String, Object>> writeComment(@RequestBody PartyCommentCreateDto partyCommentCreateDto){
         Map<String, Object> result = new HashMap<>();
         Long partyCommentId = partyService.createComment(partyCommentCreateDto);
         result.put("partyCommentId",partyCommentId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
-    @PostMapping("/join")
+    @PostMapping("/join") // 소모임 참가 신청
     public ResponseEntity<Map<String, Object>> writeJoin(@RequestBody PartyJoinCreateDto partyJoinCreateDto){
         Map<String, Object> result = new HashMap<>();
         Long joinId = partyService.createJoin(partyJoinCreateDto);
         result.put("partyJoinId",joinId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
-    }}
+    }
+
+    @PutMapping("/join/status")
+    public ResponseEntity<Map<String, Object>> updateJoinStatus(@RequestBody PartyJoinCreateDto partyJoinCreateDto){
+        Map<String, Object> result = new HashMap<>();
+        Long joinId = partyService.createJoin(partyJoinCreateDto);
+        result.put("partyJoinId",joinId);
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
+    }
+}
