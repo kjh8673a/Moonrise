@@ -36,7 +36,7 @@ public class Board {
     @JsonIgnore
     private Movie movie;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "board_info_id")
     private BoardInfo boardInfo;
 

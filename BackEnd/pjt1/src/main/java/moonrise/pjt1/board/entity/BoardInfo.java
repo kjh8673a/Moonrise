@@ -10,7 +10,6 @@ import javax.persistence.*;
  * 게시판 추가정보 - 좋아요 수, 댓글 수 등등..
  */
 @Entity
-@Table(name = "board_status")
 @Getter
 @Setter
 @NoArgsConstructor

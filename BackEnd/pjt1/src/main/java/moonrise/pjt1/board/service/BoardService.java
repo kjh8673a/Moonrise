@@ -28,7 +28,7 @@ public class BoardService {
         List<BoardListResponseDto> boardList = boardRepository.findBoardList(movieId);
         System.out.println(boardList.getClass());
         result.put("findBoards", boardList);
-//        List<Board> findboards = findMovie.get().getBoards();
+
 //        if(!findMovie.isPresent()){
 //            throw new IllegalStateException("존재 하지 않는 영화입니다.");
 //        }
@@ -50,14 +50,15 @@ public class BoardService {
 
         Board board = findBoard.get();
         // 이거 왜 안되는지?
-        //String name = board.getMember().getProfile().getUsername();
+        System.out.println( board.getMember().getProfile());
+        //.getProfile().getUsername();
 //        if (name.isBlank()){
 //            System.out.println("이름이 없다");
 //        }
 //        System.out.println(name);
 
-        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), "writer");
-        result.put("findBoard", boardDetailDto);
+      //  BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), name);
+        ///result.put("findBoard", boardDetailDto);
 
         return result;
     }
@@ -74,11 +75,11 @@ public class BoardService {
             throw new IllegalStateException("존재 하지 않는 멤버입니다.");
         }
         // 게시글 정보 생성
-        BoardInfo boardInfo = new BoardInfo("");
-        boardInfo.setBoardStatus(BoardStatus.NORMAL);
-        boardInfo.setCommentCnt(0);
-        boardInfo.setViewCnt(0);
-        boardInfo.setLikeCnt(0);
+        //BoardInfo boardInfo = new BoardInfo("");
+//        boardInfo.setBoardStatus(BoardStatus.NORMAL);
+//        boardInfo.setCommentCnt(0);
+//        boardInfo.setViewCnt(0);
+//        boardInfo.setLikeCnt(0);
 
         // e
 
