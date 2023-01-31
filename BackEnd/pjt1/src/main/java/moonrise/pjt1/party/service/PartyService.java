@@ -5,10 +5,7 @@ import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
-import moonrise.pjt1.party.dto.PartyCommentCreateDto;
-import moonrise.pjt1.party.dto.PartyCreateDto;
-import moonrise.pjt1.party.dto.PartyJoinCreateDto;
-import moonrise.pjt1.party.dto.PartyListResponseDto;
+import moonrise.pjt1.party.dto.*;
 import moonrise.pjt1.party.entity.Party;
 import moonrise.pjt1.party.entity.PartyComment;
 import moonrise.pjt1.party.entity.PartyJoin;
@@ -33,9 +30,16 @@ public class PartyService {
 
     public Map<String,Object> readParty(Long partyId) {
         Optional<Party> findParty = partyRepository.findById(partyId);
+        Party party = findParty.get();
+        List<PartyComment> partyComments = party.getPartyComments();
+        List<PartyJoin> partyJoins = party.getPartyJoins();
+//        System.out.println(partyComments);
         Map<String,Object> result = new HashMap<>();
         if(findParty.isPresent()){
-            result.put("findParty",findParty.get());
+            PartyReadResponseDto partyReadResponseDto = new PartyReadResponseDto(party.getId(),party.getTitle(),party.getContent(),party.getPartyDate(),
+                    party.getPartyPeople(),party.getLocation(),party.getPartyStatus(),party.getMember().getId(),
+                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine());
+            result.put("findParty",partyReadResponseDto);
         }
         return result;
     }

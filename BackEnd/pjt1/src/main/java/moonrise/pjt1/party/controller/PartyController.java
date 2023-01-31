@@ -20,14 +20,15 @@ import java.util.Map;
 public class PartyController {
 
     private final PartyService partyService;
-    @GetMapping("/read")
-    public ResponseEntity<Map<String, Object>> read(@RequestParam(value = "partyId") Long partyId){
+    @GetMapping("/read/{partyId}")
+    public ResponseEntity<Map<String, Object>> read(@PathVariable Long partyId){
         System.out.println(partyId);
         Map<String, Object> result = partyService.readParty(partyId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> list(@RequestParam(value = "movieId") Long movieId){
+        System.out.println(movieId);
         Map<String, Object> result = partyService.listParty(movieId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
