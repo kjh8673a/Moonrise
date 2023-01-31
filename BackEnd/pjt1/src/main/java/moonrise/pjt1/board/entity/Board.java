@@ -1,9 +1,10 @@
 package moonrise.pjt1.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import moonrise.pjt1.board.dto.BoardDto;
+import moonrise.pjt1.board.dto.BoardDetailDto;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.movie.entity.Movie;
 
@@ -32,9 +33,10 @@ public class Board {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
+    @JsonIgnore
     private Movie movie;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "board_info_id")
     private BoardInfo boardInfo;
 
@@ -52,13 +54,13 @@ public class Board {
         movie.getBoards().add(this);
     }
 
-    public static Board createBoard(BoardDto boardDto, Member member, Movie movie, BoardInfo boardInfo){
+    public static Board createBoard(BoardDetailDto boardDetailDto, Member member, Movie movie){
         Board board = new Board();
-        board.setTitle(boardDto.getTitle());
-        board.setContent(boardDto.getContent());
-        board.setDateTime(boardDto.getDateTime());
+        board.setTitle(boardDetailDto.getTitle());
+        board.setContent(boardDetailDto.getContent());
+        board.setDateTime(boardDetailDto.getDateTime());
         board.setMember(member);
-        board.setBoardInfo(boardInfo);
+        //board.setBoardInfo(boardInfo);
         board.setMovie(movie);
         return board;
     }
