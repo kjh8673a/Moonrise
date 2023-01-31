@@ -41,15 +41,16 @@ src
 │		│		│	  ├── TalkRoom.js 
 │		│		│	  └── TalkWrite.js
 │		│	  ├── party
-│		│		│	  ├── PartyList.js
+│		│		│	  ├── PartyList.js v
 │		│		│	  ├── PartyView.js
-│		│		│	  ├── PartyDetailCard.js
+│		│		│	  ├── PartyCard.js v
 │		│		│	  ├── PartyCommentGuest.js
 │		│		│	  ├── PartyCommentHost.js
 │		│		│	  ├── PartyEnroll.js
 │		│		│	  ├── PartyCandidate.js
 │		│		│	  └── PartyWrite.js
-│		│	  ├── CommunityNav.js
+│		│	  ├── CommunityNav.js v
+│		│	  ├── CommunityHeader.js v
 │		│	  └── Pagination.js
 │	  ├── profile
 │		│	  ├── profile
