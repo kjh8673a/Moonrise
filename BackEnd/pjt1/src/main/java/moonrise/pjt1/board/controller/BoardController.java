@@ -2,7 +2,6 @@ package moonrise.pjt1.board.controller;
 
 import lombok.RequiredArgsConstructor;
 import moonrise.pjt1.board.dto.BoardCreateDto;
-import moonrise.pjt1.board.dto.BoardDetailDto;
 import moonrise.pjt1.board.dto.BoardUpdateDto;
 import moonrise.pjt1.board.service.BoardService;
 import org.springframework.http.HttpStatus;
@@ -49,9 +48,10 @@ public class BoardController {
     }
 
     // 게시글 삭제 (0순위)-> 글 상태바꾸기
-    @PostMapping("/delete")
-    public void boardDelete(@RequestBody Long boardId){
-        boardService.deleteBoard(boardId);
+    @GetMapping("/status")
+    public void boardChangeStatus(@RequestParam(name="boardId") Long boardId, @RequestParam(name="status") int status){
+
+        boardService.statusBoard(boardId, status);
     }
 
 

@@ -7,7 +7,6 @@ import moonrise.pjt1.board.dto.BoardListResponseDto;
 import moonrise.pjt1.board.dto.BoardUpdateDto;
 import moonrise.pjt1.board.entity.Board;
 import moonrise.pjt1.board.entity.BoardInfo;
-import moonrise.pjt1.board.entity.BoardStatus;
 import moonrise.pjt1.board.repository.BoardRepository;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
@@ -83,12 +82,23 @@ public class BoardService {
     }
 
     @Transactional
-    public void deleteBoard(Long boardId) {
+    public void statusBoard(Long boardId, int statusCode) {
         Optional<Board> findBoard = boardRepository.findById(boardId);
         if(!findBoard.isPresent()){
-            throw new IllegalStateException("삭제할 게시글이 없습니다.");
+            throw new IllegalStateException("선택한 게시글이 없습니다.");
         }
         Board board = findBoard.get();
-        board.cancle();
+        // 1:normal 2: banned 3: deleted
+        switch (statusCode) {
+            case 1:
+                board.normalize();
+                break;
+            case 2:
+                board.banned();
+                break;
+            case 3:
+                board.cancle();
+                break;
+        }
     }
 }

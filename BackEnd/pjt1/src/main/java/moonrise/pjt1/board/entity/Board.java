@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static moonrise.pjt1.board.entity.BoardStatus.DELETED;
-import static moonrise.pjt1.board.entity.BoardStatus.NORMAL;
+import static moonrise.pjt1.board.entity.BoardStatus.*;
 
 @Entity
 @Table(name = "board")
@@ -64,17 +63,23 @@ public class Board {
         board.setContent(boardCreateDto.getContent());
         board.setDateTime(LocalDateTime.now());
         board.setMember(member);
-        board.addBoardInfo(boardInfo);
+        board.setBoardInfo(boardInfo);
         board.setMovie(movie);
         return board;
     }
-    public void addBoardInfo(BoardInfo boardInfo){
-        this.boardInfo = boardInfo;
-    }
+//    public void addBoardInfo(BoardInfo boardInfo){
+//        this.boardInfo = boardInfo;
+//    }
 
     //  게시글 삭제
     public void cancle(){
         this.boardInfo.setBoardStatus(DELETED);
+    }
+    public void banned(){
+        this.boardInfo.setBoardStatus(BANNED);
+    }
+    public void normalize(){
+        this.boardInfo.setBoardStatus(NORMAL);
     }
 
 }
