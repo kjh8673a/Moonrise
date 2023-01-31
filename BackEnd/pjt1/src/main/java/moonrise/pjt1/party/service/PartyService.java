@@ -6,13 +6,12 @@ import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.party.dto.*;
-import moonrise.pjt1.party.entity.Party;
-import moonrise.pjt1.party.entity.PartyComment;
-import moonrise.pjt1.party.entity.PartyJoin;
+import moonrise.pjt1.party.entity.*;
 import moonrise.pjt1.party.repository.PartyCommentRepository;
 import moonrise.pjt1.party.repository.PartyJoinRepository;
 import moonrise.pjt1.party.repository.PartyRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,8 +51,8 @@ public class PartyService {
     public Long createParty(PartyCreateDto partyCreateDto) {
         Optional<Member> findMember = memberRepository.findById(partyCreateDto.getMemberId());
         Optional<Movie> findMovie = movieRepository.findById(partyCreateDto.getMovieId());
-
-        Party party = Party.createParty(partyCreateDto, findMember.get(), findMovie.get());
+        PartyInfo partyInfo = new PartyInfo();
+        Party party = Party.createParty(partyCreateDto, findMember.get(), findMovie.get(),partyInfo);
         partyRepository.save(party);
         return party.getId();
     }
@@ -76,4 +75,32 @@ public class PartyService {
 
         return partyJoin.getId();
     }
+    @Transactional
+    public void updatePartyStatus(Long partyId, int status) {
+        Party party = partyRepository.findById(partyId).get();
+        if(status == 1){
+            party.setPartyStatus(PartyStatus.모집완료);
+        }
+        else if(status == 2){
+            party.setPartyStatus(PartyStatus.기간만료);
+        }
+        else if(status == 3){
+            party.setPartyStatus(PartyStatus.삭제);
+        }
+    }
+    @Transactional
+    public void updateJoinStatus(Long joinId, int status) {
+        PartyJoin partyJoin = partyJoinRepository.findById(joinId).get();
+        if(status == 1){
+            partyJoin.setPartyJoinStatus(PartyJoinStatus.승인);
+        }
+        else if(status == 2){
+            partyJoin.setPartyJoinStatus(PartyJoinStatus.거절);
+        }
+        else if(status == 3){
+            partyJoin.setPartyJoinStatus(PartyJoinStatus.취소);
+        }
+    }
+
+
 }
