@@ -24,7 +24,7 @@ public class Profile {
     private Gender gender;
     private String phone;
 
-    @OneToOne(mappedBy = "profile", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "profile")
     private Member member;
 
     private String profile_image_path;
