@@ -1,22 +1,34 @@
+import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
-import React, { Component } from 'react'
+function CommunityNav() {
+  const movePage = useNavigate();
+  
+  function changeBoard(){
+    movePage('/community/');
+  }
+  function changeTalk(){
+    movePage('/community/talk');
+  }
+  function changeParty(){
+    movePage('/community/party');
+  }
 
-export default class CommunityNav extends Component {
-  render() {
-    return (
-      <div className='mb-4'>
+  return (
+    <div className='mb-4'>
         <ul class="navbar-nav flex border-b pb-2">
             <li class="flex-1 text-center">
-                <a class="nav-link text-white hover:text-white" href="/board">게시글</a>
+                <bitton class="nav-link text-white hover:text-white" onClick={changeBoard}>게시글</bitton>
             </li>
             <li class="flex-1 text-center">
-                <a class="text-gray-400 hover:text-white" href="/">담소</a>
+                <button class="text-gray-400 hover:text-white" onClick={changeTalk}>담소</button>
             </li>
             <li class="flex-1 text-center">
-                <a class="text-gray-400 hover:text-white" href="/party">뒷풀이</a>
+                <button class="text-gray-400 hover:text-white" onClick={changeParty}>뒷풀이</button>
             </li>
         </ul>
-      </div>
-    )
-  }
+    </div>
+  )
 }
+
+export default CommunityNav
