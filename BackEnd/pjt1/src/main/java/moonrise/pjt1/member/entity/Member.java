@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import moonrise.pjt1.board.entity.Board;
+import moonrise.pjt1.party.entity.Party;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,8 +25,14 @@ public class Member {
     @JoinColumn(name = "id")
     private Profile profile;
 
+    @Enumerated(EnumType.STRING)
+    private MemberStatus memberStatus = MemberStatus.NORMAL;    // default
+
     @OneToMany(mappedBy = "member")
     private List<Board> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Party> parties = new ArrayList<>();
 
     public void addProfile(Profile memberProfile) {
         this.profile = memberProfile;
