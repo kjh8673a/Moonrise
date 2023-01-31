@@ -4,11 +4,12 @@ import BoardList from './board/BoardList'
 import CommunityNav from './CommunityNav'
 import CommunityPagination from './CommunityPagination'
 import MovieDetail from './movie/MovieDetail'
+import TalkList from './talk/TalkList'
 import PartyList from './party/PartyList'
 
 function CommunityList() {
   return (
-    <div className='communityList grid grid-cols-3 gap-4'>
+    <div className='grid grid-cols-3 gap-4 communityList'>
         <div className='col-span-1'>
         <MovieDetail/>
         </div>
@@ -16,6 +17,7 @@ function CommunityList() {
         <CommunityNav/>
           <Routes>
             <Route path="" element={<BoardList/>}></Route>
+            <Route path="talk" element={<TalkList/>}></Route>
             <Route path="party" element={<PartyList/>}></Route>
           </Routes>
         <CommunityPagination total="20" limit="2"/>
