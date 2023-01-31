@@ -49,11 +49,14 @@ public class Party {
     @OneToMany(mappedBy = "party")
     private List<PartyComment> partyComments = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "party_info_id")
+    private PartyInfo partyInfo;
     public void setMovie(Movie movie){
         this.movie = movie;
         movie.getParties().add(this);
     }
-    public static Party createParty(PartyCreateDto partyCreateDto, Member member, Movie movie){
+    public static Party createParty(PartyCreateDto partyCreateDto, Member member, Movie movie,PartyInfo partyInfo){
         Party party = new Party();
         party.setTitle(partyCreateDto.getTitle());
         party.setContent(partyCreateDto.getContent());
@@ -64,6 +67,7 @@ public class Party {
         party.setPartyStatus(PartyStatus.모집중);
         party.setMember(member);
         party.setMovie(movie);
+        party.setPartyInfo(partyInfo);
         return party;
     }
 }
