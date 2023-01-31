@@ -6,7 +6,7 @@ function TalkCard(props) {
   const onOpen = () => {
     console.log(props.title);
     window.open(
-      "http://localhost:3000/TalkView.js",
+      "http://localhost:3000/community/detail/talk",
       "_blank",
       "height=650, width=400"
     );
@@ -15,10 +15,10 @@ function TalkCard(props) {
   return (
     <div>
       <li
-        className="bg-slate-300 text-center py-2 px-10 cursor-pointer"
+        className="px-10 py-2 text-center cursor-pointer bg-slate-300"
         onClick={onOpen}
       >
-        <div className="font-bold mb-7 text-lg overflow-hidden text-ellipsis whitespace-nowrap">
+        <div className="overflow-hidden text-lg font-bold mb-7 text-ellipsis whitespace-nowrap">
           {props.title}
         </div>
         <div>{props.latest}</div>
