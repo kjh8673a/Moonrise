@@ -49,6 +49,10 @@ public class Party {
     @OneToMany(mappedBy = "party")
     private List<PartyComment> partyComments = new ArrayList<>();
 
+    public void setMovie(Movie movie){
+        this.movie = movie;
+        movie.getParties().add(this);
+    }
     public static Party createParty(PartyCreateDto partyCreateDto, Member member, Movie movie){
         Party party = new Party();
         party.setTitle(partyCreateDto.getTitle());
