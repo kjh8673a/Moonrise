@@ -2,26 +2,26 @@ import React from "react";
 
 function BoardCard(props) {
   return (
-    <li className="block float-left border-b-8 bg-slate-500 h-50">
-      <div className="float-left w-1/5 m-auto overflow-hidden h-50">
-        <img className="object-fill w-40 h-40 m-auto" src={props.poster} alt="poster" />
+    <div className="BoardCard grid grid-cols-5 gap-2 border-b-2 border-b-white pb-2 mb-2">
+      <div className="col-span-1">
+        <img className="object-fill pr-2" src={props.poster} alt="poster" />
       </div>
-      <div className="float-left w-4/5 ">
-        <div className="h-10 leading-10">
-          <span className="text-2xl font-bold">{props.title}</span>
-          <span className="float-right">{props.nickname}</span>
+      <div className="col-span-4">
+        <div className="flex justify-between">
+          <span className="text-2xl text-white font-bold">{props.title}</span>
+          <span className="text-white">{props.nickname}</span>
         </div>
-        <div className="overflow-hidden break-words h-30 text-ellipsis">
-          <p className="line-clamp-3">{props.content}</p>
+        <div className="my-3">
+          <p className="text-white line-clamp-3">{props.content}</p>
         </div>
-        <div className="h-10 leading-10">
-          <span>{props.write_date}</span>
-          <span className="float-right">
+        <div className="flex justify-between">
+          <span className="text-white text-sm">{props.write_date}</span>
+          <span className="text-white text-sm">
             좋아요 {props.like_cnt} 댓글 {props.comment_cnt}
           </span>
         </div>
       </div>
-    </li>
+    </div>
   );
 }
 
