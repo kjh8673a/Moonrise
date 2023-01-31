@@ -1,7 +1,9 @@
 package moonrise.pjt1.board.controller;
 
 import lombok.RequiredArgsConstructor;
+import moonrise.pjt1.board.dto.BoardCreateDto;
 import moonrise.pjt1.board.dto.BoardDetailDto;
+import moonrise.pjt1.board.dto.BoardUpdateDto;
 import moonrise.pjt1.board.service.BoardService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,24 +30,31 @@ public class BoardController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
     }
     // 게시글 생성 (0순위)
-    @PostMapping("")
-    public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardDetailDto boardDetailDto){
-        //System.out.println("boardDto = " + boardDto.getMemberId());
+    @PostMapping("/create")
+    public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardCreateDto boardCreateDto){
         Map<String, Object> result = new HashMap<>();
-        Long boardId = boardService.createBoard(boardDetailDto);
-        result.put("board", boardDetailDto);
+        Long boardId = boardService.createBoard(boardCreateDto);
         result.put("boardId", boardId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
 
     }
-    // 게시글 수정 (0순위)
 
-//    @PutMapping("")
-//    public ResponseEntity<Map<String, Object>> boardUpdate(@RequestBody BoardForm boardForm){
-//
-//    }
+    // 게시글 수정 (0순위)
+    @PostMapping("/modify")
+    public ResponseEntity<Map<String, Object>> boardUpdate(@RequestBody BoardUpdateDto boardUpdateDto){
+        Map<String, Object> result = new HashMap<>();
+        Long boardId = boardService.updateBoard(boardUpdateDto);
+        result.put("boardId", boardId);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
     // 게시글 삭제 (0순위)-> 글 상태바꾸기
+    @PostMapping("/delete")
+    public void boardDelete(@RequestBody Long boardId){
+        boardService.deleteBoard(boardId);
+    }
+
+
     // 게시글 인기목록 (1순위)
     // 게시글 좋아요 (1순위)
     // 게시글 북마크 (1순위)
