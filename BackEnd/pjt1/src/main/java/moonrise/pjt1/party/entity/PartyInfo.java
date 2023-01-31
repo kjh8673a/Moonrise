@@ -8,6 +8,8 @@ public class PartyInfo {
     @Column(name = "party_info_id")
     private Long id;
 
+
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "party_id")
     private Party party;
