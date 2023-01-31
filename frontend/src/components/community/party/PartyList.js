@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import PartyCard from './PartyCard'
 import CommunityHeader from '../CommunityHeader'
+import CommunityPagination from '../CommunityPagination';
 
 const partyInfo =[
   {
@@ -73,7 +74,7 @@ export default class PartyList extends Component {
         <div class="grid grid-cols-4 gap-2">
           {partyList}
         </div>
-
+        <CommunityPagination total="20" limit="2"/>
       </div>
     )
   }
