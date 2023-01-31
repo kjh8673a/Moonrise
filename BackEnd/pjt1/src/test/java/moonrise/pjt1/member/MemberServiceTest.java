@@ -1,20 +1,14 @@
-package moonrise.pjt2.member.model.service;
+package moonrise.pjt1.member;
 
-import moonrise.pjt2.member.model.entity.Gender;
-import moonrise.pjt2.member.model.entity.Member;
-import moonrise.pjt2.member.model.entity.Profile;
-import moonrise.pjt2.member.model.repository.MemberRepository;
+import moonrise.pjt1.member.entity.Member;
+import moonrise.pjt1.member.entity.Profile;
+import moonrise.pjt1.member.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class MemberServiceTest {

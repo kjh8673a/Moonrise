@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "movie")
 @Getter @Setter @NoArgsConstructor
 public class Movie {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @Column(name = "movie_id")
     private Long id;
 
