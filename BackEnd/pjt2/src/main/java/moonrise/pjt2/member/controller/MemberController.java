@@ -255,40 +255,40 @@ public class MemberController {
         }
     }
 
+//    @GetMapping("/logout")
+//    public void logout(String accessToken){
+//        String requestUrl = "https://kapi.kakao.com/v1/user/logout";
+//
+//        try{
+//            URL url = new URL(requestUrl);
+//
+//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//            conn.setRequestMethod("POST");
+//            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+//
+//            // 응답 코드
+//            int responseCode = conn.getResponseCode();
+//            System.out.println("responseCode =" + responseCode);
+//
+//            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//
+//            String line = "";
+//            String result = "";
+//
+//            while((line = br.readLine()) != null) {
+//                result += line;
+//            }
+//            System.out.println("response body =" + result);
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
     @GetMapping("/logout")
-    public void logout(String accessToken){
-        String requestUrl = "https://kapi.kakao.com/v1/user/logout";
-
-        try{
-            URL url = new URL(requestUrl);
-
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
-
-            // 응답 코드
-            int responseCode = conn.getResponseCode();
-            System.out.println("responseCode =" + responseCode);
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            String line = "";
-            String result = "";
-
-            while((line = br.readLine()) != null) {
-                result += line;
-            }
-            System.out.println("response body =" + result);
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    @GetMapping("/logout2")
-    public void logout2(String accessToken){
+    public void logout(){
         StringBuilder sb = new StringBuilder();
         sb.append("https://kauth.kakao.com/oauth/logout?");
         sb.append("client_id=" + "f0b916ceedccef620b4f4a6ab4e6bec5");
-        sb.append("&logout_redirect_uri="+"http://localhost:9000/auth/member/logout");
+        sb.append("&logout_redirect_uri="+"http://localhost:3000/");
 
         String requestUrl = sb.toString();
         try{
