@@ -17,7 +17,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.OAS_30)
                 .useDefaultResponseMessages(false)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("moonrise.pjt1.party.controller"))
+                .apis(RequestHandlerSelectors.basePackage("moonrise.pjt1"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo());
