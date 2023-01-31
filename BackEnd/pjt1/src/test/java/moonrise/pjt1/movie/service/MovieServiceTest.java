@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -30,6 +32,7 @@ class MovieServiceTest {
         Assertions.assertEquals(requestDto.getId(), movie.getId());
     }
     @Test
+    @Transactional
     void 영화검색(){
         //given
         Long movieId = 100402L;
@@ -40,4 +43,6 @@ class MovieServiceTest {
         //then
         Assertions.assertEquals(movieId, movie.getId());
     }
+
+
 }
