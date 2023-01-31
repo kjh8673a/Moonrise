@@ -7,6 +7,7 @@ import moonrise.pjt1.board.entity.Board;
 import moonrise.pjt1.party.entity.Party;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,12 @@ public class Movie {
     @Column(name = "movie_id")
     private Long id;
 
+    @Column(name = "original_title")
+    private String originalTitle;
+    private double popularity;
+
+    @Column(name = "release_date")
+    private String releaseDate;
     private String title;
 
     @OneToMany(mappedBy = "movie")
