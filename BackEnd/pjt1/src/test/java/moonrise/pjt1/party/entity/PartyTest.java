@@ -38,8 +38,10 @@ class PartyTest {
     PartyService partyService;
     @Test
     void writeParty(){
-        PartyCreateDto partyCreateDto = new PartyCreateDto(201611222L,4L,"노실분구합니다","어서오세요",
-                5,"대전시유성구",false);
+        PartyCreateDto partyCreateDto = new PartyCreateDto(2643550085L,1L,"노실분구합니다","어서오세요",
+                5,"대전시유성구",false,
+                LocalDateTime.of(2021, 1, 1, 0, 0, 0),
+                LocalDateTime.of(2021, 1, 1, 0, 0, 0));
         partyService.createParty(partyCreateDto);
     }
     @Test

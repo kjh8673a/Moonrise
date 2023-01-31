@@ -24,6 +24,7 @@ public class Party {
     private String title;
     private String content;
     private LocalDateTime partyDate;
+    private LocalDateTime deadLine;
     private int partyPeople;
     private String location;
 
@@ -52,11 +53,11 @@ public class Party {
         Party party = new Party();
         party.setTitle(partyCreateDto.getTitle());
         party.setContent(partyCreateDto.getContent());
-        party.setPartyDate(LocalDateTime.now());
+        party.setPartyDate(partyCreateDto.getPartyDate());
+        party.setDeadLine(partyCreateDto.getDeadLine());
         party.setPartyPeople(partyCreateDto.getPartyPeople());
         party.setLocation(partyCreateDto.getLocation());
         party.setPartyStatus(PartyStatus.모집중);
-
         party.setMember(member);
         party.setMovie(movie);
         return party;

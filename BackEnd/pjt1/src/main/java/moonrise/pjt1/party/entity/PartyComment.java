@@ -21,6 +21,7 @@ public class PartyComment {
     private String content;
     private LocalDateTime commentWriteTime;
     private boolean showPublic;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "party_id")
     private Party party;
