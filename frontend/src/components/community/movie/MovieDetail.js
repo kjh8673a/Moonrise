@@ -16,22 +16,22 @@ function MovieDetail() {
   const average =
     DUMMY_DATA.rating.reduce((a, c) => a + c) / DUMMY_DATA.rating.length;
   return (
-    <div className="bg-emerald-600">
+    <div className="MovieDetail my-5">
       <ul>
         <li>
-          <img className="w-2/3 m-auto" src={data.poster} alt="poster" />
+          <img className="w-3/4 m-auto" src={data.poster} alt="poster" />
         </li>
-        <li className="text-2xl font-bold">{data.title}</li>
-        <li>{average} 평점상세 평가하기</li>
-        <li className="overflow-hidden text-ellipsis whitespace-nowrap">
-          <b>감독</b> {data.director.join()}
-        </li>
-        <li className="overflow-hidden text-ellipsis whitespace-nowrap">
-          <b>주연</b> {data.actor.join()}
-        </li>
-        <li className="overflow-hidden text-ellipsis whitespace-nowrap">
-          <b>장르</b> {data.gerne.join()}
-        </li>
+        <li className="text-white text-3xl font-bold mb-3">{data.title}</li>
+        <p className="text-white text-sm">{average} 평점상세 평가하기</p>
+        <p className="text-gray-300  overflow-hidden text-ellipsis whitespace-nowrap">
+          <b className="text-white text-lg">감독</b> {data.director.join()}
+        </p>
+        <p className="text-gray-300 overflow-hidden text-ellipsis whitespace-nowrap">
+          <b className="text-white text-lg">주연</b> {data.actor.join()}
+        </p>
+        <p className="text-gray-300  overflow-hidden text-ellipsis whitespace-nowrap">
+          <b className="text-white text-lg">장르</b> {data.gerne.join()}
+        </p>
       </ul>
     </div>
   );
