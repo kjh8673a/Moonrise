@@ -30,6 +30,7 @@ public class PartyJoin {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    private String applier;
     public void setParty(Party party){
         this.party = party;
         party.getPartyJoins().add(this);
@@ -42,6 +43,7 @@ public class PartyJoin {
         partyJoin.setJoinDate(LocalDateTime.now());
         partyJoin.setMember(member);
         partyJoin.setParty(party);
+        partyJoin.setApplier(member.getProfile().getNickname());
         return partyJoin;
     }
 }

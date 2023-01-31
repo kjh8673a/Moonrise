@@ -30,6 +30,8 @@ public class PartyComment {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    private String writer;
+
     public void setParty(Party party){
         this.party = party;
         party.getPartyComments().add(this);
@@ -42,6 +44,7 @@ public class PartyComment {
         partyComment.setShowPublic(partyCommentCreateDto.isShowPublic());
         partyComment.setParty(party);
         partyComment.setMember(member);
+        partyComment.setWriter(member.getProfile().getNickname());
         return partyComment;
     }
 }

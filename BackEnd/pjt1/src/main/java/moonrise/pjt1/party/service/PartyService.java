@@ -33,7 +33,6 @@ public class PartyService {
         Party party = findParty.get();
         List<PartyComment> partyComments = party.getPartyComments();
         List<PartyJoin> partyJoins = party.getPartyJoins();
-//        System.out.println(partyComments);
         Map<String,Object> result = new HashMap<>();
         if(findParty.isPresent()){
             PartyReadResponseDto partyReadResponseDto = new PartyReadResponseDto(party.getId(),party.getTitle(),party.getContent(),party.getPartyDate(),
