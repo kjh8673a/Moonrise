@@ -53,11 +53,19 @@ public class PartyController {
         result.put("partyJoinId",joinId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
-
-    @PutMapping("/join/status")
-    public ResponseEntity<Map<String, Object>> updateJoinStatus(@RequestBody PartyJoinCreateDto partyJoinCreateDto){
+    @GetMapping("/status") //소모임 신청 상태변경
+    public ResponseEntity<Map<String, Object>> updatePartyStatus(@RequestParam(value = "partyId") Long partyId,
+                                                                @RequestParam(value = "status") int status){
         Map<String, Object> result = new HashMap<>();
-        Long joinId = partyService.createJoin(partyJoinCreateDto);
+        partyService.updatePartyStatus(partyId, status);
+        result.put("partyId",partyId);
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
+    }
+    @GetMapping("/join/status") //소모임 신청 상태변경
+    public ResponseEntity<Map<String, Object>> updateJoinStatus(@RequestParam(value = "joinId") Long joinId,
+                                                                @RequestParam(value = "status") int status){
+        Map<String, Object> result = new HashMap<>();
+        partyService.updateJoinStatus(joinId, status);
         result.put("partyJoinId",joinId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
