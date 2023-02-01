@@ -1,14 +1,17 @@
 import React from "react";
 
 function TalkCard(props) {
+  const popupW = 450;
+  const popupH = 600;
+  const popupX = window.screen.width / 2 - (popupW - 100) / 2;
+  const popupY = window.screen.height / 2 - (popupH + 100) / 2;
 
   // 새창으로 토론방 띄우기
   const onOpen = () => {
-    console.log(props.title);
     window.open(
-      "http://localhost:3000/community/detail/talk",
-      "_blank",
-      "height=650, width=400"
+      `http://localhost:3000/community/detail/talk?id=${props.id}`,
+      "talk",
+      `height=${popupH}, width=${popupW}, left=${popupX}, top=${popupY}`
     );
   };
 

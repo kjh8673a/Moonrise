@@ -70,6 +70,7 @@ function TalkList() {
         {data.map((talk) => (
           <TalkCard 
             key={talk.discuss_id}
+            id={talk.discuss_id}
             title={talk.title}
             content={talk.content}
             write_date={talk.write_date}
