@@ -15,5 +15,8 @@ public interface DebateService {
     void update(DebateDto debateDto);
 
     void delete(int debate_id);
+<<<<<<< HEAD
 
+=======
+>>>>>>> daf06450ded54db8b51c4ad53cf423a9e4b0c2c9
 }

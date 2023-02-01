@@ -15,8 +15,13 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+<<<<<<< HEAD
 #        show_sql: true
         format_sql: true
+=======
+        # show_sql: true
+        format_sql: create
+>>>>>>> daf06450ded54db8b51c4ad53cf423a9e4b0c2c9
 logging.level:
   org.hibernate.SQL: debug
   #org.hibernate.type: trace

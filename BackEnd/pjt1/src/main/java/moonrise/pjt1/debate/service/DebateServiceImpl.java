@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+<<<<<<< HEAD
 public class DebateServiceImpl implements DebateService {
 
+=======
+public class DebateServiceImpl implements DebateService{
+>>>>>>> daf06450ded54db8b51c4ad53cf423a9e4b0c2c9
     private DebateRepository debateRepository;
 
     @Autowired
