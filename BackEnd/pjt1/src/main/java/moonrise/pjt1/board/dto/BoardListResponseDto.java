@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Getter @Setter
 public class BoardListResponseDto {
-    // 게시판 목록 및 상세보기
+    // 게시판 목록
 
     private Long id;
 //    private Long memberId;

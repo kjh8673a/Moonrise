@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import moonrise.pjt1.board.dto.BoardCreateDto;
 import moonrise.pjt1.board.dto.BoardDetailDto;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.movie.entity.Movie;
@@ -12,6 +13,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static moonrise.pjt1.board.entity.BoardStatus.*;
 
 @Entity
 @Table(name = "board")
@@ -54,15 +57,29 @@ public class Board {
         movie.getBoards().add(this);
     }
 
-    public static Board createBoard(BoardDetailDto boardDetailDto, Member member, Movie movie){
+    public static Board createBoard(BoardCreateDto boardCreateDto, Member member, Movie movie, BoardInfo boardInfo){
         Board board = new Board();
-        board.setTitle(boardDetailDto.getTitle());
-        board.setContent(boardDetailDto.getContent());
-        board.setDateTime(boardDetailDto.getDateTime());
+        board.setTitle(boardCreateDto.getTitle());
+        board.setContent(boardCreateDto.getContent());
+        board.setDateTime(LocalDateTime.now());
         board.setMember(member);
-        //board.setBoardInfo(boardInfo);
+        board.setBoardInfo(boardInfo);
         board.setMovie(movie);
         return board;
+    }
+//    public void addBoardInfo(BoardInfo boardInfo){
+//        this.boardInfo = boardInfo;
+//    }
+
+    //  게시글 삭제
+    public void cancle(){
+        this.boardInfo.setBoardStatus(DELETED);
+    }
+    public void banned(){
+        this.boardInfo.setBoardStatus(BANNED);
+    }
+    public void normalize(){
+        this.boardInfo.setBoardStatus(NORMAL);
     }
 
 }

@@ -21,7 +21,7 @@ public class BoardInfo {
     @OneToOne(mappedBy = "boardInfo", fetch = FetchType.LAZY)
     private Board board;
     @Enumerated(EnumType.STRING)
-    private BoardStatus boardStatus;
+    private BoardStatus boardStatus = BoardStatus.NORMAL;
     private int likeCnt;
     private int viewCnt;
     private int commentCnt;
