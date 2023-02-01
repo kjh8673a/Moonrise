@@ -8,8 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("/board/comments")
 public class BoardCommentController {
+//    private final
     // 댓글 목록 (0순위)
+
     // 댓글 작성 (0순위)
+
+    // 대댓글 작성
     // 댓글 삭제 (1순위)
     // 대댓글 . . -> 그냥 댓글 작성이면 되나?
     // 댓글 좋아요 (1순위)

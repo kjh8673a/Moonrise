@@ -44,7 +44,7 @@ public class BoardService {
         Board board = findBoard.get();
         String writer = board.getMember().getProfile().getNickname();
 
-        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer);
+        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, board.getBoardComments());
         result.put("findBoard", boardDetailDto);
 
         return result;

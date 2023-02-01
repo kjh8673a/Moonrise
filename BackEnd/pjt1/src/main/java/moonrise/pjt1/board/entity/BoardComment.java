@@ -22,6 +22,10 @@ public class BoardComment {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @Column(name="group_id")
+    private Long groupId;
+
+    private LocalDateTime writeDate;
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
