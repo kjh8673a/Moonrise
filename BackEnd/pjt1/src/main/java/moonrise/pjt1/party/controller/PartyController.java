@@ -5,6 +5,8 @@ import lombok.extern.log4j.Log4j2;
 import moonrise.pjt1.party.dto.PartyCommentCreateDto;
 import moonrise.pjt1.party.dto.PartyCreateDto;
 import moonrise.pjt1.party.dto.PartyJoinCreateDto;
+import moonrise.pjt1.party.dto.PartyModifyDto;
+import moonrise.pjt1.party.entity.Party;
 import moonrise.pjt1.party.service.PartyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +69,14 @@ public class PartyController {
         Map<String, Object> result = new HashMap<>();
         partyService.updateJoinStatus(joinId, status);
         result.put("partyJoinId",joinId);
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/modify")
+    public ResponseEntity<Map<String, Object>> modifyParty(@RequestBody PartyModifyDto partyModifyDto){
+        Map<String, Object> result = new HashMap<>();
+        Party party = partyService.modifyParty(partyModifyDto);
+        result.put("party",party);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
 }

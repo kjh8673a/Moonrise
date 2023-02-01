@@ -5,9 +5,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class PartyCreateDto {
-    private Long memberId;
-    private Long movieId;
+public class PartyModifyDto {
+    private Long partyId;
     private String title;
     private String content;
     private int partyPeople;
@@ -15,11 +14,10 @@ public class PartyCreateDto {
     private boolean meetOnline;
     private LocalDateTime partyDate;
     private LocalDateTime deadLine;
-    public PartyCreateDto(Long memberId, Long movieId, String title, String content,
+    public PartyModifyDto(Long partyId, String title, String content,
                           int partyPeople, String location, boolean meetOnline,
                           LocalDateTime partyDate, LocalDateTime deadLine) {
-        this.memberId = memberId;
-        this.movieId = movieId;
+        this.partyId = partyId;
         this.title = title;
         this.content = content;
         this.partyPeople = partyPeople;

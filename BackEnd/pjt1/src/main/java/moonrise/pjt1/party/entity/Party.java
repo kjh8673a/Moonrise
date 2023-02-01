@@ -8,6 +8,7 @@ import lombok.ToString;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.party.dto.PartyCreateDto;
+import moonrise.pjt1.party.dto.PartyModifyDto;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class Party {
     private LocalDateTime deadLine;
     private int partyPeople;
     private String location;
+    private boolean meetOnline;
 
     @Enumerated(EnumType.STRING)
     private PartyStatus partyStatus;
@@ -60,6 +62,7 @@ public class Party {
         Party party = new Party();
         party.setTitle(partyCreateDto.getTitle());
         party.setContent(partyCreateDto.getContent());
+        party.setMeetOnline(partyCreateDto.isMeetOnline());
         party.setPartyDate(partyCreateDto.getPartyDate());
         party.setDeadLine(partyCreateDto.getDeadLine());
         party.setPartyPeople(partyCreateDto.getPartyPeople());
@@ -69,5 +72,16 @@ public class Party {
         party.setMovie(movie);
         party.setPartyInfo(partyInfo);
         return party;
+    }
+    public void modifyParty(PartyModifyDto partyModifyDto){
+        this.title = partyModifyDto.getTitle();
+        this.content = partyModifyDto.getContent();
+        this.partyPeople = partyModifyDto.getPartyPeople();
+        this.location = partyModifyDto.getLocation();
+        this.meetOnline = partyModifyDto.isMeetOnline();
+        this.partyDate = partyModifyDto.getPartyDate();
+        this.deadLine = partyModifyDto.getDeadLine();
+
+
     }
 }
