@@ -2,6 +2,7 @@ package moonrise.pjt1.board.service;
 
 import lombok.RequiredArgsConstructor;
 import moonrise.pjt1.board.dto.BoardCommentCreateDto;
+import moonrise.pjt1.board.dto.BoardCommentUpdateDto;
 import moonrise.pjt1.board.entity.Board;
 import moonrise.pjt1.board.entity.BoardComment;
 import moonrise.pjt1.board.repository.BoardCommentRepository;
@@ -11,6 +12,7 @@ import moonrise.pjt1.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -39,5 +41,17 @@ public class BoardCommentService {
         }
         return boardComment.getId();
 
+    }
+    @Transactional
+    public Long updateComment(BoardCommentUpdateDto boardCommentUpdateDto) {
+        Long commentId = boardCommentUpdateDto.getCommentId();
+        Optional<BoardComment> findComment = boardCommentRepository.findById(commentId);
+        if(!findComment.isPresent()){
+            throw new IllegalStateException("수정할 댓글을 찾을 수 없습니다.");
+        }
+        BoardComment boardComment = findComment.get();
+        boardComment.setContent(boardCommentUpdateDto.getContent());
+        boardComment.setWriteDate(LocalDateTime.now());
+        return boardComment.getId();
     }
 }

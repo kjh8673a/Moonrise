@@ -47,8 +47,8 @@ public class BoardController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    // 게시글 삭제 (0순위)-> 글 상태바꾸기
-    @GetMapping("/status")
+    // 글 상태바꾸기 ( 삭제, 신고, 평범)
+    @PostMapping("/status")
     public void boardChangeStatus(@RequestParam(name="boardId") Long boardId, @RequestParam(name="status") int status){
 
         boardService.statusBoard(boardId, status);
