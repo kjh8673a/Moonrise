@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import moonrise.pjt1.member.MemberJoinRequestDto;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.entity.Profile;
+import moonrise.pjt1.member.exception.NotExistMemberException;
 import moonrise.pjt1.member.repository.MemberRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,7 @@ public class MemberService {
         logger.info("member : {}", member);
 
         if(member.isEmpty()){
-            return true;    // 회원가입해
+            throw new NotExistMemberException("회원이 존재하지 않습니다.");
         }
         return false;
     }
