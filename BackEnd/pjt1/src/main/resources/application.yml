@@ -1,3 +1,4 @@
+
 spring:
   mvc:
     pathmatch:
@@ -23,3 +24,5 @@ logging.level:
   #org.hibernate.type: trace
   # org.hibernate.type: trace #스프링 부트 2.x, hibernate5
   # org.hibernate.orm.jdbc.bind: trace #스프링 부트 3.x, hibernate6
+server:
+  port: 9001
