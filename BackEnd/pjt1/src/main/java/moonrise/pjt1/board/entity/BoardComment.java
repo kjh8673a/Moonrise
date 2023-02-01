@@ -1,5 +1,6 @@
 package moonrise.pjt1.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +19,7 @@ public class BoardComment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
@@ -27,6 +28,7 @@ public class BoardComment {
     private Long groupId;
 
     private LocalDateTime writeDate;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
@@ -35,10 +37,11 @@ public class BoardComment {
 
     public static BoardComment createBoardComment(BoardCommentCreateDto boardCommentCreateDto, Board board, Member member) {
         BoardComment boardComment = new BoardComment();
-//        boardComment.setContent();
-//        boardComment.setBoard();
-//        boardComment.setGroupId(0);
-
+        boardComment.setContent(boardCommentCreateDto.getContent());
+        boardComment.setBoard(board);
+        boardComment.setGroupId(0L);
+        boardComment.setMember(member);
+        boardComment.setWriteDate(LocalDateTime.now());
         return boardComment;
     }
 

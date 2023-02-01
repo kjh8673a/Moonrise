@@ -26,7 +26,7 @@ public class Board {
 
     private String title;
     private String content;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -42,7 +42,7 @@ public class Board {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "board_info_id")
     private BoardInfo boardInfo;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "board")
     private List<BoardComment> boardComments = new ArrayList<>();
 
