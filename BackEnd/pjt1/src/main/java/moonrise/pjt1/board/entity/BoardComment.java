@@ -25,7 +25,7 @@ public class BoardComment {
     private Board board;
 
     @Column(name="group_id")
-    private Long groupId;
+    private Long groupId = id;
 
     private LocalDateTime writeDate;
     @JsonIgnore

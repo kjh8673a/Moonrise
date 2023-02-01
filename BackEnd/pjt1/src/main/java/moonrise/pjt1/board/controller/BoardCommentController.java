@@ -18,8 +18,6 @@ import java.util.Map;
 @RequestMapping("/board/comments")
 public class BoardCommentController {
     private final BoardCommentService boardCommentService;
-//    private final
-    // 댓글 목록 (0순위) -> BoardDetail 에서 목록만 추가로 넘기기
 
     // 댓글 작성 (0순위)
     @PostMapping("/create")
