@@ -56,7 +56,12 @@ public class PartyService {
         partyRepository.save(party);
         return party.getId();
     }
-
+    @Transactional
+    public Party modifyParty(PartyModifyDto partyModifyDto) {
+        Party party = partyRepository.findById(partyModifyDto.getPartyId()).get();
+        party.modifyParty(partyModifyDto);
+        return party;
+    }
     public Long createComment(PartyCommentCreateDto partyCommentCreateDto) {
         Optional<Member> findMember = memberRepository.findById(partyCommentCreateDto.getMemberId());
         Optional<Party> findParty = partyRepository.findById(partyCommentCreateDto.getPartyId());
@@ -101,6 +106,5 @@ public class PartyService {
             partyJoin.setPartyJoinStatus(PartyJoinStatus.취소);
         }
     }
-
 
 }
