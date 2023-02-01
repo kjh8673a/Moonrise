@@ -10,7 +10,8 @@ import moonrise.pjt1.party.dto.PartyJoinCreateDto;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity @Getter @Setter @NoArgsConstructor
+@Entity
+@Getter @Setter @NoArgsConstructor
 public class PartyJoin {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "party_join_id")
