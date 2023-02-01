@@ -51,7 +51,7 @@ public class Party {
     @OneToMany(mappedBy = "party")
     private List<PartyComment> partyComments = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "party_info_id")
     private PartyInfo partyInfo;
     public void setMovie(Movie movie){
