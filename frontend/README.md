@@ -32,26 +32,28 @@ src
 │		│	  ├── board
 │		│		│	  ├── BoardList.js
 │		│		│	  ├── BoardCard.js
-│		│		│	  ├── BoardView.js
+│		│		│	  ├── BoardDetail.js
 │		│		│	  └── BoardWrite.js
 │		│	  ├── talk
 │		│		│	  ├── TalkList.js
 │		│		│	  ├── TalkCard.js
-│		│		│	  ├── TalkView.js
+│		│		│	  ├── TalkDetail.js
 │		│		│	  ├── TalkRoom.js 
 │		│		│	  └── TalkWrite.js
 │		│	  ├── party
 │		│		│	  ├── PartyList.js v
-│		│		│	  ├── PartyView.js
+│		│		│	  ├── PartyDetail.js
 │		│		│	  ├── PartyCard.js v
 │		│		│	  ├── PartyCommentGuest.js
 │		│		│	  ├── PartyCommentHost.js
 │		│		│	  ├── PartyEnroll.js
 │		│		│	  ├── PartyCandidate.js
 │		│		│	  └── PartyWrite.js
+│		│	  ├── CommunityDetail.js v
+│		│	  ├── CommunityList.js v
 │		│	  ├── CommunityNav.js v
 │		│	  ├── CommunityHeader.js v
-│		│	  └── Pagination.js
+│		│	  └── CommunityPagination.js v
 │	  ├── profile
 │		│	  ├── profile
 │		│	  │	  └── ProfileCard.js
