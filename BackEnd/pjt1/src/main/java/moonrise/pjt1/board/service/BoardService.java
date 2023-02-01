@@ -63,7 +63,6 @@ public class BoardService {
         return result;
     }
 
-<<<<<<< HEAD
     public Long createBoard(BoardDetailDto boardDetailDto) {
 
         Optional<Member> findMember = memberRepository.findById(boardDetailDto.getMemberId());
@@ -89,20 +88,4 @@ public class BoardService {
         boardRepository.save(board);
         return board.getId();
     }
-=======
-//    public Long createBoard(BoardCreateDto boardCreateDto) {
-//
-//        Optional<Member> findMember = memberRepository.findById(boardCreateDto.getMemberId());
-//        Optional<Movie> findMovie = movieRepository.findById(boardCreateDto.getMovieId());
-//        // 게시글 정보 생성
-//        BoardInfo boardInfo = new BoardInfo();
-//        boardInfo.setBoardStatus(BoardStatus.NORMAL);
-//        boardInfo.setCommentCnt(0);
-//
-//        Board board = Board.createBoard(boardCreateDto, findMember.get(), findMovie.get());
-//        boardRepository.save(board);
-//        return board.getId();
-//
-//    }
->>>>>>> daf06450ded54db8b51c4ad53cf423a9e4b0c2c9
 }

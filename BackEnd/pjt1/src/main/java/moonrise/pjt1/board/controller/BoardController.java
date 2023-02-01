@@ -32,14 +32,9 @@ public class BoardController {
     public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardDetailDto boardDetailDto){
         //System.out.println("boardDto = " + boardDto.getMemberId());
         Map<String, Object> result = new HashMap<>();
-<<<<<<< HEAD
         Long boardId = boardService.createBoard(boardDetailDto);
         result.put("board", boardDetailDto);
         result.put("boardId", boardId);
-=======
-//        Long boardId = boardService.createBoard(boardCreateDto);
-//        result.put("boardId", boardId);
->>>>>>> daf06450ded54db8b51c4ad53cf423a9e4b0c2c9
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
 
     }
