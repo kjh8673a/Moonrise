@@ -19,7 +19,7 @@ import java.util.Map;
 public class BoardCommentController {
     private final BoardCommentService boardCommentService;
 
-    // 댓글 작성 (0순위)
+    // 댓글, 대댓글 작성 (0순위)
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> writeComment(@RequestBody BoardCommentCreateDto boardCommentCreateDto){
         Map<String, Object> result = new HashMap<>();
@@ -30,12 +30,12 @@ public class BoardCommentController {
 
     // 댓글 (상세보기) ??
 
-    // 대댓글 작성
-
-    // 댓글 삭제 (1순위)
 
     // 댓글 좋아요 (1순위)
     // 댓글 수정 (1순위)
-    //@PostMapping("/modify")
+//    @PostMapping("/modify")
+//    public ResponseEntity<Map<String, Object>> modifyComment(){
+//        return new ResponseEntity<Map<String, Object>>(H)
+//    }
     // 댓글 상태 (1순위)
 }

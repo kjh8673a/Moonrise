@@ -26,7 +26,7 @@ public class BoardComment {
 
     @Column(name="group_id")
     private Long groupId = id;
-
+    private int isNestedComment;
     private LocalDateTime writeDate;
     @JsonIgnore
     @ManyToOne
@@ -38,8 +38,9 @@ public class BoardComment {
     public static BoardComment createBoardComment(BoardCommentCreateDto boardCommentCreateDto, Board board, Member member) {
         BoardComment boardComment = new BoardComment();
         boardComment.setContent(boardCommentCreateDto.getContent());
+        boardComment.setIsNestedComment(boardCommentCreateDto.getIsNestedComment());
+        boardComment.setGroupId(boardCommentCreateDto.getGroupId());
         boardComment.setBoard(board);
-        boardComment.setGroupId(0L);
         boardComment.setMember(member);
         boardComment.setWriteDate(LocalDateTime.now());
         return boardComment;
