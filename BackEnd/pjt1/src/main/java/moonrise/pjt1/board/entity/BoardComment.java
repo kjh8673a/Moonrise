@@ -3,6 +3,7 @@ package moonrise.pjt1.board.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import moonrise.pjt1.board.dto.BoardCommentCreateDto;
 import moonrise.pjt1.member.entity.Member;
 
 import javax.persistence.*;
@@ -31,6 +32,15 @@ public class BoardComment {
     private Member member;
 
     private String content;
+
+    public static BoardComment createBoardComment(BoardCommentCreateDto boardCommentCreateDto, Board board, Member member) {
+        BoardComment boardComment = new BoardComment();
+//        boardComment.setContent();
+//        boardComment.setBoard();
+//        boardComment.setGroupId(0);
+
+        return boardComment;
+    }
 
     public void addBoard(Board board){
         this.board = board;
