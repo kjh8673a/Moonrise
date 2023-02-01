@@ -2,6 +2,7 @@ package moonrise.pjt1.board.entity;
 
 import moonrise.pjt1.board.repository.BoardRepository;
 import moonrise.pjt1.member.entity.Member;
+import moonrise.pjt1.member.entity.Profile;
 import moonrise.pjt1.movie.entity.Movie;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,8 +31,9 @@ class BoardTest {
     @Test
     void 게시글작성(){
         // 회원 생성
+        Profile profile = new Profile("김철수","찰스", "M", "01012341234");
         Member member = new Member();
-        member.setNickname("동동");
+        member.addProfile(profile);
 
         em.persist(member);
 
@@ -64,8 +66,11 @@ class BoardTest {
     @Test
     void 회원별_게시글_찾기(){
         // 회원 생성
+        Profile profile = new Profile("김철수","찰스", "M", "01012341234");
+
         Member member = new Member();
-        member.setNickname("동동");
+
+        member.addProfile(profile);
 
         em.persist(member);
 

@@ -1,31 +1,43 @@
 package moonrise.pjt1.member.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import moonrise.pjt1.board.entity.Board;
+import moonrise.pjt1.party.entity.Party;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 @Table(name = "member")
-@Getter @Setter @NoArgsConstructor
 public class Member {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @Column(name = "member_id")
     private Long id;
-    private String nickname;
-    private String image;
-    private String gender;
+
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id")
+    private Profile profile;
+
+    @Enumerated(EnumType.STRING)
+    private MemberStatus memberStatus = MemberStatus.NORMAL;    // default
 
     @OneToMany(mappedBy = "member")
     private List<Board> boards = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberInfo")
-    private MemberInfo memberInfo;
+    @OneToMany(mappedBy = "member")
+    private List<Party> parties = new ArrayList<>();
 
+    public void addProfile(Profile memberProfile) {
+        this.profile = memberProfile;
+    }
+    public void addId(Long userId) {
+        this.id = userId;
+    }
 }
