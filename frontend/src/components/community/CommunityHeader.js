@@ -1,10 +1,22 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
-export default class PartyHeader extends Component {
-  render() {
-    const searchPlaceholder = this.props.type+" 검색";
-    return (
-        <div class="mt-3 h-10 mb-2 flex justify-between">
+function CommunityHeader(props) {
+  const movePage = useNavigate();
+  function moveWrite(){
+    if (props.type === "게시글") {
+        movePage('/community/write/board');
+    }
+    else if (props.type === "담소") {
+        movePage('/community/write/talk');
+    }
+    else if (props.type === "뒷풀이"){
+        movePage('/community/write/party');
+    }
+  }
+  const searchPlaceholder = props.type+" 검색";
+  return (
+    <div class="mt-3 h-10 mb-2 flex justify-between">
             <div class="flex">
                 <div class="flex items-center text-white">정렬 기준 : </div>
                 <select class="ml-1 bg-transparent text-white focus:text-white focus:bg-transparent focus:border-white">
@@ -21,9 +33,10 @@ export default class PartyHeader extends Component {
                 </form>
             </div>
             <div class="flex">
-                <button class="bg-transparent px-4 py-2 hover:bg-gray-500 text-gray-500 hover:text-white border border-white hover:border-transparent rounded">새로운 {this.props.type}</button>
+                <button class="bg-transparent px-4 py-2 hover:bg-gray-500 text-gray-500 hover:text-white border border-white hover:border-transparent rounded" onClick={moveWrite}>새로운 {props.type}</button>
             </div>
         </div>
-    )
-  }
+  )
 }
+
+export default CommunityHeader
