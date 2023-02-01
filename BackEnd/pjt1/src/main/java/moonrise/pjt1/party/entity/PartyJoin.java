@@ -17,6 +17,8 @@ public class PartyJoin {
     private Long id;
 
     private String message;
+
+    @Enumerated(EnumType.STRING)
     private PartyJoinStatus partyJoinStatus;
     private LocalDateTime joinDate;
 

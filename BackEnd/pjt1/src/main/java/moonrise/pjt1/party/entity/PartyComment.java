@@ -20,6 +20,7 @@ public class PartyComment {
     private LocalDateTime commentWriteTime;
     private boolean showPublic;
 
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "party_id")
