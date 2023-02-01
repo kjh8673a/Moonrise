@@ -10,11 +10,6 @@ public class PartyInfo {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "party_info_id")
     private Long id;
-
-
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "party_id")
     private int likeCnt;
     private int viewCnt;
     private int commentCnt;
