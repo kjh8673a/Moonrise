@@ -32,9 +32,16 @@ public class BoardController {
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> boardCreate(@RequestBody BoardCreateDto boardCreateDto){
         Map<String, Object> result = new HashMap<>();
-        Long boardId = boardService.createBoard(boardCreateDto);
-        result.put("boardId", boardId);
-        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
+        try {
+            Long boardId = boardService.createBoard(boardCreateDto);
+            result.put("boardId", boardId);
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
+        }
+        catch (Exception e){
+            result.put("message", "게시글이 잘못됐거나  작성자가 잘못됐거나 ");
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
+
+        }
 
     }
 
@@ -48,10 +55,11 @@ public class BoardController {
     }
 
     // 글 상태바꾸기 ( 삭제, 신고, 평범)
+    // 1:normal 2: banned 3: deleted
     @PostMapping("/status")
-    public void boardChangeStatus(@RequestParam(name="boardId") Long boardId, @RequestParam(name="status") int status){
+    public void boardChangeStatus(@RequestParam(name="boardId") Long boardId, @RequestParam(name="statusCode") int statusCode){
 
-        boardService.statusBoard(boardId, status);
+        boardService.statusBoard(boardId, statusCode);
     }
 
 

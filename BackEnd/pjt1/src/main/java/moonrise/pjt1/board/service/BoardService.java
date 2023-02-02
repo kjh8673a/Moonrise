@@ -50,16 +50,13 @@ public class BoardService {
         return result;
     }
 
-    public Long createBoard(BoardCreateDto boardCreateDto) {
+    public Long createBoard(BoardCreateDto boardCreateDto) throws IllegalStateException{
+
         Optional<Member> findMember = memberRepository.findById(boardCreateDto.getMemberId());
         Optional<Movie> findMovie = movieRepository.findById(boardCreateDto.getMovieId());
 
-        if(!findMovie.isPresent()){
-            throw new IllegalStateException("존재 하지 않는 영화입니다.");
-        }
-        if (!findMember.isPresent()){
-            throw new IllegalStateException("존재 하지 않는 멤버입니다.");
-        }
+        if(!findMovie.isPresent()) throw new IllegalStateException("존재 하지 않는 영화입니다.");
+        if (!findMember.isPresent()) throw new IllegalStateException("존재 하지 않는 멤버입니다.");
         // 게시글 정보 생성
         BoardInfo boardInfo = new BoardInfo();
 
@@ -85,7 +82,7 @@ public class BoardService {
     public void statusBoard(Long boardId, int statusCode) {
         Optional<Board> findBoard = boardRepository.findById(boardId);
         if(!findBoard.isPresent()){
-            throw new IllegalStateException("선택한 게시글이 없습니다.");
+            throw new IllegalStateException("존재하지 않는 게시글 없습니다.");
         }
         Board board = findBoard.get();
         // 1:normal 2: banned 3: deleted
@@ -97,7 +94,7 @@ public class BoardService {
                 board.banned();
                 break;
             case 3:
-                board.cancle();
+                board.deleted();
                 break;
         }
     }

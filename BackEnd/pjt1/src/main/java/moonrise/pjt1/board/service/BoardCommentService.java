@@ -54,4 +54,25 @@ public class BoardCommentService {
         boardComment.setWriteDate(LocalDateTime.now());
         return boardComment.getId();
     }
+    @Transactional
+    public void statusComment(Long commentId, int statusCode) {
+        Optional<BoardComment> findComment = boardCommentRepository.findById(commentId);
+        if(!findComment.isPresent()){
+            throw new IllegalStateException("존재하지 않는 댓글입니다.");
+        }
+        BoardComment boardComment = findComment.get();
+        // 1:normal 2: banned 3: deleted
+        switch (statusCode) {
+            case 1:
+                boardComment.normalize();
+                break;
+            case 2:
+                boardComment.banned();
+                break;
+            case 3:
+                boardComment.deleted();
+                break;
+        }
+
+    }
 }

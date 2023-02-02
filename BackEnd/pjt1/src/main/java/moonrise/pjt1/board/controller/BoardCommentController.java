@@ -42,9 +42,10 @@ public class BoardCommentController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
     }
     // 댓글 상태(삭제, 신고, 평범) (1순위)
-//    @GetMapping("/status")
-//    public void boardCommentChangeStatus(@RequestParam(name="commentId") Long commentId, @RequestParam(name="status") int status){
-//
-//        boardCommentService.statusComment(commentId, status);
-//    }
+    // 1:normal 2: banned 3: deleted
+    @PostMapping("/status")
+    public ResponseEntity<String> boardCommentChangeStatus(@RequestParam(name="commentId") Long commentId, @RequestParam(name="statusCode") int statusCode){
+        boardCommentService.statusComment(commentId, statusCode);
+        return ResponseEntity.status(HttpStatus.OK).body("정상적으로 상태가 변경되었습니다");
+    }
 }

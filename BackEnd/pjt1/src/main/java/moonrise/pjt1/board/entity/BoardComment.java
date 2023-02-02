@@ -10,6 +10,8 @@ import moonrise.pjt1.member.entity.Member;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static moonrise.pjt1.board.entity.BoardCommentStatus.*;
+
 @Entity
 @Table(name = "board_comment")
 @Getter
@@ -33,7 +35,11 @@ public class BoardComment {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Enumerated(EnumType.STRING)
+    private BoardCommentStatus boardCommentStatus = NORMAL;
+
     private String content;
+    private String writer;
 
     public static BoardComment createBoardComment(BoardCommentCreateDto boardCommentCreateDto, Board board, Member member) {
         BoardComment boardComment = new BoardComment();
@@ -42,6 +48,7 @@ public class BoardComment {
         boardComment.setGroupId(boardCommentCreateDto.getGroupId());
         boardComment.setBoard(board);
         boardComment.setMember(member);
+        boardComment.setWriter(member.getProfile().getNickname());
         boardComment.setWriteDate(LocalDateTime.now());
         return boardComment;
     }
@@ -51,4 +58,10 @@ public class BoardComment {
         board.getBoardComments().add(this);
     }
 
+    public void normalize() { this.setBoardCommentStatus(NORMAL);
+    }
+
+    public void banned() { this.setBoardCommentStatus(BANNED);}
+
+    public void deleted() { this.setBoardCommentStatus(DELETED);}
 }
