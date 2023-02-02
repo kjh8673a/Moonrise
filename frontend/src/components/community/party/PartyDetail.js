@@ -28,7 +28,7 @@ function PartyDetail() {
     <div className='PartyDetail mx-60 py-10 grid grid-cols-2 gap-4'>
       <div className="col-span-1">
         <button className='text-white' onClick={goBefore}> &lt; 이전으로 </button>
-        <p className='movieName text-orange-600 mt-4'>해리포터와 마법사의 돌</p>
+        <p className='movieName text-orange-600 mt-4'>{useSelector(state => state.movie.movieTitle)}</p>
         <p className="partyTitle text-2xl text-white">{useSelector(state => state.party.partyDetail.title)}</p>
         <PartyDetailCard/>
       </div>
