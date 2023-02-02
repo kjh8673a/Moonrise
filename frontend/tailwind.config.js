@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         'community': "url('../public/images/CommunityBackground.png')",
+        'main': "url('../public/images/mainBackground.png')",
       },
     },
   },
