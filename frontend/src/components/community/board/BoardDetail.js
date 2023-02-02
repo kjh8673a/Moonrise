@@ -1,4 +1,3 @@
-import { comment } from "postcss";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -47,8 +46,8 @@ const DUMMY_DATA = [
 ];
 
 function BoardDetail() {
-  const [commentValue, setCommentValue] = useState('');
-  
+  const [commentValue, setCommentValue] = useState("");
+
   const movePage = useNavigate();
 
   const params = new URLSearchParams(window.location.search);
@@ -62,11 +61,13 @@ function BoardDetail() {
 
   const addComment = (event) => {
     event.preventDefault();
-  }
+
+    console.log(commentValue);
+  };
 
   const getValue = (event) => {
     setCommentValue(event.target.value);
-  }
+  };
 
   return (
     <div className="w-4/5 min-h-screen p-2 m-auto bg-slate-400">
@@ -77,7 +78,7 @@ function BoardDetail() {
             <span className="text-2xl font-extrabold">{board.title}</span>
             <div className="flex w-full">
               <span className="flex-1 cursor-pointer" onClick={goBack}>
-                이전으로
+                &lt; 이전으로
               </span>
               <span className="flex-1 text-center">{board.write_date}</span>
               <span className="flex-1"></span>
@@ -88,16 +89,23 @@ function BoardDetail() {
           </div>
         </>
       ))}
-      
+
       <span>댓글</span>
       <div className="p-2 border-b-2 border-black bg-slate-300">
         <form className="flex gap-2" onSubmit={addComment}>
-          <input type="text" className="flex-1 rounded p-2" placeholder="내용을 입력해 주세요" onChange={getValue}></input>
-          <button className="w-20 h-20 bg-[#FA9E13] rounded text-white">등록</button>
+          <input
+            type="text"
+            className="flex-1 rounded p-2"
+            placeholder="내용을 입력해 주세요"
+            onChange={getValue}
+          ></input>
+          <button className="w-20 h-20 bg-[#FA9E13] rounded text-white">
+            등록
+          </button>
         </form>
       </div>
-      
-      <BoardComment board_id={id}/>
+
+      <BoardComment board_id={id} />
     </div>
   );
 }
