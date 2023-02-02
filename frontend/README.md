@@ -33,6 +33,11 @@ src
 │		│		│	  ├── BoardList.js
 │		│		│	  ├── BoardCard.js
 │		│		│	  ├── BoardDetail.js
+│		│		│	  ├── BoardComment.js
+│		│		│	  ├── BoardCommentCard.js
+│		│		│	  ├── BoardSubCommentCard.js
+│		│		│	  ├── BoardSubCommentInput.js
+│		│		│	  ├── BoardDetail.js
 │		│		│	  └── BoardWrite.js
 │		│	  ├── talk
 │		│		│	  ├── TalkList.js
@@ -41,18 +46,20 @@ src
 │		│		│	  ├── TalkRoom.js 
 │		│		│	  └── TalkWrite.js
 │		│	  ├── party
-│		│		│	  ├── PartyList.js v
-│		│		│	  ├── PartyDetail.js
+│		│		│	  ├── PartyCandidate.js v
+│		│		│	  ├── PartyCandidateCard.js
 │		│		│	  ├── PartyCard.js v
-│		│		│	  ├── PartyCommentGuest.js
-│		│		│	  ├── PartyCommentHost.js
+│		│		│	  ├── PartyComment.js
+│		│		│	  ├── PartyDetail.js
+│		│		│	  ├── PartyDetailCard.js
 │		│		│	  ├── PartyEnroll.js
-│		│		│	  ├── PartyCandidate.js
-│		│		│	  └── PartyWrite.js
+│		│		│	  ├── PartyWrite.js
+│		│		│	  └── PartyList.js
 │		│	  ├── CommunityDetail.js v
 │		│	  ├── CommunityList.js v
 │		│	  ├── CommunityNav.js v
 │		│	  ├── CommunityHeader.js v
+│		│	  ├── CommunityWrite.js v
 │		│	  └── CommunityPagination.js v
 │	  ├── profile
 │		│	  ├── profile
