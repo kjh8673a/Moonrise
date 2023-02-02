@@ -81,7 +81,5 @@ public class Party {
         this.meetOnline = partyModifyDto.isMeetOnline();
         this.partyDate = partyModifyDto.getPartyDate();
         this.deadLine = partyModifyDto.getDeadLine();
-
-
     }
 }
