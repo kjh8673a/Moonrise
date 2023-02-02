@@ -14,6 +14,8 @@ import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,13 +30,23 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final BoardCommentRepository boardCommentRepository;
 
-    public Map<String, Object> listBoard(Long movieId){
+//    public Map<String, Object> listBoard(Long movieId){
+//        Optional<Movie> findMovie = movieRepository.findById(movieId);
+//        Map<String,Object> result = new HashMap<>();
+//        if(!findMovie.isPresent()){
+//            throw new IllegalStateException("존재 하지 않는 영화입니다.");
+//        }
+//        List<BoardListResponseDto> boardList = boardRepository.findBoardList(movieId);
+//        result.put("findBoards", boardList);
+//        return result;
+//    }
+    public Map<String, Object> listBoard(Long movieId, Pageable pageable){
         Optional<Movie> findMovie = movieRepository.findById(movieId);
         Map<String,Object> result = new HashMap<>();
         if(!findMovie.isPresent()){
             throw new IllegalStateException("존재 하지 않는 영화입니다.");
         }
-        List<BoardListResponseDto> boardList = boardRepository.findBoardList(movieId);
+        Page<BoardListResponseDto> boardList = boardRepository.findBoardList(movieId, pageable);
         result.put("findBoards", boardList);
         return result;
     }

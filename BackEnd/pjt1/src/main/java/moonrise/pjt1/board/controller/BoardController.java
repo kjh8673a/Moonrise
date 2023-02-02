@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import moonrise.pjt1.board.dto.BoardCreateDto;
 import moonrise.pjt1.board.dto.BoardUpdateDto;
 import moonrise.pjt1.board.service.BoardService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +20,18 @@ import java.util.Map;
 public class BoardController {
     private final BoardService boardService;
     // 게시글 목록보기 (0순위)
+//    @GetMapping(value = "/list/{movieId}")
+//    public ResponseEntity<Map<String, Object>>boardList(@PathVariable("movieId") Long movieId){
+//        Map<String, Object> result = boardService.listBoard(movieId);
+//        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
+//    }
     @GetMapping(value = "/list/{movieId}")
-    public ResponseEntity<Map<String, Object>>boardList(@PathVariable("movieId") Long movieId){
-        Map<String, Object> result = boardService.listBoard(movieId);
+    public ResponseEntity<Map<String, Object>>boardList(@PathVariable("movieId") Long movieId,
+                                                        @PageableDefault(page =0, size = 3, sort ="boardId",direction = Sort.Direction.DESC)Pageable pageable){
+        Map<String, Object> result = boardService.listBoard(movieId, pageable);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
     }
+
     // 게시글 상세보기 (0순위)
     @GetMapping("/{boardId}")
     public ResponseEntity<Map<String, Object>> boardDetail(@PathVariable("boardId") Long boardId){
