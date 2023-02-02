@@ -5,7 +5,6 @@ function BoardSubCommetInput(props) {
 
     const addComment = (event) => {
         event.preventDefault();
-        console.log(commentValue);
       }
     
       const getValue = (event) => {

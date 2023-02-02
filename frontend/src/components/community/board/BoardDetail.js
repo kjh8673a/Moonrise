@@ -1,3 +1,4 @@
+import { comment } from "postcss";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -61,7 +62,6 @@ function BoardDetail() {
 
   const addComment = (event) => {
     event.preventDefault();
-    console.log(commentValue);
   }
 
   const getValue = (event) => {

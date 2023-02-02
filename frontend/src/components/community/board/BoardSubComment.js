@@ -70,7 +70,6 @@ function BoardSubComment(props) {
 
   const openSubCommentInput = (props, e) => {
     setInputVisible(!inputVisible);
-    console.log(props);
     sendToCommentId === props
       ? setSendToCommentId("")
       : setSendToCommentId(props);

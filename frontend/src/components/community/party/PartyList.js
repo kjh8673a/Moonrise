@@ -12,7 +12,6 @@ const GetList = () => {
               setParties(response.data.findParties);
           });
   }, []);
-  console.log(parties);
   const partyList = parties.map((party) => (
     <PartyCard title={party.title} partyDate="2023.02.06" partyPeople={party.partyPeople} partyLocation={party.location} key={party.partyId} />
   ));
