@@ -88,8 +88,8 @@ public class MemberController {
             //access-token을 파싱 하여 카카오 id가 디비에 있는지 확인
             Long userId = parseToken(access_Token);
             if(memberService.check_enroll_member(userId)){  // 회원가입해
-                resultMap.put("kakaoId",userId);
-                return new ResponseEntity<HashMap<String, Object>>(resultMap, HttpStatus.NO_CONTENT);
+                resultMap.put("access_token",access_Token);
+                return new ResponseEntity<HashMap<String, Object>>(resultMap, HttpStatus.SERVICE_UNAVAILABLE);  //503
 
             }else{  // 회원가입 되어 있어 그냥 token만 반환해
                 resultMap.put("access_token", access_Token);
