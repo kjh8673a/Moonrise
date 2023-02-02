@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
+import BoardCommentCard from "./BoardCommentCard";
 
-import BoardSubComment from "./BoardSubComment";
-import BoardSubCommetInput from "./BoardSubCommetInput";
+import BoardSubCommentCard from "./BoardSubCommentCard";
 
 const DUMMY_DATA = [
   {
@@ -9,8 +9,9 @@ const DUMMY_DATA = [
     comment_id: 1,
     content: "오리지널 댓글1",
     write_date: "2023.01.17 09:54",
-    group_id: 0,
+    group_id: 1,
     nickname: "홍길동1",
+    nested: 0,
   },
   {
     board_id: 1,
@@ -19,6 +20,7 @@ const DUMMY_DATA = [
     write_date: "2023.01.17 09:54",
     group_id: 1,
     nickname: "홍길동2",
+    nested: 1,
   },
   {
     board_id: 1,
@@ -27,22 +29,25 @@ const DUMMY_DATA = [
     write_date: "2023.01.17 09:54",
     group_id: 1,
     nickname: "홍길동3",
+    nested: 1,
   },
   {
     board_id: 1,
     comment_id: 4,
     content: "오리지널 댓글4",
     write_date: "2023.01.17 09:54",
-    group_id: 0,
+    group_id: 4,
     nickname: "홍길동4",
+    nested: 0,
   },
   {
     board_id: 1,
     comment_id: 5,
     content: "오리지널 댓글5",
     write_date: "2023.01.17 09:54",
-    group_id: 0,
+    group_id: 5,
     nickname: "홍길동5",
+    nested: 0,
   },
   {
     board_id: 1,
@@ -51,6 +56,7 @@ const DUMMY_DATA = [
     write_date: "2023.01.17 09:54",
     group_id: 5,
     nickname: "홍길동6",
+    nested: 1,
   },
   {
     board_id: 1,
@@ -59,47 +65,34 @@ const DUMMY_DATA = [
     write_date: "2023.01.17 09:54",
     group_id: 5,
     nickname: "홍길동7",
+    nested: 1,
   },
 ];
 
 function BoardComment(props) {
-  const [inputVisible, setInputVisible] = useState(false);
-  const [sendToCommentId, setSendToCommentId] = useState("");
-
-  const origin_comment = DUMMY_DATA.filter(
-    (data) => data.board_id === props.board_id && data.group_id === 0
-  );
-
-  const openSubCommentInput = (props, e) => {
-    setInputVisible(!inputVisible);
-    sendToCommentId === props
-      ? setSendToCommentId("")
-      : setSendToCommentId(props);
-  };
+  const comment = DUMMY_DATA.filter((data) => data.board_id === props.board_id);
 
   return (
     <div>
-      {origin_comment.map((comment) => (
+      {comment.map((comment) => (
         <>
-          <div className="flex flex-col gap-2 p-2 border-b border-black bg-slate-300">
-            <span>{comment.nickname}</span>
-            <span className="">{comment.content}</span>
-            <div className="flex">
-              <span className="flex-1">{comment.write_date}</span>
-              <button
-                className="px-2 bg-[#FA9E13] rounded text-white"
-                onClick={(e) =>
-                  openSubCommentInput(comment.comment_id, e)
-                }
-              >
-                답글
-              </button>
-            </div>
-          </div>
-          {inputVisible && sendToCommentId === comment.comment_id && (
-            <BoardSubCommetInput nick={comment.nickname} />
+          {comment.nested === 0 && (
+            <BoardCommentCard
+              comment_id={comment.comment_id}
+              content={comment.content}
+              write_date={comment.write_date}
+              nickname={comment.nickname}
+            />
           )}
-          <BoardSubComment comment_id={comment.comment_id} />
+
+          {comment.nested === 1 && (
+            <BoardSubCommentCard
+              comment_id={comment.comment_id}
+              content={comment.content}
+              write_date={comment.write_date}
+              nickname={comment.nickname}
+            />
+          )}
         </>
       ))}
     </div>
