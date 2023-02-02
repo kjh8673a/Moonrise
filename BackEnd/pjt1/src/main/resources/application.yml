@@ -1,3 +1,4 @@
+
 spring:
   redis:
     host: 3.35.149.202
@@ -8,8 +9,7 @@ spring:
       matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://15.164.232.221:3306/test1
-    url: jdbc:mysql://3.35.149.202:3306/moonrise
+    url: jdbc:mysql://mysql-container:3306/moonrises
     username: ssafy
     password: qwer1234
   jpa:
@@ -28,3 +28,5 @@ logging.level:
   #org.hibernate.type: trace
   # org.hibernate.type: trace #스프링 부트 2.x, hibernate5
   # org.hibernate.orm.jdbc.bind: trace #스프링 부트 3.x, hibernate6
+server:
+  port: 9001
