@@ -3,11 +3,14 @@ import React, { useEffect, useState } from 'react'
 import PartyCard from './PartyCard'
 import CommunityHeader from '../CommunityHeader'
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const GetList = () => {
   const [parties, setParties] = useState([]);
+  const movieId = useSelector(state => state.movie.movieId);
+
   useEffect(() => {
-      axios.get('/party/list?movieId=257211')
+      axios.get('/party/list?movieId=' + movieId)
           .then(response => {
               setParties(response.data.findParties);
           });
