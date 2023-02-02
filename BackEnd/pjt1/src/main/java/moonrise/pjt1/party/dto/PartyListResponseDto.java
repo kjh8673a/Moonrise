@@ -11,12 +11,15 @@ public class PartyListResponseDto {
     private int partyPeople;
     private String location;
     private LocalDateTime partyDate;
+    private int viewCnt;
 
-    public PartyListResponseDto(Long partyId, String title, int partyPeople, String location,LocalDateTime partyDate) {
+    public PartyListResponseDto(Long partyId, String title, int partyPeople,
+                                String location,LocalDateTime partyDate,int viewCnt) {
         this.partyId = partyId;
         this.title = title;
         this.partyPeople = partyPeople;
         this.location = location;
         this.partyDate = partyDate;
+        this.viewCnt = viewCnt;
     }
 }
