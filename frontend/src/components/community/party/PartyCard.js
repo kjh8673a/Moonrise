@@ -1,11 +1,15 @@
 import React from 'react'
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import CardImg from '../../../assets/img/CardImg.jpg'
+import { setPartyId } from '../../../feature/reducer/PartyReducer';
 
 function PartyCard(props) {
   const movePage = useNavigate();
+  const dispatch = useDispatch();
   
   function goDetail(){
+    dispatch(setPartyId(props.partyId));
     movePage('/community/detail/party');
   }
   return (
