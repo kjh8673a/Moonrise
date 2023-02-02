@@ -1,5 +1,5 @@
 import { combineReducers, configureStore} from "@reduxjs/toolkit";
-import { partyReducer } from "./feature/reducer/PartyReducer";
+import partyReducer from "./feature/reducer/PartyReducer";
 
 
 const reducers = combineReducers({
