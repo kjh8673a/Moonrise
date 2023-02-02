@@ -7,7 +7,7 @@ import axios from 'axios';
 const GetList = () => {
   const [parties, setParties] = useState([]);
   useEffect(() => {
-      axios.get('/party/list?movieId=257211')
+      axios.get('http://pjt1-container:9001/party/list?movieId=257211')
           .then(response => {
               setParties(response.data.findParties);
           });
