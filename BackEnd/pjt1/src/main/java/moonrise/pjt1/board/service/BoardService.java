@@ -6,7 +6,9 @@ import moonrise.pjt1.board.dto.BoardDetailDto;
 import moonrise.pjt1.board.dto.BoardListResponseDto;
 import moonrise.pjt1.board.dto.BoardUpdateDto;
 import moonrise.pjt1.board.entity.Board;
+import moonrise.pjt1.board.entity.BoardComment;
 import moonrise.pjt1.board.entity.BoardInfo;
+import moonrise.pjt1.board.repository.BoardCommentRepository;
 import moonrise.pjt1.board.repository.BoardRepository;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
@@ -24,6 +26,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MovieRepository movieRepository;
     private final MemberRepository memberRepository;
+    private final BoardCommentRepository boardCommentRepository;
 
     public Map<String, Object> listBoard(Long movieId){
         Optional<Movie> findMovie = movieRepository.findById(movieId);
@@ -43,8 +46,8 @@ public class BoardService {
 
         Board board = findBoard.get();
         String writer = board.getMember().getProfile().getNickname();
-
-        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, board.getBoardComments());
+        List<BoardComment> commentList = boardCommentRepository.getCommentList();
+        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList);
         result.put("findBoard", boardDetailDto);
 
         return result;
