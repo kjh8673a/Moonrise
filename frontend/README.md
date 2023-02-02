@@ -76,7 +76,11 @@ src
 │        └── ProfileNav.js
 ├── api // axios관련..
 ├── assets // 이미지 등 자료..
-├── feature // 필요 기능들(함수 등)..
+├── feature
+|    └── reducer
+|        ├── MovieReducer.js
+|        └── PartyReducer.js
 ├── App.js
-└── index.js
+├── index.js
+└── store.js
 ```
