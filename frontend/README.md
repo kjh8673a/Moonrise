@@ -12,64 +12,64 @@ src
 │	  └── Profile.js
 ├── components // 페이지 안 컴포넌트
 │	  ├── common
-│       ├── ProfileIcon.js
-│		├── MainNav.js
-│		├── LogCard.js
-│		│	├── PartyCard.js
-│		│	└── ProfileEdit.js
+│     |     ├── ProfileIcon.js
+│	  |	    ├── MainNav.js
+│	  |	    ├── LogCard.js
+│     │	    ├── PartyCard.js
+│	  │	    └── ProfileEdit.js
 │	  ├── main
-│		│	  ├── MainSearch.js
-│		│	  └── MainLog.js
+│	  │	    ├── MainSearch.js
+│     │	    └── MainLog.js
 │	  ├── user
-│   │	  └── Login.js
+│     │	    └── Login.js
 │	  ├── search
-│		│	  └── MovieCard.js
+│	  │	    └── MovieCard.js
 │	  ├── community
-│		│	  ├── movie
-│		│		│	  ├── MovieDetail.js
-│		│		│	  ├── MovieDetailEval.js
-│		│		│	  └── MovieDetailEvalResult.js
-│		│	  ├── board
-│		│		│	  ├── BoardList.js
-│		│		│	  ├── BoardCard.js
-│		│		│	  ├── BoardDetail.js
-│		│		│	  ├── BoardComment.js
-│		│		│	  ├── BoardCommentCard.js
-│		│		│	  ├── BoardSubCommentCard.js
-│		│		│	  ├── BoardSubCommentInput.js
-│		│		│	  ├── BoardDetail.js
-│		│		│	  └── BoardWrite.js
-│		│	  ├── talk
-│		│		│	  ├── TalkList.js
-│		│		│	  ├── TalkCard.js
-│		│		│	  ├── TalkDetail.js
-│		│		│	  ├── TalkRoom.js 
-│		│		│	  └── TalkWrite.js
-│		│	  ├── party
-│		│		│	  ├── PartyCandidate.js v
-│		│		│	  ├── PartyCandidateCard.js
-│		│		│	  ├── PartyCard.js v
-│		│		│	  ├── PartyComment.js
-│		│		│	  ├── PartyDetail.js
-│		│		│	  ├── PartyDetailCard.js
-│		│		│	  ├── PartyEnroll.js
-│		│		│	  ├── PartyWrite.js
-│		│		│	  └── PartyList.js
-│		│	  ├── CommunityDetail.js v
-│		│	  ├── CommunityList.js v
-│		│	  ├── CommunityNav.js v
-│		│	  ├── CommunityHeader.js v
-│		│	  ├── CommunityWrite.js v
-│		│	  └── CommunityPagination.js v
+│	  │     ├── movie
+│	  │		│	  ├── MovieDetail.js
+│	  │		│	  ├── MovieDetailEval.js
+│	  │		│	  └── MovieDetailEvalResult.js
+│	  │	    ├── board
+│	  │		│	  ├── BoardList.js
+│  	  │		│	  ├── BoardCard.js
+│	  │		│	  ├── BoardDetail.js
+│	  │		│	  ├── BoardComment.js
+│	  │		│	  ├── BoardCommentCard.js
+│	  │		│	  ├── BoardSubCommentCard.js
+│	  │		│	  ├── BoardSubCommentInput.js
+│	  │		│	  ├── BoardDetail.js
+│	  │		│	  └── BoardWrite.js
+│	  │	    ├── talk
+│	  │		│	  ├── TalkList.js
+│	  │		│	  ├── TalkCard.js
+│     │		│	  ├── TalkDetail.js
+│	  │		│	  ├── TalkRoom.js 
+│	  │		│	  └── TalkWrite.js
+│	  │	    ├── party
+│	  │		│	  ├── PartyCandidate.js v
+│	  │		│	  ├── PartyCandidateCard.js
+│	  │		│	  ├── PartyCard.js v
+│	  │		│	  ├── PartyComment.js
+│	  │		│	  ├── PartyDetail.js
+│	  │		│	  ├── PartyDetailCard.js
+│	  │		│	  ├── PartyEnroll.js
+│	  │		│	  ├── PartyWrite.js
+│	  │		│	  └── PartyList.js
+│	  │	    ├── CommunityDetail.js v
+│	  │	    ├── CommunityList.js v
+│	  │ 	├── CommunityNav.js v
+│     │	    ├── CommunityHeader.js v
+│     │ 	├── CommunityWrite.js v
+│     │ 	└── CommunityPagination.js v
 │	  ├── profile
-│		│	  ├── profile
-│		│	  │	  └── ProfileCard.js
-│		│	  ├── log
-│		│	  │	  └── LogList.js
-│		│	  ├── board
-│		│	  │	  ├── ProfileBoardList.js
-│		│	  │	  ├── ProfileBoardCard.js
-│		│	  │	  └── ProfileBoardNav.js
+│	  │	    ├── profile
+│	  │	    │	  └── ProfileCard.js
+│	  │	    ├── log
+│	  │ 	│	  └── LogList.js
+│	  │     ├── board
+│	  │     │	  ├── ProfileBoardList.js
+│	  │     │	  ├── ProfileBoardCard.js
+│	  │ 	  │	  └── ProfileBoardNav.js
 │		│	  ├── party
 │		│	  │	  ├── ProfilePartyList.js
 │		│	  │	  └── ProfilePartyNav.js
