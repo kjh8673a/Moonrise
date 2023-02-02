@@ -10,7 +10,7 @@ const GetList = () => {
   const movieId = useSelector(state => state.movie.movieId);
 
   useEffect(() => {
-      axios.get('/party/list?movieId=' + movieId)
+      axios.get('http://3.35.149.202:80/api/party/list?movieId=' + movieId)
           .then(response => {
               setParties(response.data.findParties);
           });
