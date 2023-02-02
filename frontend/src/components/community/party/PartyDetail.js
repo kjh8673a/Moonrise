@@ -19,7 +19,7 @@ function PartyDetail() {
   const partyId = useSelector(state => state.party.partyId);
   const dispatch = useDispatch(); 
   useEffect(() => {
-    axios.get('http://i8b310.p.ssafy.io:9001/party/read/'+partyId)
+    axios.get('/party/read/'+partyId)
       .then(response => {
         dispatch(setPartyDetail(response.data.findParty));
       });
