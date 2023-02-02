@@ -62,7 +62,7 @@ const DUMMY_DATA = [
 
 function BoardSubComment(props) {
   const [inputVisible, setInputVisible] = useState(false);
-  const [sendToNick, setSendToNick] = useState("");
+  const [sendToCommentId, setSendToCommentId] = useState("");
 
   const sub_comment = DUMMY_DATA.filter(
     (data) => data.group_id === props.comment_id
@@ -70,7 +70,10 @@ function BoardSubComment(props) {
 
   const openSubCommentInput = (props, e) => {
     setInputVisible(!inputVisible);
-    sendToNick === props ? setSendToNick("") : setSendToNick(props);
+    console.log(props);
+    sendToCommentId === props
+      ? setSendToCommentId("")
+      : setSendToCommentId(props);
   };
 
   return (
@@ -86,14 +89,14 @@ function BoardSubComment(props) {
                 <span className="flex-1">{comment.write_date}</span>
                 <button
                   className="px-2 bg-[#FA9E13] rounded text-white"
-                  onClick={(e) => openSubCommentInput(comment.nickname, e)}
+                  onClick={(e) => openSubCommentInput(comment.comment_id, e)}
                 >
                   답글
                 </button>
               </div>
             </div>
           </div>
-          {inputVisible && sendToNick === comment.nickname && (
+          {inputVisible && sendToCommentId === comment.comment_id && (
             <BoardSubCommetInput nick={comment.nickname} />
           )}
         </>
