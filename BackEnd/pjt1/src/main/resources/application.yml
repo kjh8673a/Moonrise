@@ -1,4 +1,3 @@
-
 spring:
   mvc:
     pathmatch:
@@ -14,7 +13,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect # 추가 해준 부분
 
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
 #        show_sql: true
