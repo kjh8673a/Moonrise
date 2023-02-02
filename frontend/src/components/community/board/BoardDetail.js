@@ -1,6 +1,7 @@
-import React from "react";
-import BoardCard from "./BoardCard";
-import CommunityHeader from '../CommunityHeader';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import BoardComment from "./BoardComment";
 
 const DUMMY_DATA = [
   {
@@ -14,7 +15,7 @@ const DUMMY_DATA = [
     like_cnt: 34,
     comment_cnt: 14,
     poster:
-    "https://images.ctfassets.net/usf1vwtuqyxm/6Meesa1ONupgjIy7JS5TvF/10fff5e089662ef26336c1e2b8414f70/minalima-weasley-family.jpg?w=315&h=315&fit=fill&f=top&fm=webp&q=70",
+      "https://images.ctfassets.net/usf1vwtuqyxm/6Meesa1ONupgjIy7JS5TvF/10fff5e089662ef26336c1e2b8414f70/minalima-weasley-family.jpg?w=315&h=315&fit=fill&f=top&fm=webp&q=70",
   },
   {
     board_id: 2,
@@ -27,7 +28,7 @@ const DUMMY_DATA = [
     like_cnt: 34,
     comment_cnt: 14,
     poster:
-    "https://images.ctfassets.net/usf1vwtuqyxm/5bqVQEImJpoPAciVRNQqFu/336875e94b38fac41c7c1bed3336dcf6/SHP---Hero-Mob.jpg?w=315&h=315&fit=fill&f=top&fm=webp&q=70",
+      "https://images.ctfassets.net/usf1vwtuqyxm/5bqVQEImJpoPAciVRNQqFu/336875e94b38fac41c7c1bed3336dcf6/SHP---Hero-Mob.jpg?w=315&h=315&fit=fill&f=top&fm=webp&q=70",
   },
   {
     board_id: 3,
@@ -40,33 +41,65 @@ const DUMMY_DATA = [
     like_cnt: 34,
     comment_cnt: 14,
     poster:
-    "https://images.ctfassets.net/usf1vwtuqyxm/5bqVQEImJpoPAciVRNQqFu/336875e94b38fac41c7c1bed3336dcf6/SHP---Hero-Mob.jpg?w=315&h=315&fit=fill&f=top&fm=webp&q=70",
+      "https://images.ctfassets.net/usf1vwtuqyxm/5bqVQEImJpoPAciVRNQqFu/336875e94b38fac41c7c1bed3336dcf6/SHP---Hero-Mob.jpg?w=315&h=315&fit=fill&f=top&fm=webp&q=70",
   },
 ];
 
-function BoardList() {
-  const data = DUMMY_DATA;
+function BoardDetail() {
+  const [commentValue, setCommentValue] = useState('');
+  
+  const movePage = useNavigate();
+
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get("id"));
+
+  const data = DUMMY_DATA.filter((data) => data.board_id === id);
+
+  const goBack = () => {
+    movePage("/community/list/");
+  };
+
+  const addComment = (event) => {
+    event.preventDefault();
+    console.log(commentValue);
+  }
+
+  const getValue = (event) => {
+    setCommentValue(event.target.value);
+  }
 
   return (
-    <div>
-      <CommunityHeader type="게시글"/>
-      <ul>
-        {data.map((board) => (
-          <BoardCard
-            key={board.board_id}
-            id={board.board_id}
-            title={board.title}
-            content={board.content}
-            write_date={board.write_date}
-            nickname={board.nickname}
-            like_cnt={board.like_cnt}
-            comment_cnt={board.comment_cnt}
-            poster={board.poster}
-          />
-        ))}
-      </ul>
+    <div className="w-4/5 min-h-screen p-2 m-auto bg-slate-400">
+      {data.map((board) => (
+        <>
+          <div className="flex flex-col items-center border-b">
+            <span className="text-[#FA9E13] font-semibold">{board.movie}</span>
+            <span className="text-2xl font-extrabold">{board.title}</span>
+            <div className="flex w-full">
+              <span className="flex-1 cursor-pointer" onClick={goBack}>
+                이전으로
+              </span>
+              <span className="flex-1 text-center">{board.write_date}</span>
+              <span className="flex-1"></span>
+            </div>
+          </div>
+          <div className="p-2 border-b">
+            <p>{board.content}</p>
+          </div>
+        </>
+      ))}
+      
+      <span>댓글</span>
+      <div className="p-2 border-b-2 border-black bg-slate-300">
+        <form className="flex gap-2" onSubmit={addComment}>
+          <input type="text" className="flex-1 rounded p-2" placeholder="내용을 입력해 주세요" onChange={getValue}></input>
+          <button className="w-20 h-20 bg-[#FA9E13] rounded text-white">등록</button>
+        </form>
+      </div>
+      
+      <BoardComment board_id={id}/>
     </div>
   );
 }
 
-export default BoardList;
+export default BoardDetail;
