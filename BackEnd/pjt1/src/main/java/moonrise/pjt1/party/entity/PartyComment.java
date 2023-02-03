@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.party.dto.PartyCommentCreateDto;
-
+import static moonrise.pjt1.party.entity.PartyCommentStatus.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -19,8 +19,11 @@ public class PartyComment {
     private String content;
     private LocalDateTime commentWriteTime;
     private boolean showPublic;
+    private Long groupId = id;
+    private int isNestedComment;
 
-
+    @Enumerated(EnumType.STRING)
+    private PartyCommentStatus partyCommentStatus = NORMAL;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "party_id")
@@ -44,6 +47,8 @@ public class PartyComment {
         partyComment.setCommentWriteTime(LocalDateTime.now());
         partyComment.setShowPublic(partyCommentCreateDto.isShowPublic());
         partyComment.setParty(party);
+        partyComment.setIsNestedComment(partyCommentCreateDto.getIsNestedComment());
+        partyComment.setGroupId(partyCommentCreateDto.getGroupId());
         partyComment.setMember(member);
         partyComment.setWriter(member.getProfile().getNickname());
         return partyComment;

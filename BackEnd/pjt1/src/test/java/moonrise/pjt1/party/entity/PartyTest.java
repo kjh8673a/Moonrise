@@ -55,7 +55,7 @@ class PartyTest {
     @Test
     void commentWriteParty(){
         PartyCommentCreateDto partyCommentCreateDto = new PartyCommentCreateDto(13L,201611222L,
-                "댓글작성~",true);
+                "댓글작성~",true, 0L, 0);
         partyService.createComment(partyCommentCreateDto);
     }
 }
