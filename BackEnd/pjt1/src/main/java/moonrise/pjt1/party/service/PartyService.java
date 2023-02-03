@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +41,8 @@ public class PartyService {
             valueOperations.set(
                     key,
                     String.valueOf(partyInfoRepository.findPartyViewCnt(partyId)+1),
-                    Duration.ofMinutes(-1));
+                    20,
+                    TimeUnit.MINUTES);
         }
         else{
             valueOperations.increment(key);

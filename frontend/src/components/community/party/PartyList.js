@@ -5,7 +5,9 @@ import CommunityHeader from '../CommunityHeader'
 import { useSelector } from 'react-redux';
 
 const GetList = () => {
+
   const parties = useSelector(state => state.party.partyList); 
+
   const partyList = parties.map((party) => (
     <PartyCard title={party.title} partyDate="2023.02.06" partyPeople={party.partyPeople} partyLocation={party.location} partyId={party.partyId} key={party.partyId}/>
   ));
