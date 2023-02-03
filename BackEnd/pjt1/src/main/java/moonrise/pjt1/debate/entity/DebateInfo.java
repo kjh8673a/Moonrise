@@ -1,8 +1,6 @@
 package moonrise.pjt1.debate.entity;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
