@@ -14,7 +14,7 @@ function BoardList() {
       .then((response) => {
         setBoards(response.data.findBoards);
       });
-  });
+  },[movieId]);
 
   return (
     <div>

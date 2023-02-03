@@ -17,8 +17,8 @@ function BoardDetail() {
     axios.get("http://3.35.149.202/api/board/" + id).then((response) => {
       setBoard(response.data.findBoard);
     });
-  });
-
+  }, [id]);
+  
   const goBack = () => {
     movePage("/community/list/");
   };
