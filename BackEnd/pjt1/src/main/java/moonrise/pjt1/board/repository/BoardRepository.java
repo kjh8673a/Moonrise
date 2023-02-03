@@ -2,6 +2,7 @@ package moonrise.pjt1.board.repository;
 
 import moonrise.pjt1.board.dto.BoardListResponseDto;
 import moonrise.pjt1.board.entity.Board;
+import moonrise.pjt1.party.entity.Party;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,7 @@ import java.util.List;
 
 
 public interface BoardRepository extends JpaRepository<Board,Long> {
-    @Query(value = "select new moonrise.pjt1.board.dto.BoardListResponseDto" +
-            "(b.id,b.title,b.content,b.dateTime, b.member.profile.nickname) from Board b where b.movie.id = :movieId")
-    Page<BoardListResponseDto> findBoardList(@Param("movieId") Long movieId, Pageable pageable);
+    @Query("select new moonrise.pjt1.board.dto.BoardListResponseDto" +"(b.id,b.title,b.content,b.dateTime, b.member.profile.nickname) from Board as b where b.movie.id =:movieId ")
+    Page<Board> findByMovieId(@Param("movieId") Long movieId, Pageable pageable);
+
 }

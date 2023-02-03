@@ -27,7 +27,7 @@ public class BoardCommentController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 
-    // 댓글 (상세보기) ??
+    // 댓글 (상세보기) -> 필요없을듯
 
 
     // 댓글 좋아요 (1순위)

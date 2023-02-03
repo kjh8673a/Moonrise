@@ -40,6 +40,7 @@ public class Board {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "board_info_id")
+    @JsonIgnore
     private BoardInfo boardInfo;
     @JsonIgnore
     @OneToMany(mappedBy = "board")

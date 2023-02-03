@@ -46,8 +46,8 @@ public class BoardService {
         if(!findMovie.isPresent()){
             throw new IllegalStateException("존재 하지 않는 영화입니다.");
         }
-        Page<BoardListResponseDto> boardList = boardRepository.findBoardList(movieId, pageable);
-        result.put("findBoards", boardList);
+        Page<Board> boardList = boardRepository.findByMovieId(movieId, pageable);
+        result.put("findBoards", boardList.get());
         return result;
     }
 
