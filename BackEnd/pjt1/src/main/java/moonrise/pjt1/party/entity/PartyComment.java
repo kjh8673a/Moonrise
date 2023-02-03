@@ -19,6 +19,8 @@ public class PartyComment {
     private String content;
     private LocalDateTime commentWriteTime;
     private boolean showPublic;
+    private Long groupId = id;
+    private int isNestedComment;
 
 
     @JsonIgnore
@@ -44,6 +46,8 @@ public class PartyComment {
         partyComment.setCommentWriteTime(LocalDateTime.now());
         partyComment.setShowPublic(partyCommentCreateDto.isShowPublic());
         partyComment.setParty(party);
+//        partyComment.setIsNestedComment();
+//        partyComment.setGroupId();
         partyComment.setMember(member);
         partyComment.setWriter(member.getProfile().getNickname());
         return partyComment;
