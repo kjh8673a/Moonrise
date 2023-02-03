@@ -227,7 +227,7 @@ List<Party> findPartyList(@Param("movieId") Long movieId);
 
 - EC2 Redis 설치
 
-<img src ="./img/redis_docker.jpg">
+<img src ="./img/redis_docker.JPG">
 
 - 게시글, 소모임 조회수 Redis 활용 count
 
