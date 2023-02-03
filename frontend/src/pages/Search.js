@@ -1,17 +1,17 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux';
+import MovieCard from '../components/search/MovieCard';
 
 function Main() {
-  const movePage = useNavigate();
   
-  function goCommunity(){
-    movePage('/community/list');
-  }
+  console.log(useSelector(state => state.movie.movieList))
+  const movieList = useSelector(state => state.movie.movieList).map((movie) => (
+    <MovieCard poster={movie.poster_path} key={movie.id} title={movie.title} movieId={movie.id}/>
+  ));
 
   return (
-    <div>
-      검색 결과 페이지
-      <button onClick={goCommunity}>커뮤니티 이동</button>
+    <div className='searchMain bg-community h-full bg-fill p-10 grid grid-cols-5 gap-16'>
+      {movieList}
     </div>
   )
 }

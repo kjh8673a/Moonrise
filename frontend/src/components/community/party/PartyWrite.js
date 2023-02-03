@@ -53,7 +53,7 @@ function PartyWrite() {
           "Content-Type": "application/json",
           }
         }
-    axios.post('/party/write', requestBody, config)
+    axios.post('http://3.35.149.202:80/api/party/write', requestBody, config)
     
         .then(response => {
             console.log(response);
