@@ -19,8 +19,6 @@ function BoardDetail() {
     });
   });
 
-  console.log(board);
-
   const goBack = () => {
     movePage("/community/list/");
   };
@@ -35,22 +33,24 @@ function BoardDetail() {
     setCommentValue(event.target.value);
   };
 
+  const comments = board.boardComments;
+
   return (
     <div className="w-4/5 min-h-screen p-2 m-auto bg-slate-400">
-          <div className="flex flex-col items-center border-b">
-            <span className="text-[#FA9E13] font-semibold">{board.movieId}</span>
-            <span className="text-2xl font-extrabold">{board.title}</span>
-            <div className="flex w-full">
-              <span className="flex-1 cursor-pointer" onClick={goBack}>
-                &lt; 이전으로
-              </span>
-              <span className="flex-1 text-center">{board.dateTime}</span>
-              <span className="flex-1"></span>
-            </div>
-          </div>
-          <div className="p-2 border-b">
-            <p>{board.content}</p>
-          </div>
+      <div className="flex flex-col items-center border-b">
+        <span className="text-[#FA9E13] font-semibold">{board.movieId}</span>
+        <span className="text-2xl font-extrabold">{board.title}</span>
+        <div className="flex w-full">
+          <span className="flex-1 cursor-pointer" onClick={goBack}>
+            &lt; 이전으로
+          </span>
+          <span className="flex-1 text-center">{board.dateTime}</span>
+          <span className="flex-1"></span>
+        </div>
+      </div>
+      <div className="p-2 border-b">
+        <p>{board.content}</p>
+      </div>
 
       <span>댓글</span>
       <div className="p-2 border-b-2 border-black bg-slate-300">
@@ -66,8 +66,17 @@ function BoardDetail() {
           </button>
         </form>
       </div>
-
-      <BoardComment board_id={id} />
+      {comments && comments.map((comment) => (
+        <BoardComment
+          id={comment.id}
+          groupId={comment.groupId}
+          isNestedComment={comment.isNestedComment}
+          writeDate={comment.writeDate}
+          boardCommentStatus={comment.boardCommentStatus}
+          content={comment.content}
+          writer={comment.writer}
+        />
+      ))}
     </div>
   );
 }
