@@ -98,6 +98,12 @@ public class PartyService {
 
         PartyComment partyComment = PartyComment.createPartyComment(partyCommentCreateDto, findParty.get(), findMember.get());
         partyCommentRepository.save(partyComment);
+        Long commentId = partyComment.getId();
+        // 원댓글이면 groupId 를 본인 pk 로 저장
+        if (partyCommentCreateDto.getGroupId() == 0L){
+            partyComment.setGroupId(commentId);
+        }
+
         return partyComment.getId();
     }
 
