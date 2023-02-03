@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import LogoImg from '../../../assets/img/Logo.png'
 import Profile from '../../../assets/img/profile.png'
-import { setMovieList } from '../../../feature/reducer/MovieReducer';
+import { setMovieList } from '../../feature/reducer/MovieReducer';
 
 function MainNav() {
   const movePage = useNavigate();
