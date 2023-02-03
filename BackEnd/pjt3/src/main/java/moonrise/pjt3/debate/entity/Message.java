@@ -11,7 +11,9 @@ public class Message {
 
     private String writer;
     private String content;
+    private int group;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "debate_id")
     private Debate debate;
 }
