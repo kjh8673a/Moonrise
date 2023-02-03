@@ -1,29 +1,36 @@
-package moonrise.pjt1.rating.dto;
+package moonrise.pjt1.rating.entity;
+
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
+@Entity
 @Data
 @NoArgsConstructor
-public class RatingDto {
-    private long ratingId;
+@Table(name = "totalrating")
+public class TotalRatingEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long totalratingId;
     private int direction;
     private int sound;
     private int story;
     private int acting;
     private int visual;
-    private long memberId;
     private long movieId;
 
     @Builder
-    public RatingDto(long ratingId, int direction, int sound, int story, int acting, int visual, long memberId, long movieId) {
-        this.ratingId = ratingId;
+
+    public TotalRatingEntity(long totalratingId, int direction, int sound,
+                             int story, int acting, int visual, long movieId) {
+        this.totalratingId = totalratingId;
         this.direction = direction;
         this.sound = sound;
         this.story = story;
         this.acting = acting;
         this.visual = visual;
-        this.memberId = memberId;
         this.movieId = movieId;
     }
-}
