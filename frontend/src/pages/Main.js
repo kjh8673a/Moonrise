@@ -1,17 +1,13 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import MainSearch from '../components/main/MainSearch';
 
 function Main() {
-  const movePage = useNavigate();
-
-  function searchMovie(){
-    movePage('search');
-  }
-  
   return (
-    <div>
-      메인페이지 입니다
-      <button onClick={searchMovie}>검색 결과 보기</button>
+    <div className='main grid grid-cols-3 pb-0 mb-0 bg-main bg-cover'>
+      <div className="relative col-span-1 bg-white h-screen"></div>
+      <div className="fixed z-60 top-40 left-64 bg-green-800 h-96 w-2/5">
+        <MainSearch/>
+      </div>
     </div>
   )
 }
