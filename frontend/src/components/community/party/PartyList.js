@@ -1,20 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import PartyCard from './PartyCard'
 import CommunityHeader from '../CommunityHeader'
-import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const GetList = () => {
-  const [parties, setParties] = useState([]);
-  const movieId = useSelector(state => state.movie.movieId);
-
-  useEffect(() => {
-      axios.get('http://3.35.149.202:80/api/party/list?movieId=' + movieId)
-          .then(response => {
-              setParties(response.data.findParties);
-          });
-  });
+  const parties = useSelector(state => state.party.partyList); 
   const partyList = parties.map((party) => (
     <PartyCard title={party.title} partyDate="2023.02.06" partyPeople={party.partyPeople} partyLocation={party.location} partyId={party.partyId} key={party.partyId}/>
   ));

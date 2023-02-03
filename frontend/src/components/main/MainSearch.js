@@ -17,10 +17,18 @@ function MainSearch() {
     setKeyword(event.target.value);
   }
   
+  const handleOnKeyPress = e => {
+    if (e.key === 'Enter') {
+      searchMovies(); // Enter 입력이 되면 클릭 이벤트 실행
+    }
+  };
+
   const dispatch = useDispatch(); 
 
+  const tmdbToken = process.env.REACT_APP_TMDB_TOKEN;
+  
   const searchMovies = async () => {
-    axios.get('https://api.themoviedb.org/3/search/movie?api_key=ceb258a90f2367a7fb92cb7d4d6763da&language=ko-KR&page=1&include_adult=false&query='+keyword)
+    axios.get('https://api.themoviedb.org/3/search/movie?api_key=' + tmdbToken+ '&language=ko-KR&page=1&include_adult=false&query='+keyword)
         .then(response => {
             dispatch(setMovieList(response.data.results))
         })
@@ -46,10 +54,10 @@ function MainSearch() {
         </div>
       </div>
       <div className='my-6 text-center'>
-        <p className='text-white text-2xl'>영화보고 달뜬 마음, <span className='text-orange-600 text-3xl'>달뜸</span>으로 가져오세요.</p>
+        <p className='text-2xl text-white'>영화보고 달뜬 마음, <span className='text-3xl text-orange-600'>달뜸</span>으로 가져오세요.</p>
       </div>
-      <div className="h-16 mx-16 flex">
-        <input type="text" onChange={keywordHandler} id="party-search" className="block h-16 w-5/6 pl-4 text-lg border border-gray-400 rounded-lg focus:ring-white focus:border-white" placeholder="어떤 영화를 보고 오셨나요?"/>
+      <div className="flex h-16 mx-16">
+        <input type="text" onChange={keywordHandler} onKeyPress={handleOnKeyPress} id="party-search" className="block w-5/6 h-16 pl-4 text-lg border border-gray-400 rounded-lg focus:ring-white focus:border-white" placeholder="어떤 영화를 보고 오셨나요?"/>
         <button onClick={searchMovies} className='w-1/6 text-center text-white hover:bg-green-600'>검색</button>
       </div>
       
