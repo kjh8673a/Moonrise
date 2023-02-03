@@ -1,7 +1,7 @@
 package moonrise.pjt1.debate.controller;
 
 import moonrise.pjt1.debate.dto.DebateDto;
-import moonrise.pjt1.debate.entity.DebateEntity;
+import moonrise.pjt1.debate.entity.Debate;
 import moonrise.pjt1.debate.service.DebateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,16 +32,16 @@ public class DebateController {
      * 글쓰기
      */
     @PostMapping("/create")
-    public ResponseEntity create(long movie_id, long member_id, String title, String description, String img, int maxppl) {
-        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
+    public ResponseEntity create(long movieId, long memberId, String title, String description, String img, int maxppl) {
+        LocalDateTime time = LocalDateTime.now();
         DebateDto dto = DebateDto.builder()
-                .debate_title(title)
-                .debate_description(description)
-                .debate_img(img)
-                .debate_maxppl(maxppl)
-                .debate_create(time)
-                .member_id(member_id)
-                .movie_id(movie_id)
+                .title(title)
+                .description(description)
+                .img(img)
+                .maxppl(maxppl)
+                .createDate(time)
+                .memberId(memberId)
+                .movieId(movieId)
                 .build();
         debateService.saveDebate(dto);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
@@ -52,7 +52,7 @@ public class DebateController {
      */
     @GetMapping
     public ResponseEntity getDebateAll() {
-        Iterable<DebateEntity> debatelist = debateService.getDebateAll();
+        Iterable<Debate> debatelist = debateService.getDebateAll();
         return ResponseEntity.status(HttpStatus.OK).body(debatelist);
     }
 
@@ -61,7 +61,7 @@ public class DebateController {
      */
     @GetMapping("/find{id}")
     public ResponseEntity getDebateById(@PathVariable long id) {
-        Optional<DebateEntity> debateEntity = debateService.getDebateById(id);
+        Optional<Debate> debateEntity = debateService.getDebateById(id);
         return ResponseEntity.status(HttpStatus.OK).body(debateEntity);
     }
 
@@ -69,14 +69,14 @@ public class DebateController {
      * 수정 : 제목, 내용, 이미지만
      */
     @PutMapping("/update{id}")
-    public ResponseEntity update(@PathVariable long id, long movie_id, long member_id, String title, String description, String img) {
+    public ResponseEntity update(@PathVariable long id, long movieId, long memberId, String title, String description, String img) {
         DebateDto dto = DebateDto.builder()
-                .debate_id(id)
-                .debate_title(title)
-                .debate_description(description)
-                .debate_img(img)
-                .movie_id(movie_id)
-                .member_id(member_id)
+                .id(id)
+                .title(title)
+                .description(description)
+                .img(img)
+                .movieId(movieId)
+                .memberId(memberId)
                 .build();
         debateService.update(dto);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
