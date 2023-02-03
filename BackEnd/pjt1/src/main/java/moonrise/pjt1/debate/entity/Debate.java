@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import moonrise.pjt1.debate.dto.DebateCreateDto;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.movie.entity.Movie;
 
@@ -35,7 +36,7 @@ public class Debate {
     @Column(nullable = false)
     private int maxppl;
 
-
+    @Enumerated(EnumType.STRING)
     private DebateStatus debateStatus;
 
     @JsonIgnore
@@ -53,16 +54,14 @@ public class Debate {
     private DebateInfo debateInfo;
 
     @Builder
-    public Debate(long id, String title, String description, String img, LocalDateTime createDate,
-                  int maxppl, DebateStatus debateStatus, Movie movie,
+    public Debate(DebateCreateDto debateCreateDto, Movie movie,
                   Member member, DebateInfo debateInfo) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.img = img;
-        this.createDate = createDate;
-        this.maxppl = maxppl;
-        this.debateStatus = debateStatus;
+        this.title = debateCreateDto.getTitle();
+        this.description = debateCreateDto.getDescription();
+        this.img = debateCreateDto.getImg();
+        this.createDate = LocalDateTime.now();
+        this.maxppl = debateCreateDto.getMaxppl();
+        this.debateStatus = DebateStatus.생성;
         this.movie = movie;
         this.member = member;
         this.debateInfo = debateInfo;
