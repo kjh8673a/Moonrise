@@ -8,5 +8,5 @@ public class BoardUpdateDto {
     private Long memberId;
     private String content;
     private String title;
-    private Long movieId;
+
 }
