@@ -2,9 +2,9 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import LogoImg from "../../assets/img/Logo.png";
-import Profile from "../../assets/img/profile.png";
 import { setMovieList } from "../../feature/reducer/MovieReducer";
+import Logo from "./Logo";
+import ProfileIcon from "./ProfileIcon";
 
 function MainNav() {
   const movePage = useNavigate();
@@ -12,10 +12,6 @@ function MainNav() {
 
   function goMovieList() {
     movePage("/search/");
-  }
-
-  function goMain() {
-    movePage("/");
   }
 
   const keywordHandler = (event) => {
@@ -53,10 +49,7 @@ function MainNav() {
   };
   return (
     <div className="grid w-full grid-cols-3 my-8 main-nav">
-      <div className="flex col-span-1" onClick={goMain}>
-        <img className="mr-4 w-9 h-9" src={LogoImg} alt="로고 이미지" />
-        <p className="text-3xl text-white">달:뜸</p>
-      </div>
+      <Logo />
       <div className="relative col-span-1">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <svg
@@ -84,9 +77,7 @@ function MainNav() {
           placeholder="다른 영화도 검색해보세요!"
         />
       </div>
-      <div className="flex justify-end col-span-1">
-        <img className="rounded-full w-9 h-9" src={Profile} alt="" />
-      </div>
+      <ProfileIcon />
     </div>
   );
 }
