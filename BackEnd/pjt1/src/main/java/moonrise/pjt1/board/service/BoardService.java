@@ -60,7 +60,7 @@ public class BoardService {
 
         Board board = findBoard.get();
         String writer = board.getMember().getProfile().getNickname();
-        List<BoardComment> commentList = boardCommentRepository.getCommentList();
+        List<BoardComment> commentList = boardCommentRepository.getCommentList(boardId);
         BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList);
         result.put("findBoard", boardDetailDto);
 
