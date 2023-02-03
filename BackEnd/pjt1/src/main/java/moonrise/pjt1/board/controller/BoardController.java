@@ -25,11 +25,11 @@ public class BoardController {
     @GetMapping(value = "/list/{movieId}")
     public ResponseEntity<Map<String, Object>>boardList(@PathVariable("movieId") Long movieId,
 @RequestParam(value = "page", defaultValue = "0") int page){
-        System.out.println("page = " + page);
         PageRequest pageable = PageRequest.of(page, 3, Sort.by("id").descending());
         Map<String, Object> result = boardService.listBoard(movieId, pageable);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
     }
+
 
     // 게시글 상세보기 (0순위)
     @GetMapping("/{boardId}")
