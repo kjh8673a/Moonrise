@@ -110,19 +110,19 @@ src
 
 - Week1
 
-<img src ="./img/jira_week1.jpg">
+<img src ="./img/jira_week1.JPG">
 
 - Week2
 
-<img src ="./img/jira_week2.jpg">
+<img src ="./img/jira_week2.JPG">
 
 - Week3
 
-<img src ="./img/jira_week3.jpg">
+<img src ="./img/jira_week3.JPG">
 
 - Week4
 
-<img src ="./img/jira_week4.jpg">
+<img src ="./img/jira_week4.JPG">
 
 ### 개인별 수행 내용
 
@@ -179,7 +179,7 @@ Jenkins 주소 : <http://3.35.149.202:8888/>
 
 - 담당 폴더 디렉토리
 
-![folderdirectory](https://lab.ssafy.com/cherishvalue/hws/uploads/37692e70a1bddf17227803cca6a71e7c/image.png)
+![folderdirectory](./img/yunji.png)
 
 - 커뮤니티 게시판
   - 영화별 커뮤니티 게시글 목록
