@@ -17,6 +17,12 @@ function MainSearch() {
     setKeyword(event.target.value);
   }
   
+  const handleOnKeyPress = e => {
+    if (e.key === 'Enter') {
+      searchMovies(); // Enter 입력이 되면 클릭 이벤트 실행
+    }
+  };
+
   const dispatch = useDispatch(); 
 
   const tmdbToken = process.env.REACT_APP_TMDB_TOKEN;
@@ -51,7 +57,7 @@ function MainSearch() {
         <p className='text-2xl text-white'>영화보고 달뜬 마음, <span className='text-3xl text-orange-600'>달뜸</span>으로 가져오세요.</p>
       </div>
       <div className="flex h-16 mx-16">
-        <input type="text" onChange={keywordHandler} id="party-search" className="block w-5/6 h-16 pl-4 text-lg border border-gray-400 rounded-lg focus:ring-white focus:border-white" placeholder="어떤 영화를 보고 오셨나요?"/>
+        <input type="text" onChange={keywordHandler} onKeyPress={handleOnKeyPress} id="party-search" className="block w-5/6 h-16 pl-4 text-lg border border-gray-400 rounded-lg focus:ring-white focus:border-white" placeholder="어떤 영화를 보고 오셨나요?"/>
         <button onClick={searchMovies} className='w-1/6 text-center text-white hover:bg-green-600'>검색</button>
       </div>
       
