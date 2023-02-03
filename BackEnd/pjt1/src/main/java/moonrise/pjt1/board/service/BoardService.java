@@ -47,7 +47,9 @@ public class BoardService {
             throw new IllegalStateException("존재 하지 않는 영화입니다.");
         }
         Page<Board> boardList = boardRepository.findByMovieId(movieId, pageable);
+
         result.put("findBoards", boardList.get());
+        result.put("totalPages", boardList.getTotalPages());
         return result;
     }
 
@@ -58,7 +60,7 @@ public class BoardService {
 
         Board board = findBoard.get();
         String writer = board.getMember().getProfile().getNickname();
-        List<BoardComment> commentList = boardCommentRepository.getCommentList();
+        List<BoardComment> commentList = boardCommentRepository.getCommentList(boardId);
         BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList);
         result.put("findBoard", boardDetailDto);
 

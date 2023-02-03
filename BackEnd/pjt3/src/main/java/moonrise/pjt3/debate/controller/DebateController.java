@@ -1,8 +1,8 @@
-package moonrise.pjt1.debate.controller;
+package moonrise.pjt3.debate.controller;
 
 import lombok.RequiredArgsConstructor;
-import moonrise.pjt1.debate.dto.DebateCreateDto;
-import moonrise.pjt1.debate.service.DebateService;
+import moonrise.pjt3.debate.dto.DebateCreateDto;
+import moonrise.pjt3.debate.service.DebateService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

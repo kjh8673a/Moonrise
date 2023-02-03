@@ -1,16 +1,16 @@
-package moonrise.pjt1.debate.service;
+package moonrise.pjt3.debate.service;
 
 import lombok.RequiredArgsConstructor;
-import moonrise.pjt1.debate.dto.DebateCreateDto;
-import moonrise.pjt1.debate.dto.DebateListResponseDto;
-import moonrise.pjt1.debate.dto.DebateReadResponseDto;
-import moonrise.pjt1.debate.entity.Debate;
-import moonrise.pjt1.debate.entity.DebateInfo;
-import moonrise.pjt1.debate.repository.DebateRepository;
-import moonrise.pjt1.member.entity.Member;
-import moonrise.pjt1.member.repository.MemberRepository;
-import moonrise.pjt1.movie.entity.Movie;
-import moonrise.pjt1.movie.repository.MovieRepository;
+import moonrise.pjt3.debate.dto.DebateCreateDto;
+import moonrise.pjt3.debate.dto.DebateListResponseDto;
+import moonrise.pjt3.debate.dto.DebateReadResponseDto;
+import moonrise.pjt3.debate.entity.Debate;
+import moonrise.pjt3.debate.entity.DebateInfo;
+import moonrise.pjt3.debate.repository.DebateRepository;
+import moonrise.pjt3.member.entity.Member;
+import moonrise.pjt3.member.repository.MemberRepository;
+import moonrise.pjt3.movie.entity.Movie;
+import moonrise.pjt3.movie.repository.MovieRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

@@ -1,12 +1,12 @@
-package moonrise.pjt1.debate.entity;
+package moonrise.pjt3.debate.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import moonrise.pjt1.debate.dto.DebateCreateDto;
-import moonrise.pjt1.member.entity.Member;
-import moonrise.pjt1.movie.entity.Movie;
+import moonrise.pjt3.debate.dto.DebateCreateDto;
+import moonrise.pjt3.member.entity.Member;
+import moonrise.pjt3.movie.entity.Movie;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

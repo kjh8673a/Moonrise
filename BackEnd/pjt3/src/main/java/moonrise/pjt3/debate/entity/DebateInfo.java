@@ -1,4 +1,4 @@
-package moonrise.pjt1.debate.entity;
+package moonrise.pjt3.debate.entity;
 
 import lombok.Data;
 
