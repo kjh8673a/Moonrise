@@ -10,6 +10,7 @@ module.exports = {
       colors: {
         'kakao-bg' : '#FAE100',
         'kakao-text': '#3C1D1E',
+        'dal-green' : '#315B4C'
       },
     },
   },
