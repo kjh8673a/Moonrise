@@ -4,6 +4,11 @@ import BoardCommentCard from "./BoardCommentCard";
 import BoardSubCommentCard from "./BoardSubCommentCard";
 
 function BoardComment(props) {
+
+  const addSubCommentConfirm = () => {
+    props.addSubCommentConfirm();
+  }
+
   return (
     <div>
       {props.isNestedComment === 0 && (
@@ -12,6 +17,7 @@ function BoardComment(props) {
           content={props.content}
           write_date={props.writeDate}
           nickname={props.writer}
+          addSubCommentConfirm={addSubCommentConfirm}
         />
       )}
 
@@ -21,6 +27,7 @@ function BoardComment(props) {
           content={props.content}
           write_date={props.writeDate}
           nickname={props.writer}
+          addSubCommentConfirm={addSubCommentConfirm}
         />
       )}
     </div>

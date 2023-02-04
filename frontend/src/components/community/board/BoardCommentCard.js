@@ -12,6 +12,10 @@ function BoardCommentCard(props) {
       : setSendToCommentId(props);
   };
 
+  const addSubCommentConfirm = () => {
+    props.addSubCommentConfirm();
+  };
+
   return (
     <>
       <div className="flex flex-col gap-2 p-2 border-b border-black bg-slate-300">
@@ -28,7 +32,10 @@ function BoardCommentCard(props) {
         </div>
       </div>
       {inputVisible && sendToCommentId === props.comment_id && (
-        <BoardSubCommetInput nick={props.nickname} />
+        <BoardSubCommetInput
+          nick={props.nickname}
+          addSubCommentConfirm={addSubCommentConfirm}
+        />
       )}
     </>
   );

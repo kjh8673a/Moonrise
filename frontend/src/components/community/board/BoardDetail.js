@@ -14,19 +14,29 @@ function BoardDetail() {
   const id = parseInt(params.get("id"));
 
   useEffect(() => {
-    axios.get("http://3.35.149.202/api/board/" + id).then((response) => {
+    axios.get("http://3.35.149.202:80/api/board/" + id).then((response) => {
       setBoard(response.data.findBoard);
     });
   }, [id]);
-  
+
   const goBack = () => {
     movePage("/community/list/");
   };
 
   const addComment = (event) => {
     event.preventDefault();
-
+    axios.get("http://3.35.149.202:80/api/board/" + id).then((response) => {
+      setBoard(response.data.findBoard);
+    });
     console.log(commentValue);
+  };
+
+  const addSubCommentConfirm = (event) => {
+    event.preventDefault();
+    console.log("대댓글 등록");
+    axios.get("http://3.35.149.202:80/api/board/" + id).then((response) => {
+      setBoard(response.data.findBoard);
+    });
   };
 
   const getValue = (event) => {
@@ -66,17 +76,19 @@ function BoardDetail() {
           </button>
         </form>
       </div>
-      {comments && comments.map((comment) => (
-        <BoardComment
-          id={comment.id}
-          groupId={comment.groupId}
-          isNestedComment={comment.isNestedComment}
-          writeDate={comment.writeDate}
-          boardCommentStatus={comment.boardCommentStatus}
-          content={comment.content}
-          writer={comment.writer}
-        />
-      ))}
+      {comments &&
+        comments.map((comment) => (
+          <BoardComment
+            id={comment.id}
+            groupId={comment.groupId}
+            isNestedComment={comment.isNestedComment}
+            writeDate={comment.writeDate}
+            boardCommentStatus={comment.boardCommentStatus}
+            content={comment.content}
+            writer={comment.writer}
+            addSubCommentConfirm={addSubCommentConfirm}
+          />
+        ))}
     </div>
   );
 }
