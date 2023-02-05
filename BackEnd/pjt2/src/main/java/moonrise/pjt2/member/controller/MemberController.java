@@ -32,7 +32,7 @@ public class MemberController {
      * KaKao 서버로 부터 인가 코드를 받아
      * Access-Token 과 Refresh-Token을 받는다.
      */
-    @GetMapping("/kakao")
+    @PostMapping("/kakao")
     @Transactional
     public ResponseEntity<?> getKaKaoToken(@RequestHeader HttpHeaders headers){
         // Http Header 에서 인가 코드 받기
