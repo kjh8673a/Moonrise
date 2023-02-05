@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 @Slf4j
 @RestController
@@ -29,7 +30,8 @@ public class JwtController {
         String access_token = headers.get("access_token").toString();
         log.info("access-Token : {}", access_token);
         try{
-            Long userId = HttpUtil.parseToken(access_token);
+            HashMap<String, Object> userInfo = HttpUtil.parseToken(access_token);
+            Long userId = (Long) userInfo.get("user_id");
             log.info("parse result : {}", userId);
 
             return ResponseEntity.ok().body(userId);

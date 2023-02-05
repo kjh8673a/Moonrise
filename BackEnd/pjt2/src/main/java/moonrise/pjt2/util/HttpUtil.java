@@ -7,9 +7,10 @@ import moonrise.pjt2.member.exception.UnauthorizedException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 public class HttpUtil {
-    public static Long parseToken(String token){
+    public static HashMap<String, Object> parseToken(String token){
         String requestUrl = "https://kapi.kakao.com/v2/user/me";
 
         try{
@@ -31,8 +32,13 @@ public class HttpUtil {
                 JsonElement element = GetResponse.getJsonResponse(conn);
 
                 Long id = Long.parseLong(element.getAsJsonObject().get("id").getAsString());
+                String nickname = element.getAsJsonObject().get("profile_nickname").getAsString();
 
-                return id;
+                HashMap<String, Object> userInfo = new HashMap<>();
+                userInfo.put("user_id",id);
+                userInfo.put("nickname", nickname);
+
+                return userInfo;
             }
             else if(responseCode == 401){   //access-Token 만료 시
                 throw new UnauthorizedException("토큰 만료..");
