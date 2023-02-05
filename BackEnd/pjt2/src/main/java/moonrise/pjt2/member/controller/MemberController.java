@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 
 @RestController
@@ -40,6 +41,7 @@ public class MemberController {
         String refresh_Token = "";
 
         HashMap<String, Object> resultMap = new HashMap<>();
+        ResponseDto responseDto = new ResponseDto();
         String requestURL = "https://kauth.kakao.com/oauth/token";
 
         try{
@@ -98,11 +100,20 @@ public class MemberController {
 
             if(memberService.check_enroll_member(userId)){  // 회원가입해
                 resultMap.put("access_token",access_Token);
-                return new ResponseEntity<HashMap<String, Object>>(resultMap, HttpStatus.SERVICE_UNAVAILABLE);  //503
+
+                responseDto.setStatus(400);
+                responseDto.setMessage("회원가입 정보 없음!!");
+                responseDto.setData(resultMap);
+
+                return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);  //200
 
             }else{  // 회원가입 되어 있어 그냥 token만 반환해
                 resultMap.put("access_token", access_Token);
                 resultMap.put("refresh_token", refresh_Token);
+
+                responseDto.setStatus(200);
+                responseDto.setMessage("로그인 완료!!");
+                responseDto.setData(resultMap);
             }
 
             br.close();
