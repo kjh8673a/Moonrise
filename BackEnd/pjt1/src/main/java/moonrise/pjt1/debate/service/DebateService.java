@@ -11,6 +11,8 @@ import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,22 +24,29 @@ public class DebateService {
     private final MovieRepository movieRepository;
     private final MemberRepository memberRepository;
     private final DebateRepository debateRepository;
-    public Map<String, Object> listDebate(Long movieId) {
+//    public Map<String, Object> listDebate(Long movieId) {
+//        Map<String,Object> result = new HashMap<>();
+//        List<Debate> dabateList = debateRepository.findDebateList(movieId);
+//        List<DebateListResponseDto> debateListResponseDtos = new ArrayList<>();
+//        for (Debate debate : dabateList) {
+//            DebateListResponseDto debateListResponseDto = DebateListResponseDto.builder()
+//                            .debateId(debate.getId())
+//                            .title(debate.getTitle())
+//                            .writer(debate.getMember().getProfile().getNickname())
+//                            .maxppl(debate.getMaxppl())
+//                            .nowppl(debate.getDebateInfo().getNowppl())
+//                            .debateStatus(debate.getDebateStatus())
+//                            .build();
+//            debateListResponseDtos.add(debateListResponseDto);
+//        }
+//        result.put("findParties",debateListResponseDtos);
+//        return result;
+//    }
+    public Map<String, Object> listDebate(Long movieId, PageRequest pageable) {
         Map<String,Object> result = new HashMap<>();
-        List<Debate> dabateList = debateRepository.findDebateList(movieId);
-        List<DebateListResponseDto> debateListResponseDtos = new ArrayList<>();
-        for (Debate debate : dabateList) {
-            DebateListResponseDto debateListResponseDto = DebateListResponseDto.builder()
-                            .debateId(debate.getId())
-                            .title(debate.getTitle())
-                            .writer(debate.getMember().getProfile().getNickname())
-                            .maxppl(debate.getMaxppl())
-                            .nowppl(debate.getDebateInfo().getNowppl())
-                            .debateStatus(debate.getDebateStatus())
-                            .build();
-            debateListResponseDtos.add(debateListResponseDto);
-        }
-        result.put("findParties",debateListResponseDtos);
+        Page<Debate> debateList = debateRepository.findDebateList(movieId, pageable);
+        result.put("findParties",debateList.get());
+        result.put("totalPages", debateList.getTotalPages());
         return result;
     }
     public Long createParty(DebateCreateDto debateCreateDto) {
