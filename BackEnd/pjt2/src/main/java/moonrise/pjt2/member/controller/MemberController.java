@@ -96,7 +96,7 @@ public class MemberController {
             //access-token을 파싱 하여 카카오 id가 디비에 있는지 확인
             HashMap<String, Object> userInfo = HttpUtil.parseToken(access_Token);
             Long userId = (Long) userInfo.get("user_id");
-            String nickname = userInfo.get("nickname").toString();
+            //String nickname = userInfo.get("nickname").toString();
             log.info("parse result : {}", userId);
 
             if(userId == null){
@@ -106,7 +106,7 @@ public class MemberController {
             if(memberService.check_enroll_member(userId)){  // 회원가입해
                 resultMap.put("access_token",access_Token);
                 resultMap.put("refresh_token",refresh_Token);
-                resultMap.put("nickname", nickname);
+                //resultMap.put("nickname", nickname);
 
                 responseDto.setStatus(400);
                 responseDto.setMessage("회원가입 정보 없음!!");
