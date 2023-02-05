@@ -13,6 +13,7 @@ src
 ├── components // 페이지 안 컴포넌트
 │   ├── common
 │   |   ├── ProfileIcon.js
+│   |   ├── Logo.js
 │   |   ├── MainNav.js
 │   |   ├── LogCard.js
 │   │   ├── PartyCard.js

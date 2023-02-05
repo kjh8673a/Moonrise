@@ -6,7 +6,7 @@ import CommunityPagination from './CommunityPagination'
 import MovieDetail from './movie/MovieDetail'
 import TalkList from './talk/TalkList'
 import PartyList from './party/PartyList'
-import MainNav from './common/MainNav'
+import MainNav from '../common/MainNav'
 
 function CommunityList() {
   return (

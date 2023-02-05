@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
-import MainNav from '../components/community/common/MainNav';
+import MainNav from '../components/common/MainNav';
 import MovieCard from '../components/search/MovieCard';
 
 function Main() {
