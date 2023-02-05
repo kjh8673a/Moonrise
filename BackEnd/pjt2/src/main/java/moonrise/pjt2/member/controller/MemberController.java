@@ -100,6 +100,7 @@ public class MemberController {
             log.info("parse result : {}", userId);
 
             if(userId == null){
+                log.info("userId == null error");
                 return ResponseEntity.status(401).body(null);
             }
 
@@ -202,7 +203,7 @@ public class MemberController {
     }
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody MemberJoinRequestDto memberJoinRequestDto){
-        log.debug("memberJoin Data : {}", memberJoinRequestDto);
+        log.info("memberJoin Data : {}", memberJoinRequestDto);
         // token을 통해 userid 받아오기
         HashMap<String, Object> userInfo = HttpUtil.parseToken(memberJoinRequestDto.getAccess_token());
 
