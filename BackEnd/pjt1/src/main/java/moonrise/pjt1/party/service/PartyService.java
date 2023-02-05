@@ -12,6 +12,8 @@ import moonrise.pjt1.party.repository.PartyCommentRepository;
 import moonrise.pjt1.party.repository.PartyInfoRepository;
 import moonrise.pjt1.party.repository.PartyJoinRepository;
 import moonrise.pjt1.party.repository.PartyRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -61,22 +63,28 @@ public class PartyService {
         }
         return result;
     }
-    public Map<String,Object> listParty(Long movieId) {
+//    public Map<String,Object> listParty(Long movieId) {
+//        Map<String,Object> result = new HashMap<>();
+//        List<Party> partyList = partyRepository.findPartyList(movieId);
+//        List<PartyListResponseDto> partyListResponseDtos = new ArrayList<>();
+//        for (Party party : partyList) {
+//            PartyListResponseDto partyListResponseDto = new PartyListResponseDto(
+//                party.getId(),party.getTitle(),party.getPartyPeople(),party.getLocation(),
+//                    party.getPartyDate(),party.getPartyInfo().getViewCnt()
+//            );
+//            partyListResponseDtos.add(partyListResponseDto);
+//        }
+//        result.put("findParties",partyListResponseDtos);
+//        return result;
+//    }
+    public Map<String,Object> listParty(Long movieId, PageRequest pageable) {
         Map<String,Object> result = new HashMap<>();
-        List<Party> partyList = partyRepository.findPartyList(movieId);
-        List<PartyListResponseDto> partyListResponseDtos = new ArrayList<>();
-        for (Party party : partyList) {
-            PartyListResponseDto partyListResponseDto = new PartyListResponseDto(
-                party.getId(),party.getTitle(),party.getPartyPeople(),party.getLocation(),
-                    party.getPartyDate(),party.getPartyInfo().getViewCnt()
-            );
-            partyListResponseDtos.add(partyListResponseDto);
-        }
+        Page<Party> partyList = partyRepository.findPartyList(movieId, pageable);
 
-        result.put("findParties",partyListResponseDtos);
+        result.put("findParties",partyList.get());
+        result.put("totalPages", partyList.getTotalPages());
         return result;
     }
-
     public Long createParty(PartyCreateDto partyCreateDto) {
         Optional<Member> findMember = memberRepository.findById(partyCreateDto.getMemberId());
         Optional<Movie> findMovie = movieRepository.findById(partyCreateDto.getMovieId());
@@ -90,7 +98,8 @@ public class PartyService {
         Party party = partyRepository.findById(partyModifyDto.getPartyId()).get();
         party.modifyParty(partyModifyDto);
         return party;
-    }@Transactional
+    }
+    @Transactional
     public Long createComment(PartyCommentCreateDto partyCommentCreateDto) {
         Optional<Member> findMember = memberRepository.findById(partyCommentCreateDto.getMemberId());
         Optional<Party> findParty = partyRepository.findById(partyCommentCreateDto.getPartyId());

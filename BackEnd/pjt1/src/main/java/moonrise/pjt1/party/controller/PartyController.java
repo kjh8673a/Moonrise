@@ -5,6 +5,8 @@ import lombok.extern.log4j.Log4j2;
 import moonrise.pjt1.party.dto.*;
 import moonrise.pjt1.party.entity.Party;
 import moonrise.pjt1.party.service.PartyService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +27,10 @@ public class PartyController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
     @GetMapping("/list") // 파티 목록 조회
-    public ResponseEntity<Map<String, Object>> list(@RequestParam(value = "movieId") Long movieId){
-        System.out.println(movieId);
-        Map<String, Object> result = partyService.listParty(movieId);
+    public ResponseEntity<Map<String, Object>> list(@RequestParam(value = "movieId") Long movieId,
+                                                    @RequestParam(value = "page", defaultValue = "0")int page){
+        PageRequest pageable = PageRequest.of(page, 8, Sort.by("id").descending());
+        Map<String, Object> result = partyService.listParty(movieId, pageable);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
     @PostMapping("/write") // 파티 생성
