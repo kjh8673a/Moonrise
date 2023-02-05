@@ -2,10 +2,7 @@ package moonrise.pjt1.party.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import moonrise.pjt1.party.dto.PartyCommentCreateDto;
-import moonrise.pjt1.party.dto.PartyCreateDto;
-import moonrise.pjt1.party.dto.PartyJoinCreateDto;
-import moonrise.pjt1.party.dto.PartyModifyDto;
+import moonrise.pjt1.party.dto.*;
 import moonrise.pjt1.party.entity.Party;
 import moonrise.pjt1.party.service.PartyService;
 import org.springframework.http.HttpStatus;
@@ -48,7 +45,20 @@ public class PartyController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
     // 댓글 수정
-    // 댓글 상태 변경
+    @PostMapping("/comment/modify")
+    public ResponseEntity<Map<String, Object>> updateComment(@RequestBody PartyCommentUpdateDto partyCommentUpdateDto){
+        Map<String, Object> result = new HashMap<>();
+        Long commentId = partyService.updateComment(partyCommentUpdateDto);
+        result.put("partyCommentId", commentId);
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
+    }
+    // 댓글 상태(삭제, 신고, 평범) (1순위)
+    // 1:normal 2: banned 3: deleted
+    @PostMapping("/comment/status")
+    public ResponseEntity<String> commentChangeStatus(@RequestParam(name="commentId") Long commentId, @RequestParam(name="statusCode") int statusCode){
+        partyService.statusComment(commentId, statusCode);
+        return ResponseEntity.status(HttpStatus.OK).body("정상적으로 상태가 변경되었습니다");
+    }
 
     @PostMapping("/join") // 소모임 참가 신청
     public ResponseEntity<Map<String, Object>> writeJoin(@RequestBody PartyJoinCreateDto partyJoinCreateDto){
