@@ -40,13 +40,16 @@ public class PartyController {
         result.put("partyId",partyId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
-    @PostMapping("/comment/write") // 댓글 작성
+    @PostMapping("/comment/write") // 댓글, 대댓글 작성
     public ResponseEntity<Map<String, Object>> writeComment(@RequestBody PartyCommentCreateDto partyCommentCreateDto){
         Map<String, Object> result = new HashMap<>();
         Long partyCommentId = partyService.createComment(partyCommentCreateDto);
         result.put("partyCommentId",partyCommentId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
+    // 댓글 수정
+    // 댓글 상태 변경
+
     @PostMapping("/join") // 소모임 참가 신청
     public ResponseEntity<Map<String, Object>> writeJoin(@RequestBody PartyJoinCreateDto partyJoinCreateDto){
         Map<String, Object> result = new HashMap<>();
