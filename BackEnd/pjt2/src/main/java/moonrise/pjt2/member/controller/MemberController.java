@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 
 @RestController
@@ -43,6 +44,7 @@ public class MemberController {
         String refresh_Token = "";
 
         HashMap<String, Object> resultMap = new HashMap<>();
+        ResponseDto responseDto = new ResponseDto();
         String requestURL = "https://kauth.kakao.com/oauth/token";
 
         try{
@@ -58,8 +60,8 @@ public class MemberController {
             StringBuilder sb = new StringBuilder();
 
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=f0b916ceedccef620b4f4a6ab4e6bec5"); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:9000/auth/member/kakao"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&client_id=f630ff6ea6d0746e053aff7c7f201a3c"); // TODO REST_API_KEY 입력
+            sb.append("&redirect_uri=http://localhost:3000/user/kakaoLogin"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&prompt=login");
             sb.append("&code=" + authorization_code);
             bw.write(sb.toString());
@@ -106,7 +108,11 @@ public class MemberController {
                 resultMap.put("refresh_token",refresh_Token);
                 resultMap.put("nickname", nickname);
 
-                return new ResponseEntity<HashMap<String, Object>>(resultMap, HttpStatus.SERVICE_UNAVAILABLE);  //503
+                responseDto.setStatus(400);
+                responseDto.setMessage("회원가입 정보 없음!!");
+                responseDto.setData(resultMap);
+
+                return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);  //200
 
             }else{  // 회원가입 되어 있어 그냥 token만 반환해
                 Member member = memberService.findMember(userId);
@@ -114,6 +120,10 @@ public class MemberController {
                 resultMap.put("nickname", member.getProfile().getNickname());
                 resultMap.put("access_token", access_Token);
                 resultMap.put("refresh_token", refresh_Token);
+
+                responseDto.setStatus(200);
+                responseDto.setMessage("로그인 완료!!");
+                responseDto.setData(resultMap);
             }
 
             br.close();
