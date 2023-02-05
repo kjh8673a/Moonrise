@@ -18,7 +18,6 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.http.HttpResponse;
 import java.util.HashMap;
 
 @RestController
