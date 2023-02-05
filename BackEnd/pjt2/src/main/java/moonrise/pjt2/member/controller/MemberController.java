@@ -55,8 +55,8 @@ public class MemberController {
             StringBuilder sb = new StringBuilder();
 
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=f0b916ceedccef620b4f4a6ab4e6bec5"); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:9000/auth/member/kakao"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&client_id=f630ff6ea6d0746e053aff7c7f201a3c"); // TODO REST_API_KEY 입력
+            sb.append("&redirect_uri=http://localhost:3000/user/kakaoLogin"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&prompt=login");
             sb.append("&code=" + authorization_code);
             bw.write(sb.toString());
