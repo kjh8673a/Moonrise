@@ -46,7 +46,7 @@ function UserRegister() {
             }
           }
           console.log(requestBody);
-      axios.post('http://3.35.149.202:9002/auth/member/join', requestBody, config)
+      axios.post('http://3.35.149.202:80/auth/member/join', requestBody, config)
           .then(response => {
               console.log(response);
           });
