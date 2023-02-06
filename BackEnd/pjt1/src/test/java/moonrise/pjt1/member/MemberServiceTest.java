@@ -20,7 +20,7 @@ class MemberServiceTest {
     @Transactional
 //    @Rollback(value = false)
     void save(){
-        Profile profile = new Profile("김테스트","날카로운비평가", "W", "01072911424");
+        Profile profile = new Profile("찰스", "M");
         Member member = new Member();
         member.addId(1643552103L);
         member.addProfile(profile);
@@ -32,7 +32,7 @@ class MemberServiceTest {
         Member findMember = memberRepository.findById(member.getId()).get();
 
         Assertions.assertEquals(1643552103L, findMember.getId());
-        Assertions.assertEquals(profile.getUsername(), findMember.getProfile().getUsername());
+        Assertions.assertEquals(profile.getNickname(), findMember.getProfile().getNickname());
     }
     @Test
     @Transactional
@@ -43,6 +43,6 @@ class MemberServiceTest {
         System.out.println("findMember = " + findMember.getId());
 
         Profile profile = findMember.getProfile();
-        System.out.println("profile = " + profile.getUsername());
+        System.out.println("profile = " + profile.getNickname());
     }
 }

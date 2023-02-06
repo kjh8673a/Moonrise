@@ -31,7 +31,7 @@ class BoardTest {
     @Test
     void 게시글작성(){
         // 회원 생성
-        Profile profile = new Profile("김철수","찰스", "M", "01012341234");
+        Profile profile = new Profile("찰스", "M");
         Member member = new Member();
         member.addProfile(profile);
 
@@ -66,7 +66,7 @@ class BoardTest {
     @Test
     void 회원별_게시글_찾기(){
         // 회원 생성
-        Profile profile = new Profile("김철수","찰스", "M", "01012341234");
+        Profile profile = new Profile("찰스", "M");
 
         Member member = new Member();
 
