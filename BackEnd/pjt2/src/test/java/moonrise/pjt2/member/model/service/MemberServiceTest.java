@@ -24,7 +24,7 @@ class MemberServiceTest {
     @Test
     @Transactional
     void save(){
-        Profile profile = new Profile("김동률","동동이", "M", "01033334444");
+        Profile profile = new Profile("동동이", "M");
         Member member = new Member();
         member.addId(2630362777L);
         member.addProfile(profile);
@@ -35,6 +35,5 @@ class MemberServiceTest {
         Member findMember = memberRepository.findById(member.getId()).get();
 
         Assertions.assertEquals(2630362777L, findMember.getId());
-        Assertions.assertEquals(profile.getUsername(), findMember.getProfile().getUsername());
     }
 }

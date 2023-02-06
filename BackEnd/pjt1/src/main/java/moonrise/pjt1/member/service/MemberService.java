@@ -19,7 +19,7 @@ public class MemberService {
     private final Logger logger = LoggerFactory.getLogger(MemberService.class);
     public void join(MemberJoinRequestDto dto){
         // dto를 통한 엔티티 만들기
-        Profile memberProfile = new Profile(dto.getUsername(), dto.getNickname(), dto.getGender(), dto.getPhone());
+        Profile memberProfile = new Profile(dto.getNickname(), dto.getGender());
 
         // Member에 profile 매핑
         Member member = new Member();
