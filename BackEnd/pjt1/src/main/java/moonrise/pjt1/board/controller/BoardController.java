@@ -82,7 +82,7 @@ public class BoardController {
     @GetMapping("/test")
     public void test(String token){
         System.out.println("token Test : " + token);
-        String requestUrl = "https://pjt2-container/auth/jwt/token";
+        String requestUrl = "http://pjt2-container/auth/jwt/token";
 
         try{
             URL url = new URL(requestUrl);  // URL 객체
