@@ -46,6 +46,7 @@ public class PartyController {
         String access_token = headers.get("access_token").toString();
         log.info("access_token : {}", access_token);
         ResponseDto responseDto = partyService.createParty(access_token, partyCreateDto);
+
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
     @PostMapping("/comment/write") // 댓글, 대댓글 작성
