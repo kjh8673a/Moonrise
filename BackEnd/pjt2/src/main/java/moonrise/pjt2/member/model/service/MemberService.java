@@ -18,13 +18,13 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final Logger logger = LoggerFactory.getLogger(MemberService.class);
-    public void join(MemberJoinRequestDto dto){
+    public void join(MemberJoinRequestDto dto, Long user_id){
         // dto를 통한 엔티티 만들기
-        Profile memberProfile = new Profile(dto.getUsername(), dto.getNickname(), dto.getGender(), dto.getPhone());
+        Profile memberProfile = new Profile(dto.getNickname(), dto.getGender());
 
         // Member에 profile 매핑
         Member member = new Member();
-        member.addId(dto.getUser_id());
+        member.addId(user_id);
         member.addProfile(memberProfile);
 
         memberRepository.save(member);
@@ -39,5 +39,12 @@ public class MemberService {
             return true;
         }
         return false;
+    }
+    public Member findMember(Long userId){
+        Optional<Member> m = memberRepository.findById(userId);
+        if(!m.isPresent()){
+            throw new NotExistMemberException("회원이 존재하지 않습니다.");
+        }
+        return m.get();
     }
 }
