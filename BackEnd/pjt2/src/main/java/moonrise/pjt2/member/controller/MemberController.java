@@ -35,7 +35,7 @@ public class MemberController {
     @Transactional
     public ResponseEntity<?> getKaKaoToken(@RequestHeader HttpHeaders headers){
         // Http Header 에서 인가 코드 받기
-        String authorization_code = headers.get("authorization_code").toString();
+        String authorization_code = headers.get("authorization").toString();
 
         log.info("code : {}", authorization_code);
 
