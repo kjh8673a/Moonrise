@@ -136,7 +136,7 @@ public class MemberController {
             return ResponseEntity.status(401).body(null);
         }
 
-        return ResponseEntity.ok().body(resultMap);
+        return ResponseEntity.ok().body(responseDto);
     }
 
 
