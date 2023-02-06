@@ -2,15 +2,19 @@ package moonrise.pjt1.party.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.party.dto.*;
 import moonrise.pjt1.party.entity.Party;
 import moonrise.pjt1.party.service.PartyService;
+import moonrise.pjt1.util.HttpUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Null;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,11 +38,14 @@ public class PartyController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
     @PostMapping("/write") // 파티 생성
-    public ResponseEntity<Map<String, Object>> createParty(@RequestBody PartyCreateDto partyCreateDto){
-        Map<String, Object> result = new HashMap<>();
-        Long partyId = partyService.createParty(partyCreateDto);
-        result.put("partyId",partyId);
-        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
+    public ResponseEntity<?> createParty(@RequestHeader HttpHeaders headers, @RequestBody PartyCreateDto partyCreateDto){
+        // Http Header 에서 Access-Token 받기
+        String access_token = headers.get("access_token").toString();
+        log.info("access_token : {}", access_token);
+
+        ResponseDto responseDto = partyService.createParty(access_token, partyCreateDto);
+
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
     @PostMapping("/comment/write") // 댓글, 대댓글 작성
     public ResponseEntity<Map<String, Object>> writeComment(@RequestBody PartyCommentCreateDto partyCommentCreateDto){

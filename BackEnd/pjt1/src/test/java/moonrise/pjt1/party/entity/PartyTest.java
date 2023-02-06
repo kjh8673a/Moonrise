@@ -41,7 +41,6 @@ class PartyTest {
                 5,"대전시유성구",false,
                 LocalDateTime.of(2021, 1, 1, 0, 0, 0),
                 LocalDateTime.of(2021, 1, 1, 0, 0, 0));
-        partyService.createParty(partyCreateDto);
     }
     @Test
     void listParty(){

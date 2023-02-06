@@ -2,6 +2,7 @@ package moonrise.pjt1.party.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
@@ -12,10 +13,13 @@ import moonrise.pjt1.party.repository.PartyCommentRepository;
 import moonrise.pjt1.party.repository.PartyInfoRepository;
 import moonrise.pjt1.party.repository.PartyJoinRepository;
 import moonrise.pjt1.party.repository.PartyRepository;
+import moonrise.pjt1.util.HttpUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,13 +89,35 @@ public class PartyService {
         result.put("totalPages", partyList.getTotalPages());
         return result;
     }
-    public Long createParty(PartyCreateDto partyCreateDto) {
+    public ResponseDto createParty(String access_token, PartyCreateDto partyCreateDto) {
+        Map<String, Object> result = new HashMap<>();
+
+        // token parsing 요청
+        Long user_id = HttpUtil.requestParingToken(access_token);
+        ResponseDto responseDto = new ResponseDto();
+
+        if(user_id == 0L){
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("회원 정보가 없습니다.");
+            return responseDto;
+        }
+        // member_id 매핑
+        partyCreateDto.setMemberId(user_id);
+
+        //DB
         Optional<Member> findMember = memberRepository.findById(partyCreateDto.getMemberId());
         Optional<Movie> findMovie = movieRepository.findById(partyCreateDto.getMovieId());
         PartyInfo partyInfo = new PartyInfo();
         Party party = Party.createParty(partyCreateDto, findMember.get(), findMovie.get(),partyInfo);
         partyRepository.save(party);
-        return party.getId();
+
+        //responseDto 작성
+        result.put("party_id",party.getId());
+        responseDto.setMessage("소모임 작성 완료");
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
+
+        return responseDto;
     }
     @Transactional
     public Party modifyParty(PartyModifyDto partyModifyDto) {
