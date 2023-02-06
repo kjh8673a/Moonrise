@@ -8,8 +8,8 @@ spring:
       matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql-container:3306/moonrise
-    #url: jdbc:mysql://3.35.149.202:3306/moonrise
+    url: jdbc:mysql://3.35.149.202:3306/moonrise
+    #url: jdbc:mysql://mysql-container:3306/moonrise
     username: ssafy
     password: qwer1234
   jpa:
