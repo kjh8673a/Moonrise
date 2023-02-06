@@ -9,7 +9,7 @@ export const setNickname = nickname => ({ type: SET_NICKNAME, nickname });
 const initialState = {
     accessToken : "",
     refreshToken : "",
-    nickname : "홍길동",
+    nickname : "",
 };
 
 export default function movieReducer(state = initialState, action) {
