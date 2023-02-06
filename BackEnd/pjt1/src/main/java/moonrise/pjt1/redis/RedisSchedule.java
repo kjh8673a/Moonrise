@@ -2,6 +2,8 @@ package moonrise.pjt1.redis;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import moonrise.pjt1.board.entity.BoardInfo;
+import moonrise.pjt1.board.repository.BoardInfoRepository;
 import moonrise.pjt1.party.entity.PartyInfo;
 import moonrise.pjt1.party.repository.PartyInfoRepository;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,6 +19,7 @@ import java.util.Set;
 @Log4j2
 public class RedisSchedule {
     private final PartyInfoRepository partyInfoRepository;
+    private final BoardInfoRepository boardInfoRepository;
     private final RedisTemplate redisTemplate;
 
     @Transactional
@@ -32,6 +35,18 @@ public class RedisSchedule {
             partyInfo.setViewCnt(viewCnt);
             redisTemplate.delete(data);
             redisTemplate.delete("party::"+partyId);
+        }
+
+        redisKeys = redisTemplate.keys("boardViewCnt*");
+        it = redisKeys.iterator();
+        while (it.hasNext()) {
+            String data = it.next();
+            Long boardId = Long.parseLong(data.split("::")[1]);
+            int viewCnt = Integer.parseInt((String) redisTemplate.opsForValue().get(data));
+            BoardInfo boardInfo = boardInfoRepository.findById(boardId).get();
+            boardInfo.setViewCnt(viewCnt);
+            redisTemplate.delete(data);
+            redisTemplate.delete("boardViewCnt::"+boardInfo);
         }
     }
 }

@@ -19,7 +19,9 @@ public class BoardListResponseDto {
 
     //  작성자 프로필 이미지
 //    private String userImg;
-//    private int like;
+    private int likeCnt;
+    private int commentCnt;
+    private int viewCnt;
 //    private int mark;
     // 사용자 이름? 모르겠음
     private String writer;
