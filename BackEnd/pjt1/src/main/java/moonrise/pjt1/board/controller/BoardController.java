@@ -1,9 +1,13 @@
 package moonrise.pjt1.board.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import moonrise.pjt1.board.dto.BoardCreateDto;
 import moonrise.pjt1.board.dto.BoardUpdateDto;
 import moonrise.pjt1.board.service.BoardService;
+import moonrise.pjt1.util.GetResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -82,7 +86,8 @@ public class BoardController {
     @GetMapping("/test")
     public void test(String token){
         System.out.println("token Test : " + token);
-        String requestUrl = "https://pjt2-container/auth/jwt/token";
+        String requestUrl = "http://pjt2-container:9002/auth/jwt/parse";
+        //String requestUrl = "http://localhost:9002/auth/jwt/parse";
 
         try{
             URL url = new URL(requestUrl);  // URL 객체
@@ -100,6 +105,12 @@ public class BoardController {
 
             if(responseCode == 200){    // 유효성 통과
                 System.out.println("성공");
+                JsonObject jsonObject = GetResponse.getJsonResponse(conn).getAsJsonObject();
+                System.out.println(jsonObject.toString());
+
+                JsonElement data = jsonObject.get("data");
+                System.out.println(data.getAsJsonObject().get("user_id"));
+
                 return;
             }
             System.out.println("에러~");
