@@ -35,7 +35,7 @@ public class MemberController {
     @Transactional
     public ResponseEntity<?> getKaKaoToken(@RequestHeader HttpHeaders headers){
         // Http Header 에서 인가 코드 받기
-        String authorization_code = headers.get("authorization_code").toString();
+        String authorization_code = headers.get("authorization").toString();
 
         log.info("code : {}", authorization_code);
 
@@ -108,7 +108,7 @@ public class MemberController {
                 resultMap.put("refresh_token",refresh_Token);
                 //resultMap.put("nickname", nickname);
 
-                responseDto.setStatus(400);
+                responseDto.setStatus_code(400);
                 responseDto.setMessage("회원가입 정보 없음!!");
                 responseDto.setData(resultMap);
 
@@ -121,7 +121,7 @@ public class MemberController {
                 resultMap.put("access_token", access_Token);
                 resultMap.put("refresh_token", refresh_Token);
 
-                responseDto.setStatus(200);
+                responseDto.setStatus_code(200);
                 responseDto.setMessage("로그인 완료!!");
                 responseDto.setData(resultMap);
             }
