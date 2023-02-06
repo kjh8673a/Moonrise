@@ -12,13 +12,14 @@ import moonrise.pjt1.party.repository.PartyCommentRepository;
 import moonrise.pjt1.party.repository.PartyInfoRepository;
 import moonrise.pjt1.party.repository.PartyJoinRepository;
 import moonrise.pjt1.party.repository.PartyRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -51,7 +52,7 @@ public class PartyService {
         log.info("value:{}",viewCnt);
         Optional<Party> findParty = partyRepository.findById(partyId);
         Party party = findParty.get();
-        List<PartyComment> partyComments = party.getPartyComments();
+        List<PartyComment> partyComments = partyCommentRepository.getCommentList(partyId);
         List<PartyJoin> partyJoins = party.getPartyJoins();
         Map<String,Object> result = new HashMap<>();
         if(findParty.isPresent()){
@@ -62,22 +63,28 @@ public class PartyService {
         }
         return result;
     }
-    public Map<String,Object> listParty(Long movieId) {
+//    public Map<String,Object> listParty(Long movieId) {
+//        Map<String,Object> result = new HashMap<>();
+//        List<Party> partyList = partyRepository.findPartyList(movieId);
+//        List<PartyListResponseDto> partyListResponseDtos = new ArrayList<>();
+//        for (Party party : partyList) {
+//            PartyListResponseDto partyListResponseDto = new PartyListResponseDto(
+//                party.getId(),party.getTitle(),party.getPartyPeople(),party.getLocation(),
+//                    party.getPartyDate(),party.getPartyInfo().getViewCnt()
+//            );
+//            partyListResponseDtos.add(partyListResponseDto);
+//        }
+//        result.put("findParties",partyListResponseDtos);
+//        return result;
+//    }
+    public Map<String,Object> listParty(Long movieId, PageRequest pageable) {
         Map<String,Object> result = new HashMap<>();
-        List<Party> partyList = partyRepository.findPartyList(movieId);
-        List<PartyListResponseDto> partyListResponseDtos = new ArrayList<>();
-        for (Party party : partyList) {
-            PartyListResponseDto partyListResponseDto = new PartyListResponseDto(
-                party.getId(),party.getTitle(),party.getPartyPeople(),party.getLocation(),
-                    party.getPartyDate(),party.getPartyInfo().getViewCnt()
-            );
-            partyListResponseDtos.add(partyListResponseDto);
-        }
+        Page<Party> partyList = partyRepository.findPartyList(movieId, pageable);
 
-        result.put("findParties",partyListResponseDtos);
+        result.put("findParties",partyList.get());
+        result.put("totalPages", partyList.getTotalPages());
         return result;
     }
-
     public Long createParty(PartyCreateDto partyCreateDto) {
         Optional<Member> findMember = memberRepository.findById(partyCreateDto.getMemberId());
         Optional<Movie> findMovie = movieRepository.findById(partyCreateDto.getMovieId());
@@ -92,6 +99,7 @@ public class PartyService {
         party.modifyParty(partyModifyDto);
         return party;
     }
+    @Transactional
     public Long createComment(PartyCommentCreateDto partyCommentCreateDto) {
         Optional<Member> findMember = memberRepository.findById(partyCommentCreateDto.getMemberId());
         Optional<Party> findParty = partyRepository.findById(partyCommentCreateDto.getPartyId());
@@ -100,7 +108,7 @@ public class PartyService {
         partyCommentRepository.save(partyComment);
         Long commentId = partyComment.getId();
         // 원댓글이면 groupId 를 본인 pk 로 저장
-        if (partyCommentCreateDto.getGroupId() == 0L){
+        if (partyComment.getGroupId() == 0L){
             partyComment.setGroupId(commentId);
         }
 
@@ -140,6 +148,38 @@ public class PartyService {
         }
         else if(status == 3){
             partyJoin.setPartyJoinStatus(PartyJoinStatus.취소);
+        }
+    }
+    @Transactional
+    public Long updateComment(PartyCommentUpdateDto partyCommentUpdateDto) {
+        Long commentId = partyCommentUpdateDto.getCommentId();
+        Optional<PartyComment> findComment = partyCommentRepository.findById(commentId);
+        if(!findComment.isPresent()){
+            throw new IllegalStateException("수정할 댓글을 찾을 수 없습니다.");
+        }
+        PartyComment partyComment = findComment.get();
+        partyComment.setContent(partyCommentUpdateDto.getContent());
+        partyComment.setShowPublic(partyCommentUpdateDto.isShowPublic());
+        partyComment.setCommentWriteTime(LocalDateTime.now());
+        return partyComment.getId();
+    }
+    @Transactional
+    public void statusComment(Long commentId, int statusCode) {
+        Optional<PartyComment> findComment = partyCommentRepository.findById(commentId);
+        if(!findComment.isPresent()){
+            throw new IllegalStateException("존재하지 않는 댓글입니다.");
+        }
+        PartyComment partyComment = findComment.get();
+        switch (statusCode) {
+            case 1:
+                partyComment.normalize();
+                break;
+            case 2:
+                partyComment.banned();
+                break;
+            case 3:
+                partyComment.deleted();
+                break;
         }
     }
 }
