@@ -5,11 +5,14 @@ import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.party.dto.PartyCommentCreateDto;
 import moonrise.pjt1.party.dto.PartyCreateDto;
+import moonrise.pjt1.party.repository.PartyRepository;
 import moonrise.pjt1.party.repository.PartyRepositoryTest;
 import moonrise.pjt1.party.service.PartyService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +26,7 @@ import java.util.Map;
 @Rollback(value = false)
 class PartyTest {
     @Autowired
-    PartyRepositoryTest partyRepository;
+    PartyRepository partyRepository;
     @Autowired
     MemberRepository memberRepository;
     @Autowired
@@ -38,11 +41,11 @@ class PartyTest {
                 5,"대전시유성구",false,
                 LocalDateTime.of(2021, 1, 1, 0, 0, 0),
                 LocalDateTime.of(2021, 1, 1, 0, 0, 0));
-        partyService.createParty(partyCreateDto);
     }
     @Test
     void listParty(){
-        Map<String, Object> listParty = partyService.listParty(1L);
+        PageRequest pageable = PageRequest.of(0, 8, Sort.by("id").descending());
+        Map<String, Object> listParty = partyService.listParty(1L, pageable);
         System.out.println(listParty.get("findParties"));
     }
 

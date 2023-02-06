@@ -1,9 +1,13 @@
 package moonrise.pjt1.board.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import moonrise.pjt1.board.dto.BoardCreateDto;
 import moonrise.pjt1.board.dto.BoardUpdateDto;
 import moonrise.pjt1.board.service.BoardService;
+import moonrise.pjt1.util.GetResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,6 +83,41 @@ public class BoardController {
     // 게시글 좋아요 (1순위)
     // 게시글 북마크 (1순위)
 
+    @GetMapping("/test")
+    public void test(String token){
+        System.out.println("token Test : " + token);
+        String requestUrl = "http://pjt2-container:9002/auth/jwt/parse";
+        //String requestUrl = "http://localhost:9002/auth/jwt/parse";
 
+        try{
+            URL url = new URL(requestUrl);  // URL 객체
+
+            // KAKAO 서버에 HTTP 요청
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("access_token", token);
+
+            // 응답 코드
+            int responseCode = conn.getResponseCode();
+
+            // success : 200, 유효성 error : 401
+            System.out.println("responseCode = " + responseCode);
+
+            if(responseCode == 200){    // 유효성 통과
+                System.out.println("성공");
+                JsonObject jsonObject = GetResponse.getJsonResponse(conn).getAsJsonObject();
+                System.out.println(jsonObject.toString());
+
+                JsonElement data = jsonObject.get("data");
+                System.out.println(data.getAsJsonObject().get("user_id"));
+
+                return;
+            }
+            System.out.println("에러~");
+
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
 
 }

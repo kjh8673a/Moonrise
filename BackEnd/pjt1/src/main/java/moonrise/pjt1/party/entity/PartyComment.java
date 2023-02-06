@@ -53,4 +53,16 @@ public class PartyComment {
         partyComment.setWriter(member.getProfile().getNickname());
         return partyComment;
     }
+
+    public void normalize() {
+        this.setPartyCommentStatus(NORMAL);
+    }
+
+    public void banned() {
+        this.setPartyCommentStatus(BANNED);
+    }
+
+    public void deleted() {
+        this.setPartyCommentStatus(DELETED);
+    }
 }
