@@ -17,8 +17,9 @@ public class BoardDetailDto {
     private LocalDateTime dateTime;
     private String writer;
     private List<BoardComment> boardComments = new ArrayList<>();
+    private int viewCnt;
 
-    public BoardDetailDto(Long memberId, Long movieId, String title, String content, LocalDateTime dateTime, String writer, List<BoardComment> boardComments) {
+    public BoardDetailDto(Long memberId, Long movieId, String title, String content, LocalDateTime dateTime, String writer, List<BoardComment> boardComments, int viewCnt) {
         this.memberId = memberId;
         this.movieId = movieId;
         this.title = title;
@@ -26,5 +27,6 @@ public class BoardDetailDto {
         this.dateTime = dateTime;
         this.writer = writer;
         this.boardComments = boardComments;
+        this.viewCnt = viewCnt;
     }
 }

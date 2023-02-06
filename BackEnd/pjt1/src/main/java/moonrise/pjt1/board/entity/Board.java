@@ -42,7 +42,7 @@ public class Board {
     @JoinColumn(name = "board_info_id")
     @JsonIgnore
     private BoardInfo boardInfo;
-    @JsonIgnore
+//    @JsonIgnore
     @OneToMany(mappedBy = "board")
     private List<BoardComment> boardComments = new ArrayList<>();
 
