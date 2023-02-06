@@ -23,11 +23,9 @@ public class BoardInfo {
     private BoardStatus boardStatus = BoardStatus.NORMAL;
     private int likeCnt;
     private int viewCnt;
-    private int commentCnt;
 
     public BoardInfo() {
         this.likeCnt = 0;
         this.viewCnt = 0;
-        this.commentCnt = 0;
     }
 }
