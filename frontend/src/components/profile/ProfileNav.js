@@ -8,10 +8,10 @@ function ProfileNav() {
     movePage("/profile/list/");
   }
   function changeBoard() {
-    movePage("/profile/list/board");
+    movePage("/profile/list/board/bookmark");
   }
   function changeParty() {
-    movePage("/profile/list/party");
+    movePage("/profile/list/party/part");
   }
   return (
     <div className="mb-4">
