@@ -31,7 +31,7 @@ public class RedisSchedule {
             PartyInfo partyInfo = partyInfoRepository.findById(partyId).get();
             partyInfo.setViewCnt(viewCnt);
             redisTemplate.delete(data);
-            redisTemplate.delete("party::"+partyId);
+            redisTemplate.delete("partyViewCnt::"+partyId);
         }
     }
 }
