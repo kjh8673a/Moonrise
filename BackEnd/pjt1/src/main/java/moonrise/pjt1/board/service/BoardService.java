@@ -45,7 +45,17 @@ public class BoardService {
         }
         Page<Board> boardList = boardRepository.findByMovieId(movieId, pageable);
 
-        result.put("findBoards", boardList.get());
+        List<BoardListResponseDto> findBoards = new ArrayList<>();
+
+        for(Board b : boardList){
+            int viewCnt = b.getBoardInfo().getViewCnt();
+            int commentsCnt = b.getBoardComments().size();
+            int likeCnt = b.getBoardInfo().getLikeCnt();
+            String nickname = b.getMember().getProfile().getNickname();
+            BoardListResponseDto boardListResponseDto = new BoardListResponseDto(b.getId(),b.getTitle(),b.getContent(),b.getDateTime(),likeCnt,commentsCnt,viewCnt,nickname);
+            findBoards.add(boardListResponseDto);
+        }
+        result.put("findBoards", findBoards);
         result.put("totalPages", boardList.getTotalPages());
         return result;
     }
