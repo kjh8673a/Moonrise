@@ -26,16 +26,16 @@ public class DebateController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/create") // 파티 생성
-    public ResponseEntity<Map<String, Object>> createParty(@RequestBody DebateCreateDto debateCreateDto){
+    @PostMapping("/create") // 채팅방 생성
+    public ResponseEntity<Map<String, Object>> createDebate(@RequestBody DebateCreateDto debateCreateDto){
         Map<String, Object> result = new HashMap<>();
         Long debateId = debateService.createParty(debateCreateDto);
         result.put("debateId",debateId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/read/{debateId}") // 파티 상세보기
-    public ResponseEntity<Map<String, Object>> read(@PathVariable Long debateId){
+    @GetMapping("/read/{debateId}") // 채팅방 상세보기
+    public ResponseEntity<Map<String, Object>> readDebate(@PathVariable Long debateId){
         Map<String, Object> result = debateService.readDebate(debateId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }

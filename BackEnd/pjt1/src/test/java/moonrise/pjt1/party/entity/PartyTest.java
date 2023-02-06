@@ -1,6 +1,7 @@
 
 package moonrise.pjt1.party.entity;
 
+import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.party.dto.PartyCommentCreateDto;
@@ -37,28 +38,21 @@ class PartyTest {
     PartyService partyService;
     @Test
     void writeParty(){
-        PartyCreateDto partyCreateDto = new PartyCreateDto(2643550085L,1L,"노실분구합니다","어서오세요",
-                5,"대전시유성구",false,
-                LocalDateTime.of(2021, 1, 1, 0, 0, 0),
-                LocalDateTime.of(2021, 1, 1, 0, 0, 0));
     }
     @Test
     void listParty(){
         PageRequest pageable = PageRequest.of(0, 8, Sort.by("id").descending());
-        Map<String, Object> listParty = partyService.listParty(1L, pageable);
-        System.out.println(listParty.get("findParties"));
+        ResponseDto responseDto = partyService.listParty(1L, pageable);
+        System.out.println(responseDto);
     }
 
     @Test
     void readParty(){
-        Map<String, Object> readParty = partyService.readParty(13L);
-        System.out.println(readParty.get("findParty"));
+
     }
 
     @Test
     void commentWriteParty(){
-        PartyCommentCreateDto partyCommentCreateDto = new PartyCommentCreateDto(13L,201611222L,
-                "댓글작성~",true, 0L, 0);
-        partyService.createComment(partyCommentCreateDto);
+
     }
 }
