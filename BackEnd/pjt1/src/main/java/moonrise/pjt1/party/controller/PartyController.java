@@ -45,7 +45,7 @@ public class PartyController {
 
         ResponseDto responseDto = partyService.createParty(access_token, partyCreateDto);
 
-        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.ACCEPTED);
     }
     @PostMapping("/comment/write") // 댓글, 대댓글 작성
     public ResponseEntity<Map<String, Object>> writeComment(@RequestBody PartyCommentCreateDto partyCommentCreateDto){
