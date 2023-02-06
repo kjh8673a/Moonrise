@@ -10,11 +10,9 @@ public class PartyJoinCreateDto {
 
     private String message;
     private Long partyId;
-    private Long memberId;
 
-    public PartyJoinCreateDto(String message, Long partyId, Long memberId) {
+    public PartyJoinCreateDto(String message, Long partyId) {
         this.message = message;
         this.partyId = partyId;
-        this.memberId = memberId;
     }
 }
