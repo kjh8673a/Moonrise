@@ -47,6 +47,7 @@ public class RedisSchedule {
             boardInfo.setViewCnt(viewCnt);
             redisTemplate.delete(data);
             redisTemplate.delete("boardViewCnt::"+boardInfo);
+
         }
     }
 }
