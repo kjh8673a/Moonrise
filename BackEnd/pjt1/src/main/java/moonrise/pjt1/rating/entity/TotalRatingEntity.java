@@ -34,3 +34,4 @@ public class TotalRatingEntity {
         this.visual = visual;
         this.movieId = movieId;
     }
+}
