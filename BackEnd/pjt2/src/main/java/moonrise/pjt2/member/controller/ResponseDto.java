@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ResponseDto<T> {
-    private int Status;
+    private int status_code;
     private String message;
     private T data;
 }
