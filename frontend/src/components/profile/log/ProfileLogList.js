@@ -34,7 +34,7 @@ const DUMMY_DATA = [
     id: 5,
     title: "호그와트 초상화로 살기 vs 부엌 지박령 집요정으로 살기",
     type: "TALK",
-    image: "https://www.therpf.com/forums/attachments/img_6753-jpg.299547/",
+    image: "https://cdn.britannica.com/82/152982-050-11159CF4/Daniel-Radcliffe-Rupert-Grint-Emma-Watson-Harry.jpg",
   },
   {
     id: 6,

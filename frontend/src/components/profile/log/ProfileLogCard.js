@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 function ProfileLogCard(props) {
   const [hide, setHide] = useState(true);
+
   return (
     <div
       style={{
