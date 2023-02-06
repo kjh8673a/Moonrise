@@ -1,8 +1,6 @@
-import axios from 'axios'
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { setPartyDetail } from '../../../feature/reducer/PartyReducer'
 
 import PartyCandidate from './PartyCandidate'
 import PartyComment from './PartyComment'
@@ -16,20 +14,13 @@ function PartyDetail() {
     movePage('/community/list/party');
   }
 
-  const partyId = useSelector(state => state.party.partyId);
-  const dispatch = useDispatch(); 
-  useEffect(() => {
-    axios.get('http://3.35.149.202:80/api/party/read/'+partyId)
-      .then(response => {
-        dispatch(setPartyDetail(response.data.findParty));
-      });
-  }, );
+  
   return (
-    <div className='PartyDetail mx-60 py-10 grid grid-cols-2 gap-4'>
+    <div className='grid grid-cols-2 gap-4 py-10 PartyDetail mx-60'>
       <div className="col-span-1">
         <button className='text-white' onClick={goBefore}> &lt; 이전으로 </button>
-        <p className='movieName text-orange-600 mt-4'>{useSelector(state => state.movie.movieTitle)}</p>
-        <p className="partyTitle text-2xl text-white">{useSelector(state => state.party.partyDetail.title)}</p>
+        <p className='mt-4 text-orange-600 movieName'>{useSelector(state => state.movie.movieTitle)}</p>
+        <p className="text-2xl text-white partyTitle">{useSelector(state => state.party.partyDetail.title)}</p>
         <PartyDetailCard/>
       </div>
       <div className="col-span-1">
