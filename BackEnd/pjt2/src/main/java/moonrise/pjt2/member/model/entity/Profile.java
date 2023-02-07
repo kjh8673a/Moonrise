@@ -12,16 +12,13 @@ import javax.persistence.*;
 public class Profile {
     @Id @GeneratedValue
     @Column(name = "profile_id")
-    private Long id;
+    private Long profile_id;
 
     @Column(name = "nickname")
     private String nickname;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "profile")
-    private Member member;
 
     private String profile_image_path;
 
