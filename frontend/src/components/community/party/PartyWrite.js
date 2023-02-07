@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 function PartyWrite() {
   const movePage = useNavigate();
-  
+  const movieId = useSelector(state => state.movie.movieId);
+
   function changeBoard(){
     movePage('/community/list/party');
   }
@@ -14,12 +16,13 @@ function PartyWrite() {
     deadLine: "2023-02-02T06:23:05.082Z",
     location: "",
     meetOnline: true,
-    memberId: "2630362777",
-    movieId: "257211",
+    movieId: movieId,
     partyDate: "2023-02-02T06:23:05.082Z",
     partyPeople: 0,
     title: ""
   });
+
+  const access_token = useSelector(state => state.member.accessToken);
   
   const titleChangeHandler = (event) => {
     setRequestBody((prevState) => {
@@ -50,13 +53,13 @@ function PartyWrite() {
     console.log(requestBody)
     const config = { 
         headers: {
-          "Content-Type": "application/json",
+          "access_token": access_token,
           }
         }
     axios.post('http://3.35.149.202:80/api/party/write', requestBody, config)
         .then(response => {
             console.log(response);
-            changeBoard()
+            // changeBoard()
         });
   }
   return (
