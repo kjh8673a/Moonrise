@@ -20,11 +20,10 @@ public class DebateDto {
     private int nowppl;
     private DebateStatus debateStatus;
     private long movieId;
-    private long memberId;
 
     @Builder
     public DebateDto(long id, String title, String description, String img, LocalDateTime createDate,
-                     int maxppl, int nowppl, DebateStatus debateStatus, long movieId, long memberId) {
+                     int maxppl, int nowppl, DebateStatus debateStatus, long movieId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -34,6 +33,5 @@ public class DebateDto {
         this.nowppl = nowppl;
         this.debateStatus = debateStatus;
         this.movieId = movieId;
-        this.memberId = memberId;
     }
 }

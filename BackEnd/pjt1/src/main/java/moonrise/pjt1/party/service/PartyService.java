@@ -122,10 +122,10 @@ public class PartyService {
     }
     public ResponseDto createParty(String access_token, PartyCreateDto partyCreateDto) {
         Map<String, Object> result = new HashMap<>();
+        ResponseDto responseDto = new ResponseDto();
 
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        ResponseDto responseDto = new ResponseDto();
 
         if(user_id == 0L){
             responseDto.setStatus_code(400);
