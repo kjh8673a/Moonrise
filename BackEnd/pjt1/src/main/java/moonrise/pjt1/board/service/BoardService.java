@@ -76,7 +76,9 @@ public class BoardService {
         Board board = findBoard.get();
         String writer = board.getMember().getProfile().getNickname();
         List<BoardComment> commentList = boardCommentRepository.getCommentList(boardId);
-        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList, viewCnt);
+        int commentCnt = commentList.size();
+        int likeCnt = board.getBoardInfo().getLikeCnt();
+        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMember().getId(), board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList, viewCnt,commentCnt,likeCnt);
         result.put("findBoard", boardDetailDto);
 
         return result;
