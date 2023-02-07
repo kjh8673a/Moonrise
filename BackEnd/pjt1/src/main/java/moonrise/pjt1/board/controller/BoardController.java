@@ -34,11 +34,11 @@ public class BoardController {
 
     // 게시글 목록보기 (0순위)
     @GetMapping(value = "/list/{movieId}")
-    public ResponseEntity<Map<String, Object>>boardList(@PathVariable("movieId") Long movieId,
+    public ResponseEntity<?>boardList(@PathVariable("movieId") Long movieId,
                                                         @RequestParam(value = "page", defaultValue = "0") int page){
         PageRequest pageable = PageRequest.of(page, 3, Sort.by("id").descending());
-        Map<String, Object> result = boardService.listBoard(movieId, pageable);
-        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
+        ResponseDto responseDto = boardService.listBoard(movieId, pageable);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 
 
@@ -60,7 +60,7 @@ public class BoardController {
         String access_token = headers.get("access_token").toString();
         log.info("access_token : {}", access_token);
         ResponseDto responseDto = boardService.createBoard(access_token, boardCreateDto);
-        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.CREATED);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 
     // 게시글 수정 (0순위)

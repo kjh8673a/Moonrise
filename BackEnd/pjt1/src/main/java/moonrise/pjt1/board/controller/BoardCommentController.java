@@ -31,7 +31,7 @@ public class BoardCommentController {
         String access_token = headers.get("access_token").toString();
         log.info("access_token : {}", access_token);
         ResponseDto responseDto = boardCommentService.createComment(access_token, boardCommentCreateDto);
-        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.CREATED);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 
     // 댓글 좋아요 (1순위)
