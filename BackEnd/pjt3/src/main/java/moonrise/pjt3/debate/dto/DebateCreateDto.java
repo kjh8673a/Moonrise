@@ -10,14 +10,12 @@ public class DebateCreateDto {
     private String img;
     private int maxppl;
     private Long movieId;
-    private Long memberId;
     @Builder
-    public DebateCreateDto(String title, String description, String img, int maxppl, Long movieId, Long memberId) {
+    public DebateCreateDto(String title, String description, String img, int maxppl, Long movieId) {
         this.title = title;
         this.description = description;
         this.img = img;
         this.maxppl = maxppl;
         this.movieId = movieId;
-        this.memberId = memberId;
     }
 }

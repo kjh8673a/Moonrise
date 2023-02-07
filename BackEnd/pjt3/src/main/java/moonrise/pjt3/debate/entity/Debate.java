@@ -14,12 +14,11 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "debate")
 public class Debate {
 
     @Id @Column(name = "debate_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     private String title;
