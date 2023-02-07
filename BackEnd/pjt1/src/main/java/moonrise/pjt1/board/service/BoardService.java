@@ -39,7 +39,8 @@ public class BoardService {
     private final RedisTemplate redisTemplate;
 
 
-    public Map<String, Object> listBoard(Long movieId, Pageable pageable){
+    public ResponseDto listBoard(Long movieId, Pageable pageable){
+        ResponseDto responseDto = new ResponseDto();
         Optional<Movie> findMovie = movieRepository.findById(movieId);
         Map<String,Object> result = new HashMap<>();
         if(!findMovie.isPresent()){
@@ -59,7 +60,11 @@ public class BoardService {
         }
         result.put("find_boards", findBoards);
         result.put("total_pages", boardList.getTotalPages());
-        return result;
+        //responseDto 작성
+        responseDto.setMessage("게시글 목록 리턴");
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
+        return responseDto;
     }
 
     public ResponseDto detailBoard(String access_token,Long boardId){
