@@ -96,8 +96,18 @@ public class PartyService {
         ResponseDto responseDto = new ResponseDto();
 
         Page<Party> partyList = partyRepository.findPartyList(movieId, pageable);
+        List<PartyListResponseDto> findParties = new ArrayList<>();
 
-        result.put("findParties",partyList.get());
+        for(Party p : partyList){
+            int viewCnt = p.getPartyInfo().getViewCnt();
+            int commentsCnt = p.getPartyComments().size();
+            int likeCnt = p.getPartyInfo().getLikeCnt();
+            String nickname = p.getMember().getProfile().getNickname();
+            PartyListResponseDto partyListResponseDto = new PartyListResponseDto(p.getId(),p.getTitle(),p.getPartyPeople(),p.getLocation(),p.getPartyDate(),likeCnt,viewCnt, commentsCnt,nickname,p.getDeadLine());
+            findParties.add(partyListResponseDto);
+        }
+
+        result.put("findParties",findParties);
         result.put("totalPages", partyList.getTotalPages());
 
         //responseDto 작성
