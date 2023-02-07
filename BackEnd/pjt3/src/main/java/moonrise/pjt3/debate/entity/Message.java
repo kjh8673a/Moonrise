@@ -26,7 +26,6 @@ public class Message {
         this.groupNum = groupNum;
         this.debate = debate;
     }
-
     @Override
     public String toString() {
         return "Message{" +
