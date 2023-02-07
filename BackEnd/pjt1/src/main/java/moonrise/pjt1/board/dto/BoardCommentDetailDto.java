@@ -13,4 +13,6 @@ public class BoardCommentDetailDto {
     private String writer;
     private LocalDateTime dateTime;
 
+
+
 }
