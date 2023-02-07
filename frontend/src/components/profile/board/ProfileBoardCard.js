@@ -14,7 +14,7 @@ function ProfileBoardCard(props) {
         <div className="row-span-1 text-xs overflow-hidden text-[#FA9E13] flex items-center">
           <span className="whitespace-nowrap text-ellipsis overflow-hidden">{props.movie}</span>
         </div>
-        <div className="row-span-1 overflow-hidden font-semibold text-lg flex items-center">
+        <div className="row-span-1 overflow-hidden font-semibold text-lg flex items-center text-white">
           <span className="whitespace-nowrap text-ellipsis overflow-hidden">{props.title}</span>
         </div>
         <div className="row-span-1 text-xs flex items-center">{props.write_date}</div>

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import ProfileSeeMoreButton from "../ProfileSeeMoreButton";
 import ProfileLogCard from "./ProfileLogCard";
 
 const DUMMY_DATA = [
@@ -34,10 +35,89 @@ const DUMMY_DATA = [
     id: 5,
     title: "호그와트 초상화로 살기 vs 부엌 지박령 집요정으로 살기",
     type: "TALK",
-    image: "https://cdn.britannica.com/82/152982-050-11159CF4/Daniel-Radcliffe-Rupert-Grint-Emma-Watson-Harry.jpg",
+    image:
+      "https://cdn.britannica.com/82/152982-050-11159CF4/Daniel-Radcliffe-Rupert-Grint-Emma-Watson-Harry.jpg",
   },
   {
     id: 6,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 7,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 8,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 9,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 10,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 11,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 12,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 13,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 14,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 15,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 16,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 17,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 18,
+    title: "헤르미온느 팬 양성소",
+    type: "PARTY",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
+  {
+    id: 19,
     title: "헤르미온느 팬 양성소",
     type: "PARTY",
     image: "https://i.insider.com/60772a1742061500181757bc?width=700",
@@ -46,11 +126,21 @@ const DUMMY_DATA = [
 
 function ProfileLogList() {
   const data = DUMMY_DATA;
+  const [limit, setLimit] = useState(8);
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    setList(data.filter((item, index) => index < limit));
+  }, [data, limit]);
+
+  const seeMore = () => {
+    setLimit(limit + 8);
+  };
 
   return (
     <div className="p-2">
       <ul className="grid grid-cols-4 gap-4 justify-items-center">
-        {data.map((log) => (
+        {list.map((log) => (
           <ProfileLogCard
             id={log.id}
             title={log.title}
@@ -59,6 +149,7 @@ function ProfileLogList() {
           />
         ))}
       </ul>
+      {limit < data.length && <ProfileSeeMoreButton seeMore={seeMore} />}
     </div>
   );
 }

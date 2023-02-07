@@ -4,21 +4,53 @@ function ProfileEditorCard(props) {
   const [nicknameValue, setNicknameValue] = useState("남극도둑갈매기");
   const [gerneValue, setGerneValue] = useState(["액션", "드라마", "SF"]);
   const [hideOpt, setHideOpt] = useState(true);
-  const [imgPreview, setImgPreview] = useState("");
+  const [gerneError, setGerneError] = useState(false);
+  const [imgPreview, setImgPreview] = useState(
+    "http://ojsfile.ohmynews.com/AT_T_IMG/2018/0420/A0002426619_T.jpg"
+  );
   const imgRef = useRef();
+
+  const gerneList = [
+    "SF",
+    "가족",
+    "공포",
+    "다큐멘터리",
+    "드라마",
+    "로맨스",
+    "모험",
+    "미스터리",
+    "범죄",
+    "서부",
+    "스릴러",
+    "애니메이션",
+    "액션",
+    "역사",
+    "음악",
+    "전쟁",
+    "코미디",
+    "판타지"
+  ];
 
   const nicknameChangeHandler = (event) => {
     let { value } = { ...event.target };
     setNicknameValue(value);
   };
 
-  const gerneDeletehandeler = (event) => {
-    event.preventDefault();
+  const gerneDeletehandeler = (props) => {
+    setGerneValue(
+      gerneValue.filter((gerneValue) => gerneValue !== props.gerne)
+    );
   };
 
-  const gerneChangeHandeler = (event) => {
-    event.preventDefault();
-    setGerneValue();
+  const gerneChangeHandeler = (props) => {
+    if (gerneValue.length >= 3) {
+      setGerneError(true);
+    } else {
+      let copy = [...gerneValue];
+      copy[gerneValue.length] = props.gerne;
+      setGerneValue([...new Set(copy)]);
+      setGerneError(false);
+    }
   };
 
   const changeImage = () => {
@@ -26,7 +58,7 @@ function ProfileEditorCard(props) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-        setImgPreview(reader.result);
+      setImgPreview(reader.result);
     };
   };
 
@@ -34,18 +66,7 @@ function ProfileEditorCard(props) {
     <div className="grid h-full grid-rows-6 p-5">
       <div className="row-span-5 border-b grid grid-cols-4">
         <div className="mx-auto col-span-1">
-          {hideOpt && !imgPreview && (
-            <img
-              className="rounded-full h-32 w-32 border-1"
-              src="http://ojsfile.ohmynews.com/AT_T_IMG/2018/0420/A0002426619_T.jpg"
-              alt=""
-              onMouseEnter={() => {
-                setHideOpt(false);
-              }}
-            />
-          )}
-
-          {hideOpt && imgPreview && (
+          {hideOpt && (
             <img
               className="rounded-full h-32 w-32 border-1"
               src={imgPreview}
@@ -84,7 +105,7 @@ function ProfileEditorCard(props) {
             </button>
           </div>
           <div className="row-span-5 px-5">
-            <div className="mb-5">
+            <div className="mb-1">
               <p className="font-bold text-xl">닉네임</p>
               <p className="text-xs text-gray-400">
                 사이트에서 사용할 닉네임을 입력해주세요
@@ -101,89 +122,48 @@ function ProfileEditorCard(props) {
             </div>
             <div>
               <div>
-                <span className="font-bold text-xl">선호 장르</span>
+                <span className="font-bold text-xl ">선호 장르</span>
                 {gerneValue.map((gerne) => (
                   <span className="bg-[#B3B6B7] ml-3 pl-3 pr-1 rounded-xl text-sm">
-                    {gerne} <button onClick={gerneDeletehandeler}>X</button>
+                    {gerne}
+                    <button onClick={() => gerneDeletehandeler({ gerne })}>
+                      X
+                    </button>
                   </span>
                 ))}
               </div>
-              <p className="text-xs text-gray-400">
-                선호 장르를 선택해주세요 (최대 3개)
-              </p>
-              <div className="grid grid-cols-4 gap-4 mt-6">
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  코미디
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  SF
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  멜로
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  액션
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  애니메이션
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  범죄
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  판타지
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  전쟁
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  음악
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  공포
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  스포츠
-                </button>
-                <button
-                  className="border-2 py-1 rounded-md"
-                  onClick={gerneChangeHandeler}
-                >
-                  스릴러
-                </button>
+              {!gerneError && (
+                <p className="text-xs text-gray-400">
+                  선호 장르를 선택해주세요 (최대 3개)
+                </p>
+              )}
+              {gerneError && (
+                <p className="text-xs text-red-600">
+                  선호 장르를 선택해주세요 (최대 3개)
+                </p>
+              )}
+              <div className="grid grid-cols-4 gap-1 mt-1">
+                {gerneList.map((gerne) => (
+                  <>
+                    {gerneValue.includes({gerne}.gerne) && (
+                      <button
+                        className="border-2 py-1 rounded-md bg-gray-500 text-white"
+                        onClick={() => gerneDeletehandeler({gerne})}
+                      >
+                        {gerne}
+                      </button>
+                    )}
+                    {!gerneValue.includes({gerne}.gerne) && (
+                      <button
+                        className="border-2 py-1 rounded-md"
+                        onClick={() => gerneChangeHandeler({gerne})}
+                      >
+                        {gerne}
+                      </button>
+                    )}
+                  </>
+                ))}
+
               </div>
             </div>
           </div>

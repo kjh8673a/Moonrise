@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ProfileBoardCard from '../board/ProfileBoardCard';
+import ProfileSeeMoreButton from '../ProfileSeeMoreButton';
 
 const DUMMY_DATA = [
   {
@@ -48,16 +49,56 @@ const DUMMY_DATA = [
     write_date: "2022.12.23 12:54",
     image: "https://i.insider.com/60772a1742061500181757bc?width=700",
   },
+  {
+    board_id: 7,
+    title: "가장 인상 깊었던 장면은..",
+    movie: "인턴",
+    write_date: "2022.01.22 11:51",
+    image:
+      "https://cdn.britannica.com/82/152982-050-11159CF4/Daniel-Radcliffe-Rupert-Grint-Emma-Watson-Harry.jpg",
+  },
+  {
+    board_id: 8,
+    title: "말포이 저만 귀엽나요?",
+    movie: "해리포터와 마법사의 돌",
+    write_date: "2022.02.03 19:54",
+    image:
+      "https://hips.hearstapps.com/cosmouk.cdnds.net/15/08/nrm_1424419881-draco-malfoy-harry-potter.jpg",
+  },
+  {
+    board_id:9,
+    title: "호그와트 초상화로 살기 vs 부엌 지박령 집요정으로 살기",
+    movie: "해리포터와 아즈카반의 죄수",
+    write_date: "2022.12.18 22:12",
+    image: "https://cdn.britannica.com/82/152982-050-11159CF4/Daniel-Radcliffe-Rupert-Grint-Emma-Watson-Harry.jpg",
+  },
+  {
+    board_id: 10,
+    title: "헤르미온느 팬 양성소",
+    movie: "해리포터와 마법사의 돌",
+    write_date: "2022.12.23 12:54",
+    image: "https://i.insider.com/60772a1742061500181757bc?width=700",
+  },
 ];
 
 function ProfileBoardBookmarkList() {
   const data = DUMMY_DATA;
+  const [limit, setLimit] = useState(8);
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    setList(data.filter((item, index) => index < limit));
+  }, [data, limit]);
+
+  const seeMore = () => {
+    setLimit(limit + 8);
+  };
 
   return (
     <div>
        <div className="p-2">
       <ul className="grid grid-cols-4 gap-4 justify-items-center">
-        {data.map((board) => (
+        {list.map((board) => (
           <ProfileBoardCard
             board_id={board.board_id}
             title={board.title}
@@ -67,6 +108,7 @@ function ProfileBoardBookmarkList() {
           />
         ))}
       </ul>
+      {limit < data.length && <ProfileSeeMoreButton seeMore={seeMore} />}
     </div>
     </div>
   )
