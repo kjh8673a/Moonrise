@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 public class BoardDetailDto {
 
-    private Long memberId;
     private Long movieId;
     private String title;
     private String content;
@@ -21,8 +20,7 @@ public class BoardDetailDto {
     private int commentCnt;
     private int likeCnt;
 
-    public BoardDetailDto(Long memberId, Long movieId, String title, String content, LocalDateTime dateTime, String writer, List<BoardComment> boardComments, int viewCnt, int commentCnt, int likeCnt) {
-        this.memberId = memberId;
+    public BoardDetailDto(Long movieId, String title, String content, LocalDateTime dateTime, String writer, List<BoardComment> boardComments, int viewCnt, int commentCnt, int likeCnt) {
         this.movieId = movieId;
         this.title = title;
         this.content = content;
