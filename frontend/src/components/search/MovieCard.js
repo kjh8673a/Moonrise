@@ -20,8 +20,11 @@ function MovieCard(props) {
     movePage('/community/list');
   }
   return (
-    <div className='col-span-1' onClick={goCommunity}>
-        <img className="z-0 w-full h-full" src={imgURL} alt="포스터 이미지가 없습니다."></img>
+    <div className='relative col-span-1 movieCard' onClick={goCommunity}>
+        <img className="object-cover w-full h-full" src={imgURL} alt="포스터 이미지가 없습니다."></img>
+        <div className="absolute top-0 left-0 flex flex-col items-center justify-center w-full h-full duration-300 bg-black opacity-0 hover:opacity-90">
+          <h1 className="text-2xl text-white">{props.title}</h1>
+        </div>
     </div>
   )
 }
