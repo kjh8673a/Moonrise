@@ -74,10 +74,13 @@ public class PartyService {
         Party party = findParty.get();
         List<PartyComment> partyComments = partyCommentRepository.getCommentList(partyId);
         List<PartyJoin> partyJoins = party.getPartyJoins();
+        int commentsCnt = partyComments.size();
+        int likeCnt = party.getPartyInfo().getLikeCnt();
         if(findParty.isPresent()){
+
             PartyReadResponseDto partyReadResponseDto = new PartyReadResponseDto(party.getId(),party.getTitle(),party.getContent(),party.getPartyDate(),
                     party.getPartyPeople(),party.getLocation(),party.getPartyStatus(),
-                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine(), viewCnt);
+                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine(), viewCnt, likeCnt, commentsCnt);
             result.put("findParty",partyReadResponseDto);
         }
         if(user_id == party.getMember().getId()){
@@ -96,8 +99,18 @@ public class PartyService {
         ResponseDto responseDto = new ResponseDto();
 
         Page<Party> partyList = partyRepository.findPartyList(movieId, pageable);
+        List<PartyListResponseDto> findParties = new ArrayList<>();
 
-        result.put("findParties",partyList.get());
+        for(Party p : partyList){
+            int viewCnt = p.getPartyInfo().getViewCnt();
+            int commentsCnt = p.getPartyComments().size();
+            int likeCnt = p.getPartyInfo().getLikeCnt();
+            String nickname = p.getMember().getProfile().getNickname();
+            PartyListResponseDto partyListResponseDto = new PartyListResponseDto(p.getId(),p.getTitle(),p.getPartyPeople(),p.getLocation(),p.getPartyDate(),likeCnt,viewCnt, commentsCnt,nickname,p.getDeadLine());
+            findParties.add(partyListResponseDto);
+        }
+
+        result.put("findParties",findParties);
         result.put("totalPages", partyList.getTotalPages());
 
         //responseDto 작성
