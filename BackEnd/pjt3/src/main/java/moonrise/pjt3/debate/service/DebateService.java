@@ -56,6 +56,9 @@ public class DebateService {
         else{
             chatOperations.rightPush(key,value);
         }
+
+
+
     }
 
     public void saveRdbChat(List<DebateChatDto> debateChatDtos, int groupNum){
@@ -93,7 +96,7 @@ public class DebateService {
                 return responseDto;
             }
             //이값이랑 findCnt 이용해서 Groupnum으로 select
-            List<DebateChatDto> dbChats = messageRepository.findBYGroupNumAndDebateId(debateId, maxGroupNum - findCnt + 1);
+            List<DebateChatDto> dbChats = messageRepository.findDtoBYGroupNum(debateId, maxGroupNum - findCnt + 1);
             result.put("recentChats",dbChats);
         }
         //responseDto 작성

@@ -53,7 +53,7 @@ public class RedisSchedule {
         }
     }
     @Transactional
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void deleteLivePeopleCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("debateLivePeopleCnt*");
         Iterator<String> it = redisKeys.iterator();
