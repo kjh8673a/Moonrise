@@ -4,6 +4,8 @@ import com.google.gson.JsonElement;
 import lombok.extern.slf4j.Slf4j;
 import moonrise.pjt2.member.controller.GetResponse;
 import moonrise.pjt2.member.exception.UnauthorizedException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -11,10 +13,16 @@ import java.net.URL;
 import java.util.HashMap;
 
 @Slf4j
+@Component
 public class HttpUtil {
+    private static String parse_token_url;
+    @Value("${kakao.url.token}")
+    public void setUrl(String url){
+        parse_token_url = url;
+    }
     public static HashMap<String, Object> parseToken(String token){
-        String requestUrl = "https://kapi.kakao.com/v2/user/me";
-
+        String requestUrl = parse_token_url;
+        log.info("url : {}" , parse_token_url);
         try{
             URL url = new URL(requestUrl);  // URL 객체
 
