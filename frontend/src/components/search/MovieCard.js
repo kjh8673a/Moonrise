@@ -15,7 +15,6 @@ function MovieCard(props) {
     dispatch(setMovieDetail({poster: imgURL, title: props.title}))
     axios.get(baseURL+ '/api/party/list?movieId=' + props.movieId)
             .then(res => {
-              console.log(res);
               dispatch(setPartyList(res.data.data.findParties));
     });
     movePage('/community/list');
