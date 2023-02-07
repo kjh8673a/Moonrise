@@ -74,10 +74,13 @@ public class PartyService {
         Party party = findParty.get();
         List<PartyComment> partyComments = partyCommentRepository.getCommentList(partyId);
         List<PartyJoin> partyJoins = party.getPartyJoins();
+        int commentsCnt = partyComments.size();
+        int likeCnt = party.getPartyInfo().getLikeCnt();
         if(findParty.isPresent()){
+
             PartyReadResponseDto partyReadResponseDto = new PartyReadResponseDto(party.getId(),party.getTitle(),party.getContent(),party.getPartyDate(),
                     party.getPartyPeople(),party.getLocation(),party.getPartyStatus(),
-                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine(), viewCnt);
+                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine(), viewCnt, likeCnt, commentsCnt);
             result.put("findParty",partyReadResponseDto);
         }
         if(user_id == party.getMember().getId()){
