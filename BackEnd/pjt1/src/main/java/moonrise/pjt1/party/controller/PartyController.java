@@ -35,7 +35,7 @@ public class PartyController {
     }
     @GetMapping("/list") // 파티 목록 조회
     public ResponseEntity<?> list(@RequestParam(value = "movieId") Long movieId,
-                                                    @RequestParam(value = "page", defaultValue = "0")int page){
+                                  @RequestParam(value = "page", defaultValue = "0")int page){
         PageRequest pageable = PageRequest.of(page, 8, Sort.by("id").descending());
         ResponseDto responseDto = partyService.listParty(movieId, pageable);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);

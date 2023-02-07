@@ -1,6 +1,7 @@
 package moonrise.pjt1.debate.service;
 
 import lombok.RequiredArgsConstructor;
+import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.debate.dto.DebateCreateDto;
 import moonrise.pjt1.debate.dto.DebateListResponseDto;
 import moonrise.pjt1.debate.dto.DebateReadResponseDto;
@@ -42,12 +43,19 @@ public class DebateService {
 //        result.put("findParties",debateListResponseDtos);
 //        return result;
 //    }
-    public Map<String, Object> listDebate(Long movieId, PageRequest pageable) {
+    public ResponseDto listDebate(Long movieId, PageRequest pageable) {
         Map<String,Object> result = new HashMap<>();
+        ResponseDto responseDto = new ResponseDto();
+
         Page<Debate> debateList = debateRepository.findDebateList(movieId, pageable);
         result.put("findParties",debateList.get());
         result.put("totalPages", debateList.getTotalPages());
-        return result;
+
+        //responseDto 작성
+        responseDto.setMessage("토론방 목록 리턴");
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
+        return responseDto;
     }
     public Long createParty(DebateCreateDto debateCreateDto) {
         Optional<Member> findMember = memberRepository.findById(debateCreateDto.getMemberId());
