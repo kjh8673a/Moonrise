@@ -129,7 +129,7 @@ public class MemberController {
             }else{  // 회원가입 되어 있어 그냥 token만 반환해
                 Member member = memberService.findMember(userId);
 
-                resultMap.put("nickname", member.getProfile().getNickname());
+                //resultMap.put("nickname", member.getProfile().getNickname());
                 resultMap.put("access_token", access_Token);
                 resultMap.put("refresh_token", refresh_Token);
 
