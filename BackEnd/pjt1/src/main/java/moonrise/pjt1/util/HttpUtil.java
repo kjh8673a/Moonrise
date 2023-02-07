@@ -11,8 +11,8 @@ import java.net.URL;
 @Slf4j
 public class HttpUtil {
     public static Long requestParingToken(String token){
-        String requestUrl = "http://pjt2-container:9002/auth/jwt/parse";
-        //String requestUrl = "http://localhost:9002/auth/jwt/parse";
+        //String requestUrl = "http://pjt2-container:9002/auth/jwt/parse";
+        String requestUrl = "http://localhost:9002/auth/jwt/parse";
 
         try{
             URL url = new URL(requestUrl);  // URL 객체

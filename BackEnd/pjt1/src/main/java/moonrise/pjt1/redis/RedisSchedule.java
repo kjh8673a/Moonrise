@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import moonrise.pjt1.board.entity.BoardInfo;
 import moonrise.pjt1.board.repository.BoardInfoRepository;
+import moonrise.pjt1.member.entity.Member;
+import moonrise.pjt1.member.entity.MemberInfo;
 import moonrise.pjt1.party.entity.PartyInfo;
 import moonrise.pjt1.party.repository.PartyInfoRepository;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -50,4 +52,21 @@ public class RedisSchedule {
 
         }
     }
+
+    @Transactional
+    @Scheduled(cron = "0 0/1 * * * ?")
+    public void deleteLikeCntCacheFromRedis() {
+        Set<String> redisKeys = redisTemplate.keys("boardLikeCnt*");
+        Iterator<String> it = redisKeys.iterator();
+        while (it.hasNext()) {
+            String data = it.next();
+            Long boardId = Long.parseLong(data.split("::")[1]);
+            int likeCnt = Integer.parseInt((String) redisTemplate.opsForValue().get(data));
+            BoardInfo boardInfo = boardInfoRepository.findById(boardId).get();
+            boardInfo.setLikeCnt(likeCnt);
+            redisTemplate.delete(data);
+            redisTemplate.delete("boardLikeCnt::" + boardId);
+        }
+    }
+
 }

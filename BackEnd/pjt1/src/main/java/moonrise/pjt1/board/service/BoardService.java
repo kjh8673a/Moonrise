@@ -1,10 +1,8 @@
 package moonrise.pjt1.board.service;
 
 import lombok.RequiredArgsConstructor;
-import moonrise.pjt1.board.dto.BoardCreateDto;
-import moonrise.pjt1.board.dto.BoardDetailDto;
-import moonrise.pjt1.board.dto.BoardListResponseDto;
-import moonrise.pjt1.board.dto.BoardUpdateDto;
+import lombok.extern.log4j.Log4j2;
+import moonrise.pjt1.board.dto.*;
 import moonrise.pjt1.board.entity.Board;
 import moonrise.pjt1.board.entity.BoardComment;
 import moonrise.pjt1.board.entity.BoardInfo;
@@ -30,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class BoardService {
     private final BoardRepository boardRepository;
     private final MovieRepository movieRepository;
@@ -205,6 +204,49 @@ public class BoardService {
         responseDto.setMessage("게시글 상태 변경 성공");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
+        return responseDto;
+    }
+    @Transactional
+    public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
+        Map<String, Object> result = new HashMap<>();
+        ResponseDto responseDto = new ResponseDto();
+
+        // token parsing 요청
+        Long user_id = HttpUtil.requestParingToken(access_token);
+        if(user_id == 0L){
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("회원 정보가 없습니다.");
+            return responseDto;
+        }
+        // DB
+        Long boardId = boardLikeDto.getBoardId();
+        Optional<Member> findMember = memberRepository.findById(user_id);
+        Optional<Board> findBoard = boardRepository.findById(boardId);
+        int status = boardLikeDto.getStatus();
+        String key = "boardLikeCnt::"+boardId;
+        String key2 = "UserBoardLikeList::"+ user_id;
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        if(valueOperations.get(key)==null){ // 캐시에 값이 없음 레포지토리에서 조회하고 저장
+            if (status==1){ // 좋아요 누르면 -> LIKECNT ++, LIKEBOARD 에 boardid 추가
+                valueOperations.set(key, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()+1),20,TimeUnit.MINUTES);
+//                ValueOperations.set(key2, String.valueOf(findMember.get().get))
+
+
+            }else { // 좋아요 취소 누르면
+                valueOperations.set(key, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()-1),20,TimeUnit.MINUTES);
+            }
+
+        }else { // 캐시에 값이 있을때
+            // 좋아요 (1)
+            if (status ==1){
+                valueOperations.increment(key);
+            } else{   // 취소(0)
+                valueOperations.decrement(key);
+            }
+        }
+        int likeCnt = Integer.parseInt((String) valueOperations.get(key));
+        log.info("value:{}", likeCnt);
+
         return responseDto;
     }
 }
