@@ -9,6 +9,7 @@ import moonrise.pjt2.member.model.entity.Member;
 import moonrise.pjt2.member.model.service.MemberService;
 
 import moonrise.pjt2.util.HttpUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,21 +32,31 @@ public class MemberController {
      * KaKao 서버로 부터 인가 코드를 받아
      * Access-Token 과 Refresh-Token을 받는다.
      */
+    @Value("${kakao.url.code}")
+    private String get_token_url;
+
+    @Value("${client_id}")
+    private String client_id;
+
+    @Value("${redirect_uri}")
+    private String redirect_uri;
+
+    private final HttpUtil httpUtil;
+
     @PostMapping("/kakao")
     @Transactional
     public ResponseEntity<?> getKaKaoToken(@RequestHeader HttpHeaders headers){
         // Http Header 에서 인가 코드 받기
         String authorization_code = headers.get("authorization").toString();
 
-        log.info("code : {}", authorization_code);
+        log.info("auth_code : {}", authorization_code);
 
         String access_Token = "";
         String refresh_Token = "";
 
         HashMap<String, Object> resultMap = new HashMap<>();
         ResponseDto responseDto = new ResponseDto();
-        String requestURL = "https://kauth.kakao.com/oauth/token";
-
+        String requestURL = get_token_url;
         try{
             URL url = new URL(requestURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -59,8 +70,8 @@ public class MemberController {
             StringBuilder sb = new StringBuilder();
 
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=f630ff6ea6d0746e053aff7c7f201a3c"); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:3000/user/kakaoLogin"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&client_id=" + client_id); // TODO REST_API_KEY 입력
+            sb.append("&redirect_uri=" + redirect_uri); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&prompt=login");
             sb.append("&code=" + authorization_code);
             bw.write(sb.toString());
@@ -68,7 +79,8 @@ public class MemberController {
 
             //결과 코드가 200이라면 성공
             int responseCode = connection.getResponseCode();
-            log.debug("getKaKaoToken :: responseCode : {}", responseCode);
+            log.info("get_token_res_code : {}", responseCode);
+
             if(responseCode == 401){
                 //Error
             }
@@ -93,7 +105,7 @@ public class MemberController {
             log.info("refresh_token : {}", refresh_Token);
 
             //access-token을 파싱 하여 카카오 id가 디비에 있는지 확인
-            HashMap<String, Object> userInfo = HttpUtil.parseToken(access_Token);
+            HashMap<String, Object> userInfo = httpUtil.parseToken(access_Token);
             Long userId = (Long) userInfo.get("user_id");
             //String nickname = userInfo.get("nickname").toString();
             log.info("parse result : {}", userId);
@@ -139,42 +151,25 @@ public class MemberController {
         return ResponseEntity.ok().body(responseDto);
     }
 
+    @Value("${kakao.url.logout}")
+    private String kakao_logout_url;
 
+    @Value("${logout_redirect_uri}")
+    private String logout_redirect_uri;
 
-//    @GetMapping("/logout")
-//    public void logout(String accessToken){
-//        String requestUrl = "https://kapi.kakao.com/v1/user/logout";
-//
-//        try{
-//            URL url = new URL(requestUrl);
-//
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestMethod("POST");
-//            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
-//
-//            // 응답 코드
-//            int responseCode = conn.getResponseCode();
-//            System.out.println("responseCode =" + responseCode);
-//
-//            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//
-//            String line = "";
-//            String result = "";
-//
-//            while((line = br.readLine()) != null) {
-//                result += line;
-//            }
-//            System.out.println("response body =" + result);
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    /**
+     * 카카오 계정과 함께 로그아웃
+     * 웹 브라우저에 로그인된 카카오계정의 세션을 만료시키고, 서비스에서도 로그아웃 처리할 때 사용하는 로그아웃 추가 기능
+     * 기본적인 로그아웃은 토큰을 만료시켜 해당 사용자 정보로 더 이상 카카오 API를 호출할 수 없도록 하는 기능
+     * 카카오계정 로그아웃 처리 후 Logout Redirect URI로 302 리다이렉트(Redirect)
+     */
     @GetMapping("/logout")
     public void logout(){
         StringBuilder sb = new StringBuilder();
-        sb.append("https://kauth.kakao.com/oauth/logout?");
-        sb.append("client_id=" + "f0b916ceedccef620b4f4a6ab4e6bec5");
-        sb.append("&logout_redirect_uri="+"http://localhost:3000/");
+        sb.append(kakao_logout_url);
+        sb.append("?");
+        sb.append("client_id=" + client_id);
+        sb.append("&logout_redirect_uri=" + logout_redirect_uri);
 
         String requestUrl = sb.toString();
         try{
@@ -185,7 +180,7 @@ public class MemberController {
 
             // 응답 코드
             int responseCode = conn.getResponseCode();
-            System.out.println("responseCode =" + responseCode);
+            log.info("logout_res_code : {}", responseCode);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
@@ -195,19 +190,28 @@ public class MemberController {
             while((line = br.readLine()) != null) {
                 result += line;
             }
-            System.out.println("response body =" + result);
+            log.info("logout_res_body : {}", result);
         }catch (Exception e) {
             e.printStackTrace();
         }
     }
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody MemberJoinRequestDto memberJoinRequestDto){
+    public ResponseEntity<?> join(@RequestHeader HttpHeaders headers, @RequestBody MemberJoinRequestDto memberJoinRequestDto){
         log.info("memberJoin Data : {}", memberJoinRequestDto);
+
+        String access_token = headers.get("access_token").toString();
+        String refresh_token = headers.get("refresh_token").toString();
+        log.info("join_access_token : {}", access_token);
+
         // token을 통해 userid 받아오기
-        HashMap<String, Object> userInfo = HttpUtil.parseToken(memberJoinRequestDto.getAccess_token());
+        HashMap<String, Object> userInfo = HttpUtil.parseToken(access_token);
 
         // Service에 요청
         memberService.join(memberJoinRequestDto, (Long) userInfo.get("user_id"));
+        HashMap<String, Object> result = new HashMap<>();
+
+        result.put("access_token", access_token);
+        result.put("refresh_token", refresh_token);
 
         return ResponseEntity.ok().body(null);
     }

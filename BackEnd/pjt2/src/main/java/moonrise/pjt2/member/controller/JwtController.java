@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import lombok.extern.slf4j.Slf4j;
 import moonrise.pjt2.member.exception.UnauthorizedException;
 import moonrise.pjt2.util.HttpUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,15 +52,21 @@ public class JwtController {
         }
     }
     /**
-     * Refresh-Token을 받아 access-Token을 재발급 받는다.
+     * Refresh-Token을 받아 Access-Token을 재발급 받는다.
      */
+    @Value("${kakao.url.code}")
+    private String get_token_url;
+
+    @Value("${client_id}")
+    private String client_id;
+
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestHeader HttpHeaders headers){
         // Http Header 에서 Refresh-Token 받기
         String refresh_token = headers.get("refresh_token").toString();
-        log.info("refresh-token : {}", refresh_token);
+        log.info("refresh : refresh_token : {}", refresh_token);
 
-        String requestURL = "https://kauth.kakao.com/oauth/token";
+        String requestURL = get_token_url;
         HashMap<String, Object> resultMap = new HashMap<>();
         try {
             URL url = new URL(requestURL);
@@ -74,7 +81,7 @@ public class JwtController {
             StringBuilder sb = new StringBuilder();
 
             sb.append("grant_type=refresh_token");
-            sb.append("&client_id=f0b916ceedccef620b4f4a6ab4e6bec5"); // TODO REST_API_KEY 입력
+            sb.append("&client_id=" + client_id); // TODO REST_API_KEY 입력
             sb.append("&refresh_token=" + refresh_token); // TODO 인가코드 받은 redirect_uri 입력
 
             bw.write(sb.toString());
