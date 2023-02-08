@@ -25,7 +25,6 @@ function MovieCard(props) {
     axios.post(baseURL + '/api/movie',movieData).then(res => {console.log(res)})
     axios.get(baseURL+ '/api/party/list?movieId=' + props.movie.id)
             .then(res => {
-              console.log(res);
               dispatch(setPartyList(res.data.data.findParties));
     });
     movePage('/community/list');
