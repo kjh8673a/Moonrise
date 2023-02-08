@@ -9,7 +9,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://15.164.232.221:3306/test1
+    url: jdbc:mysql://3.35.149.202:3306/moonrise
     #url: jdbc:mysql://mysql-container:3306/moonrise
     username: ssafy
     password: qwer1234
@@ -18,7 +18,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect # ?? ?? ??
 
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         # show_sql: true

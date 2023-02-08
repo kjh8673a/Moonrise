@@ -14,21 +14,17 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "debate")
 public class Debate {
 
     @Id @Column(name = "debate_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String description;
-
-    @Column(nullable = true) //사진은 선택사항으로
-    private String img;
 
     @Column(nullable = true)
     private LocalDateTime createDate;
@@ -58,7 +54,6 @@ public class Debate {
                   Member member, DebateInfo debateInfo) {
         this.title = debateCreateDto.getTitle();
         this.description = debateCreateDto.getDescription();
-        this.img = debateCreateDto.getImg();
         this.createDate = LocalDateTime.now();
         this.maxppl = debateCreateDto.getMaxppl();
         this.debateStatus = DebateStatus.생성;
