@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Getter @Setter
-public class MemberJoinRequestDto {
+public class MemberJoinDto {
     private String access_token;
     private String refresh_token;
     private String nickname;

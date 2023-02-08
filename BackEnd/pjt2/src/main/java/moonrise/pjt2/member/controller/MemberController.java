@@ -47,7 +47,7 @@ public class MemberController {
     @Transactional
     public ResponseEntity<?> getKaKaoToken(@RequestHeader HttpHeaders headers){
         // Http Header 에서 인가 코드 받기
-        String authorization_code = headers.get("authorization").toString();
+        String authorization_code = headers.get("authorization_code").toString();
 
         log.info("auth_code : {}", authorization_code);
 
@@ -196,8 +196,8 @@ public class MemberController {
         }
     }
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestHeader HttpHeaders headers, @RequestBody MemberJoinRequestDto memberJoinRequestDto){
-        log.info("memberJoin Data : {}", memberJoinRequestDto);
+    public ResponseEntity<?> join(@RequestHeader HttpHeaders headers, @RequestBody MemberJoinDto memberJoinDto){
+        log.info("memberJoin Data : {}", memberJoinDto);
 
         String access_token = headers.get("access_token").toString();
         String refresh_token = headers.get("refresh_token").toString();
@@ -206,13 +206,27 @@ public class MemberController {
         // token을 통해 userid 받아오기
         HashMap<String, Object> userInfo = HttpUtil.parseToken(access_token);
 
+        memberJoinDto.setAccess_token(access_token);
+        memberJoinDto.setRefresh_token(refresh_token);
+
         // Service에 요청
-        memberService.join(memberJoinRequestDto, (Long) userInfo.get("user_id"));
-        HashMap<String, Object> result = new HashMap<>();
+        memberService.join(memberJoinDto, (Long) userInfo.get("user_id"));
 
-        result.put("access_token", access_token);
-        result.put("refresh_token", refresh_token);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setStatus_code(200);
+        responseDto.setData(memberJoinDto);
+        responseDto.setMessage("회원가입 완료~~~");
 
-        return ResponseEntity.ok().body(null);
+
+        log.info("responseDto.ATK : {}", memberJoinDto.getAccess_token());
+        log.info("responseDto.RTK : {}", memberJoinDto.getRefresh_token());
+
+        return ResponseEntity.ok().body(responseDto);
+    }
+    @GetMapping("/check")
+    public ResponseEntity<?> nicknameCheck(@RequestParam String nickname){
+        ResponseDto responseDto = memberService.nicknameCheck(nickname);
+
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 }

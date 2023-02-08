@@ -85,6 +85,9 @@ public class PartyController {
         ResponseDto responseDto = partyService.createJoin(access_token,partyJoinCreateDto);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
+
+    // 소모임 상태
+    // 1:모집완료 2: 기간만료 3: 삭제
     @GetMapping("/status") //소모임 상태변경
     public ResponseEntity<?> updatePartyStatus(@RequestHeader HttpHeaders headers, @RequestParam(value = "partyId") Long partyId,
                                                                 @RequestParam(value = "status") int status){
@@ -94,6 +97,9 @@ public class PartyController {
         ResponseDto responseDto = partyService.updatePartyStatus(access_token,partyId, status);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
+
+    // 소모임 참가신청 상태
+    // 1:승인 2: 거절 3: 취소
     @GetMapping("/join/status") //소모임 신청 상태변경
     public ResponseEntity<?> updateJoinStatus(@RequestHeader HttpHeaders headers, @RequestParam(value = "joinId") Long joinId,
                                                                 @RequestParam(value = "status") int status){

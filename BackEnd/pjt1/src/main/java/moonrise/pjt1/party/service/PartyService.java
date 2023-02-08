@@ -77,13 +77,12 @@ public class PartyService {
         int commentsCnt = partyComments.size();
         int likeCnt = party.getPartyInfo().getLikeCnt();
         if(findParty.isPresent()){
-
             PartyReadResponseDto partyReadResponseDto = new PartyReadResponseDto(party.getId(),party.getTitle(),party.getContent(),party.getPartyDate(),
                     party.getPartyPeople(),party.getLocation(),party.getPartyStatus(),
-                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine(), viewCnt, likeCnt, commentsCnt);
+                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine(), viewCnt, likeCnt, commentsCnt,party.getMember().getProfile().getNickname());
             result.put("findParty",partyReadResponseDto);
         }
-        if(user_id == party.getMember().getId()){
+        if(user_id.equals(party.getMember().getId())){
             result.put("isWriter",true);
         }
         else result.put("isWriter",false);
@@ -127,7 +126,7 @@ public class PartyService {
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -153,13 +152,13 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
         Party party = partyRepository.findById(partyModifyDto.getPartyId()).get();
-        if(user_id == party.getMember().getId()) {
+        if(user_id.equals(party.getMember().getId())) {
             party.modifyParty(partyModifyDto);
         }
         else{
@@ -180,7 +179,7 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -192,7 +191,7 @@ public class PartyService {
         partyCommentRepository.save(partyComment);
         Long commentId = partyComment.getId();
         // 원댓글이면 groupId 를 본인 pk 로 저장
-        if (partyComment.getGroupId() == 0L){
+        if (partyComment.getGroupId().equals(0L)){
             partyComment.setGroupId(commentId);
         }
         //responseDto 작성
@@ -208,7 +207,7 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -231,13 +230,13 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
         Party party = partyRepository.findById(partyId).get();
-        if(user_id == party.getMember().getId()) {
+        if(user_id.equals(party.getMember().getId())) {
             if (status == 1) {
                 party.setPartyStatus(PartyStatus.모집완료);
             } else if (status == 2) {
@@ -264,13 +263,13 @@ public class PartyService {
         ResponseDto responseDto = new ResponseDto();
         Map<String, Object> result = new HashMap<>();
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
         PartyJoin partyJoin = partyJoinRepository.findById(joinId).get();
-        if(user_id == partyJoin.getParty().getMember().getId()) {
+        if(user_id.equals(partyJoin.getParty().getMember().getId())) {
             if (status == 1) {
                 partyJoin.setPartyJoinStatus(PartyJoinStatus.승인);
             } else if (status == 2) {
@@ -297,7 +296,7 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -311,7 +310,10 @@ public class PartyService {
             return responseDto;
         }
         PartyComment partyComment = findComment.get();
-        if(user_id == partyComment.getMember().getId()){
+        Long id = partyComment.getMember().getId();
+        log.info("현재 사용자 user_id : "+user_id);
+        log.info("해당 댓글 작성자 id : "+id);
+        if(user_id.equals(id)){
             partyComment.setContent(partyCommentUpdateDto.getContent());
             partyComment.setShowPublic(partyCommentUpdateDto.isShowPublic());
             partyComment.setCommentWriteTime(LocalDateTime.now());
@@ -335,7 +337,7 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -347,7 +349,7 @@ public class PartyService {
             return responseDto;
         }
         PartyComment partyComment = findComment.get();
-        if(user_id == partyComment.getMember().getId()) {
+        if(user_id.equals(partyComment.getMember().getId())) {
             switch (statusCode) {
                 case 1:
                     partyComment.normalize();
