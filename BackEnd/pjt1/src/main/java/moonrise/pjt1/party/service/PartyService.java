@@ -311,7 +311,9 @@ public class PartyService {
             return responseDto;
         }
         PartyComment partyComment = findComment.get();
-        if(user_id == partyComment.getMember().getId()){
+        Long id = partyComment.getMember().getId();
+        log.info("해당 댓글 작성자 id : "+id);
+        if(user_id == id){
             partyComment.setContent(partyCommentUpdateDto.getContent());
             partyComment.setShowPublic(partyCommentUpdateDto.isShowPublic());
             partyComment.setCommentWriteTime(LocalDateTime.now());
