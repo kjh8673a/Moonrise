@@ -23,12 +23,11 @@ class MovieServiceTest {
         requestDto.setId(100402L);
         requestDto.setTitle("캡틴 아메리카");
         requestDto.setOriginalTitle("Captain America: The Winter Soldier");
-        requestDto.setRelease_date("2014-03-20");
         requestDto.setPopularity(66.807);
 
         movieService.insertMovie(requestDto);
 
-        MovieResponseDto movie = movieService.findMovie(requestDto.getId());
+        MovieResponseDto movie = (MovieResponseDto) movieService.findMovie(requestDto.getId()).getData();
         Assertions.assertEquals(requestDto.getId(), movie.getId());
     }
     @Test
@@ -38,7 +37,7 @@ class MovieServiceTest {
         Long movieId = 100402L;
 
         //when
-        MovieResponseDto movie = movieService.findMovie(movieId);
+        MovieResponseDto movie = (MovieResponseDto) movieService.findMovie(movieId).getData();
 
         //then
         Assertions.assertEquals(movieId, movie.getId());

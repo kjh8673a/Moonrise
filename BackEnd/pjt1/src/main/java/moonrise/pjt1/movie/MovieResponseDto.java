@@ -18,13 +18,11 @@ public class MovieResponseDto {
     private double popularity;
     private String release_date;
     private List<String> genre;
-    private List<Party> parties;
     public void setResponseDto(Movie movie){
         this.id = movie.getId();
         this.originalTitle = movie.getOriginalTitle();
         this.title = movie.getTitle();
         this.popularity = movie.getPopularity();
         this.release_date = movie.getReleaseDate();
-        this.parties = movie.getParties();
     }
 }
