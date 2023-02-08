@@ -10,12 +10,12 @@ function UserRegister() {
     const [gender, setGender] = useState("");
     const [nickname, setNickname] = useState(useSelector(state=> state.member.nickname));
     const access_token = useSelector(state=> state.member.accessToken);
-    const refresh_token = useSelector(state=> state.member.refreshToken);
+    const refresh_token = useSelector(state=> state.member.refresh_token);
     const genreList = ["코미디", "SF", "멜로", "액션", "범죄", "스릴러", "전쟁", "판타지", "스포츠"];
     const movePage = useNavigate(); 
     function goMain(){
         movePage('/');
-      }  
+      } 
 
     const nicknameHandler = (event) => {
         setNickname(event.target.value);
@@ -53,7 +53,7 @@ function UserRegister() {
           headers: {
             "Content-Type": "application/json",
             access_token: access_token,
-            refresh_token: refresh_token,
+            refresh_token : refresh_token,
             }
           }
       const requestBody = {
