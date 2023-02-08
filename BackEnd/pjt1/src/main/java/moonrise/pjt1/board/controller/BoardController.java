@@ -58,7 +58,8 @@ public class BoardController {
     public ResponseEntity<?> boardCreate(@RequestHeader HttpHeaders headers,
                                          @RequestBody BoardCreateDto boardCreateDto){
         // Http Header 에서 Access-Token 받기
-        String access_token = headers.get("access_token").toString();
+//        String access_token = headers.get("access_token").toString();
+        String access_token = "xn6uRh0AFtOVtFp1fhzB_W4NFr9cTByGXXNPDu2pCisNHwAAAYYuhP4N";
         log.info("access_token : {}", access_token);
         ResponseDto responseDto = boardService.createBoard(access_token, boardCreateDto);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
@@ -93,7 +94,7 @@ public class BoardController {
     @PostMapping("/like")
     public ResponseEntity<?> boardLike(@RequestHeader HttpHeaders headers, @RequestBody BoardLikeDto boardLikeDto){
 //        String access_token = headers.get("access_token").toString();
-        String access_token = "0vrRAmtZWNoQCzrGHzNL49VL9yN04PlEup56ouFoCinI2QAAAYYrBcGF";
+        String access_token = "xn6uRh0AFtOVtFp1fhzB_W4NFr9cTByGXXNPDu2pCisNHwAAAYYuhP4N";
         ResponseDto responseDto = boardService.likeBoard(access_token, boardLikeDto);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }

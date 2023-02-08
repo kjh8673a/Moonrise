@@ -206,47 +206,113 @@ public class BoardService {
         responseDto.setStatus_code(200);
         return responseDto;
     }
-    @Transactional
-    public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
-        Map<String, Object> result = new HashMap<>();
-        ResponseDto responseDto = new ResponseDto();
+//    @Transactional
+//    public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
+//        Map<String, Object> result = new HashMap<>();
+//        ResponseDto responseDto = new ResponseDto();
+//
+//        // token parsing 요청
+//        Long user_id = HttpUtil.requestParingToken(access_token);
+//        if(user_id == 0L){
+//            responseDto.setStatus_code(400);
+//            responseDto.setMessage("회원 정보가 없습니다.");
+//            return responseDto;
+//        }
+//        // DB
+//        Long boardId = boardLikeDto.getBoardId();
+//        Optional<Member> findMember = memberRepository.findById(user_id);
+//        Optional<Board> findBoard = boardRepository.findById(boardId);
+//        int status = boardLikeDto.getStatus();
+//        String key = "boardLikeCnt::"+boardId;
+//        String key2 = "UserBoardLikeList::"+ user_id;
+//        ValueOperations valueOperations = redisTemplate.opsForValue();
+//        if(valueOperations.get(key)==null){ // 캐시에 값이 없음 레포지토리에서 조회하고 저장
+//            if (status==1){ // 좋아요 누르면 -> LIKECNT ++, LIKEBOARD 에 boardid 추가
+//                valueOperations.set(key, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()+1),20,TimeUnit.MINUTES);
+////                ValueOperations.set(key2, String.valueOf(findMember.get().get))
+//
+//
+//            }else { // 좋아요 취소 누르면
+//                valueOperations.set(key, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()-1),20,TimeUnit.MINUTES);
+//            }
+//
+//        }else { // 캐시에 값이 있을때
+//            // 좋아요 (1)
+//            if (status ==1){
+//                valueOperations.increment(key);
+//            } else{   // 취소(0)
+//                if (Integer.parseInt((String)valueOperations.get(key))<0){
+//                    valueOperations.set(key, "0");
+//                }else valueOperations.decrement(key);
+//            }
+//        }
+//        int likeCnt = Integer.parseInt((String) valueOperations.get(key));
+//        log.info("value:{}", likeCnt);
+//
+//        return responseDto;
+//    }
+@Transactional
+public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
+    Map<String, Object> result = new HashMap<>();
+    ResponseDto responseDto = new ResponseDto();
 
-        // token parsing 요청
-        Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
-            responseDto.setStatus_code(400);
-            responseDto.setMessage("회원 정보가 없습니다.");
-            return responseDto;
-        }
-        // DB
-        Long boardId = boardLikeDto.getBoardId();
-        Optional<Member> findMember = memberRepository.findById(user_id);
-        Optional<Board> findBoard = boardRepository.findById(boardId);
-        int status = boardLikeDto.getStatus();
-        String key = "boardLikeCnt::"+boardId;
-        String key2 = "UserBoardLikeList::"+ user_id;
-        ValueOperations valueOperations = redisTemplate.opsForValue();
-        if(valueOperations.get(key)==null){ // 캐시에 값이 없음 레포지토리에서 조회하고 저장
-            if (status==1){ // 좋아요 누르면 -> LIKECNT ++, LIKEBOARD 에 boardid 추가
-                valueOperations.set(key, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()+1),20,TimeUnit.MINUTES);
-//                ValueOperations.set(key2, String.valueOf(findMember.get().get))
-
-
-            }else { // 좋아요 취소 누르면
-                valueOperations.set(key, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()-1),20,TimeUnit.MINUTES);
-            }
-
-        }else { // 캐시에 값이 있을때
-            // 좋아요 (1)
-            if (status ==1){
-                valueOperations.increment(key);
-            } else{   // 취소(0)
-                valueOperations.decrement(key);
-            }
-        }
-        int likeCnt = Integer.parseInt((String) valueOperations.get(key));
-        log.info("value:{}", likeCnt);
-
+    // token parsing 요청
+    Long user_id = HttpUtil.requestParingToken(access_token);
+    if(user_id == 0L){
+        responseDto.setStatus_code(400);
+        responseDto.setMessage("회원 정보가 없습니다.");
         return responseDto;
     }
+    // DB
+    Long boardId = boardLikeDto.getBoardId();
+    Optional<Member> findMember = memberRepository.findById(user_id);
+    Optional<Board> findBoard = boardRepository.findById(boardId);
+    int status = boardLikeDto.getStatus();
+    String cntKey = "boardLikeCnt::"+boardId;
+    String listKey = "UserBoardLikeList::"+ user_id;
+    ValueOperations valueOperations = redisTemplate.opsForValue();
+
+    StringBuilder likelist = new StringBuilder(findMember.get().getMemberInfo().getLikeBoard());
+
+    // 좋아요 -> LIKECNT ++, LIKEBOARD 에 boardid 추가
+    if(status ==1 ){
+
+        // cnt 캐시
+        if(valueOperations.get(cntKey)==null){ // 캐시에 값이 없을 경우 레포지토리에서 조회 후 저장
+            valueOperations.set(cntKey, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()+1),20,TimeUnit.MINUTES);
+        }else{ // 캐시에 값이 있는 경우
+            valueOperations.increment(cntKey);
+        }
+        // list 캐시
+        likelist.append(boardId).append(",");
+        if(valueOperations.get(listKey)==null){
+            valueOperations.set(listKey, listKey);
+        }else {
+            valueOperations.set(listKey, listKey);
+        }
+
+    }else{ // 좋아요취소
+        likelist
+        // cnt 캐시
+        if(valueOperations.get(cntKey)==null){ // 캐시에 값이 없을 경우 레포지토리에서 조회 후 저장
+            valueOperations.set(cntKey, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()-1),20,TimeUnit.MINUTES);
+
+        }else { // 캐시에 값이 있는 경우
+            valueOperations.decrement(cntKey);
+        }
+        // list 캐시
+        if(valueOperations.get(listKey)==null){
+
+        }else {
+
+        }
+    }
+    int likeCnt = Integer.parseInt((String) valueOperations.get(cntKey));
+    String likeList  = (String) valueOperations.get(listKey);
+    log.info("value:{}", likeCnt);
+    result.put("boardId", boardId);
+    result.put("likeCnt", likeCnt);
+    result.put("likeList", likeList);
+    return responseDto;
+}
 }
