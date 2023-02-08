@@ -44,14 +44,17 @@ function ProfileList() {
         </div>
       </div>
       {!onEdit && (
-        <div className="fixed w-1/5 bg-white top-40 left-40 h-3/4 rounded-md">
+        <div className="fixed w-1/5 bg-white rounded-md top-40 left-40 h-3/4">
           <ProfileCard openEditor={openEditor} />
         </div>
       )}
       {onEdit && (
-        <div className="fixed w-1/2 bg-white top-40 left-40 h-3/4 rounded-md">
+        <>
+        <div className="fixed top-0 left-0 z-20 w-full h-full bg-black opacity-70" onClick={closeEditor}></div>
+        <div className="fixed z-50 w-1/2 bg-white rounded-md top-40 left-40 h-3/4">
           <ProfileEditorCard closeEditor={closeEditor} />
         </div>
+        </>
       )}
     </div>
   );
