@@ -4,23 +4,26 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Slf4j
+@Component
 public class HttpUtil {
 
     private static String requestUrl;
 
     @Value("${pjt2_request_url}")
-    public static void setRequestUrl(String requestUrl) {
-        HttpUtil.requestUrl = requestUrl;
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
     }
 
     public static Long requestParingToken(String token){
         try{
+            log.info("url : {}", requestUrl);
             URL url = new URL(requestUrl);  // URL 객체
 
             // KAKAO 서버에 HTTP 요청
