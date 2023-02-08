@@ -91,6 +91,7 @@ public class BoardService {
         if(!findBoard.isPresent()) throw new IllegalStateException("존재하지 않는 게시글 입니다");
         Board board = findBoard.get();
         String writer = board.getMember().getProfile().getNickname();
+        System.out.println("writer = " + writer);
         List<BoardComment> commentList = boardCommentRepository.getCommentList(boardId);
         int commentCnt = commentList.size();
         int likeCnt = board.getBoardInfo().getLikeCnt();
@@ -272,8 +273,7 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
     String listKey = "UserBoardLikeList::"+ user_id;
     ValueOperations valueOperations = redisTemplate.opsForValue();
 
-    StringBuilder likelist = new StringBuilder(findMember.get().getMemberInfo().getLikeBoard());
-
+    //StringBuilder likelist = new StringBuilder(findMember.get().getMemberInfo().getLikeBoard());
     // 좋아요 -> LIKECNT ++, LIKEBOARD 에 boardid 추가
     if(status ==1 ){
 
@@ -284,15 +284,25 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
             valueOperations.increment(cntKey);
         }
         // list 캐시
-        likelist.append(boardId).append(",");
-        if(valueOperations.get(listKey)==null){
-            valueOperations.set(listKey, listKey);
-        }else {
-            valueOperations.set(listKey, listKey);
+
+        if(valueOperations.get(listKey)==null){ // 캐시에 값없는 경우 레포지토리에서 조회 후 저장
+            String s = findMember.get().getMemberInfo().getLikeBoard() +boardId +",";
+            valueOperations.set(listKey, s);
+            System.out.println("캐시에 값 없는 경우 ");
+            System.out.println("s = " + s);
+        }else { // 캐시에서 값 가져온 다음 변경 후 저장
+            String s =  valueOperations.get(listKey) + String.valueOf(boardId)+",";
+            valueOperations.set(listKey, s);
+            System.out.println("캐시에 값 있는 경우 캐시에서 받아옴");
+            System.out.println("s = " + s);
         }
 
     }else{ // 좋아요취소
-        likelist
+//        String boardIdString = boardId+",";
+//        int boardIdIndex = likelist.indexOf(boardIdString);
+//        int boardIdStringLen = boardIdString.length();
+//        likelist.delete(boardIdIndex, boardIdIndex+boardIdStringLen);
+//
         // cnt 캐시
         if(valueOperations.get(cntKey)==null){ // 캐시에 값이 없을 경우 레포지토리에서 조회 후 저장
             valueOperations.set(cntKey, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()-1),20,TimeUnit.MINUTES);
@@ -301,9 +311,22 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
             valueOperations.decrement(cntKey);
         }
         // list 캐시
-        if(valueOperations.get(listKey)==null){
-
+        if(valueOperations.get(listKey)==null){ // 캐시에 값없는 경우 레포지토리에서 조회 후 저장
+            String s = findMember.get().getMemberInfo().getLikeBoard();
+            System.out.println("s = " + s);
+            StringBuilder sb = new StringBuilder(s);
+            String boardIdString = boardId+",";
+            System.out.println("----------------------------------------------");
+            System.out.println(sb);
+            int boardIdIndex = sb.indexOf(boardIdString);
+            int boardIdStringLen = boardIdString.length();
+            sb.delete(boardIdIndex, boardIdIndex+boardIdStringLen);
+            valueOperations.set(listKey, sb,20,TimeUnit.MINUTES);
         }else {
+            System.out.println("캐시에 값있음   ----------------------------------------");
+//            valueOperations.set(listKey, likelist,20,TimeUnit.MINUTES);
+            String s = findMember.get().getMemberInfo().getLikeBoard();
+            System.out.println("s = " + s);
 
         }
     }
@@ -313,6 +336,7 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
     result.put("boardId", boardId);
     result.put("likeCnt", likeCnt);
     result.put("likeList", likeList);
+    responseDto.setData(result);
     return responseDto;
 }
 }

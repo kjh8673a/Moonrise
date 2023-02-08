@@ -48,7 +48,8 @@ public class BoardController {
     public ResponseEntity<?> boardDetail(@RequestHeader HttpHeaders headers,
                                          @PathVariable("boardId") Long boardId){
         // Http Header 에서 Access-Token 받기
-        String access_token = headers.get("access_token").toString();
+        String access_token ="edK5K7ltZuL6oZjzv95jZz0BQJX9gWQy0Z7mURgcCisMqAAAAYYwMywJ";
+//        String access_token = headers.get("access_token").toString();
         log.info("access_token : {}", access_token);
         ResponseDto responseDto = boardService.detailBoard(access_token, boardId);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
@@ -59,7 +60,7 @@ public class BoardController {
                                          @RequestBody BoardCreateDto boardCreateDto){
         // Http Header 에서 Access-Token 받기
 //        String access_token = headers.get("access_token").toString();
-        String access_token = "xn6uRh0AFtOVtFp1fhzB_W4NFr9cTByGXXNPDu2pCisNHwAAAYYuhP4N";
+        String access_token = "edK5K7ltZuL6oZjzv95jZz0BQJX9gWQy0Z7mURgcCisMqAAAAYYwMywJ";
         log.info("access_token : {}", access_token);
         ResponseDto responseDto = boardService.createBoard(access_token, boardCreateDto);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
@@ -94,7 +95,7 @@ public class BoardController {
     @PostMapping("/like")
     public ResponseEntity<?> boardLike(@RequestHeader HttpHeaders headers, @RequestBody BoardLikeDto boardLikeDto){
 //        String access_token = headers.get("access_token").toString();
-        String access_token = "xn6uRh0AFtOVtFp1fhzB_W4NFr9cTByGXXNPDu2pCisNHwAAAYYuhP4N";
+        String access_token = "edK5K7ltZuL6oZjzv95jZz0BQJX9gWQy0Z7mURgcCisMqAAAAYYwMywJ";
         ResponseDto responseDto = boardService.likeBoard(access_token, boardLikeDto);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }

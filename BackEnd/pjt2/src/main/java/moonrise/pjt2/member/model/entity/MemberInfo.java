@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter @Setter
 public class MemberInfo {
     @Id @GeneratedValue
-    @Column(name = "member_info_id")
+    @Column(name = "memberInfo_id")
     private Long memberInfo_id;
 
     private int bannedCnt;
