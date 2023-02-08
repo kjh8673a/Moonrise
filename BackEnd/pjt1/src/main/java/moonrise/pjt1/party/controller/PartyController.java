@@ -24,7 +24,6 @@ public class PartyController {
     private final PartyService partyService;
     @GetMapping("/read/{partyId}") // 파티 상세보기
     public ResponseEntity<Map<String, Object>> read(@PathVariable Long partyId){
-        System.out.println(partyId);
         Map<String, Object> result = partyService.readParty(partyId);
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.ACCEPTED);
     }

@@ -1,20 +1,19 @@
-import React, { Component } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import CommunityNav from '../components/community/CommunityNav'
-import PartyList from '../components/community/party/PartyList'
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import CommunityDetail from "../components/community/CommunityDetail";
+import CommunityList from "../components/community/CommunityList";
+import CommunityWrite from "../components/community/CommunityWrite";
 
-export default class Community extends Component {
-  render() {
-    return (
-      <div>
-        <BrowserRouter>
-        <CommunityNav/>
-        <Routes>
-          <Route path="/party" element={<PartyList/>}></Route>
-        </Routes>
-        </BrowserRouter>
-
-      </div>
-    )
-  }
+function Community() {
+  return (
+    <div className="grid h-full px-10 bg-fill bg-community">
+      <Routes>
+        <Route path="list/*" element={<CommunityList />}></Route>
+        <Route path="detail/*" element={<CommunityDetail />}></Route>
+        <Route path="write/*" element={<CommunityWrite />}></Route>
+      </Routes>
+    </div>
+  );
 }
+
+export default Community;
