@@ -18,6 +18,7 @@ function MovieDetail() {
   const showRatingCreateModal = () => {
     setRatingCreateModalOpen(true);
   };
+  
   const showRatingEditModal = () => {
     setRatingEditModalOpen(true);
   };
