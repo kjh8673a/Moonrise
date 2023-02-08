@@ -11,8 +11,14 @@ import java.net.URL;
 
 @Slf4j
 public class HttpUtil {
-    @Value("${pjt2_request_url}")
+
     private static String requestUrl;
+
+    @Value("${pjt2_request_url}")
+    public static void setRequestUrl(String requestUrl) {
+        HttpUtil.requestUrl = requestUrl;
+    }
+
     public static Long requestParingToken(String token){
         try{
             URL url = new URL(requestUrl);  // URL 객체
