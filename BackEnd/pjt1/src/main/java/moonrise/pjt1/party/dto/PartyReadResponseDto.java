@@ -28,11 +28,12 @@ public class PartyReadResponseDto {
     private Long movie_id;
     private List<PartyJoin> partyJoins = new ArrayList<>();
     private List<PartyComment> partyComments = new ArrayList<>();
+    private String writer;
 
     public PartyReadResponseDto(Long partyId, String title, String content, LocalDateTime partyDate, int partyPeople,
                                 String location, PartyStatus partyStatus,Long movie_id,
                                 List<PartyJoin> partyJoins, List<PartyComment> partyComments,
-                                LocalDateTime deadLine, int viewCnt, int likeCnt, int commentCnt) {
+                                LocalDateTime deadLine, int viewCnt, int likeCnt, int commentCnt,String writer) {
         this.partyId = partyId;
         this.title = title;
         this.content = content;
@@ -47,5 +48,6 @@ public class PartyReadResponseDto {
         this.viewCnt = viewCnt;
         this.likeCnt = likeCnt;
         this.commentCnt = commentCnt;
+        this.writer = writer;
     }
 }
