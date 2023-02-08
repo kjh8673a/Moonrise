@@ -66,7 +66,7 @@ src
 │        ├── profile
 │        │    └── ProfileCard.js
 │        ├── log
-│        │    └── LogList.js
+│        │    └── ProfileLogList.js
 │        ├── board
 │        │    ├── ProfileBoardList.js
 │        │    ├── ProfileBoardCard.js
@@ -74,6 +74,7 @@ src
 │        ├── party
 │        │    ├── ProfilePartyList.js
 │        │    └── ProfilePartyNav.js
+│        ├── ProfileLog.js
 │        └── ProfileNav.js
 ├── api // axios관련..
 ├── assets // 이미지 등 자료..
