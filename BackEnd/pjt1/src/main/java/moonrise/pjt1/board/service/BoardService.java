@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+
 @Service
 @RequiredArgsConstructor
 @Log4j2
@@ -86,7 +87,7 @@ public class BoardService {
         }else {
             likeBoard = (String) valueOperations.get(listKey);
         }
-        boolean isLike = likeBoard.contains(boardId + ",");
+        boolean isLike = likeBoard.contains(boardId + "");
         //***************redis 캐시서버**********************
         String key = "boardViewCnt::"+boardId;
         Long boardInfoId = findBoard.get().getBoardInfo().getId();
