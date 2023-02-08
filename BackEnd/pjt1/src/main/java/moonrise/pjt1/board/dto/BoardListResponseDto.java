@@ -12,23 +12,27 @@ public class BoardListResponseDto {
     // 게시판 목록
 
     private Long id;
-//    private Long memberId;
     private String title;
     private String content;
     private LocalDateTime dateTime;
 
     //  작성자 프로필 이미지
 //    private String userImg;
-//    private int like;
+    private int likeCnt;
+    private int commentCnt;
+    private int viewCnt;
 //    private int mark;
     // 사용자 이름? 모르겠음
     private String writer;
 
-    public BoardListResponseDto(Long id, String title, String content, LocalDateTime dateTime, String writer) {
+    public BoardListResponseDto(Long id, String title, String content, LocalDateTime dateTime, int likeCnt, int commentCnt, int viewCnt, String writer) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.dateTime = dateTime;
+        this.likeCnt = likeCnt;
+        this.commentCnt = commentCnt;
+        this.viewCnt = viewCnt;
         this.writer = writer;
     }
 }

@@ -1,94 +1,49 @@
 package moonrise.pjt1.debate.controller;
 
-import moonrise.pjt1.debate.dto.DebateDto;
-import moonrise.pjt1.debate.entity.DebateEntity;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import moonrise.pjt1.commons.response.ResponseDto;
+import moonrise.pjt1.debate.dto.DebateCreateDto;
 import moonrise.pjt1.debate.service.DebateService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/debate")
+@RequiredArgsConstructor @Log4j2
 public class DebateController {
-
     private final DebateService debateService;
 
-    @Autowired
-    public DebateController(DebateService debateService) {
-        this.debateService = debateService;
+    @GetMapping("/list")
+    public ResponseEntity<?> list(@RequestParam(value = "movieId") Long movieId,
+                                                    @RequestParam(value = "page", defaultValue = "0") int page){
+        PageRequest pageable = PageRequest.of(page, 6, Sort.by("id").descending());
+        ResponseDto responseDto = debateService.listDebate(movieId, pageable);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/check")
-    public String check() {
-        return "hi";
+    @PostMapping("/create") // 채팅방 생성
+    public ResponseEntity<?> createDebate(@RequestHeader HttpHeaders headers, @RequestBody DebateCreateDto debateCreateDto){
+        // Http Header 에서 Access-Token 받기
+        String access_token = headers.get("access_token").toString();
+        log.info("access_token : {}", access_token);
+        ResponseDto responseDto = debateService.createDebate(access_token, debateCreateDto);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 
-    /**
-     * 글쓰기
-     */
-    @PostMapping("/create")
-    public ResponseEntity create(long movie_id, long member_id, String title, String description, String img, int maxppl) {
-        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
-        DebateDto dto = DebateDto.builder()
-                .debate_title(title)
-                .debate_description(description)
-                .debate_img(img)
-                .debate_maxppl(maxppl)
-                .debate_create(time)
-                .member_id(member_id)
-                .movie_id(movie_id)
-                .build();
-        debateService.saveDebate(dto);
-        return ResponseEntity.status(HttpStatus.OK).body(dto);
-    }
-
-    /**
-     * 전체목록
-     */
-    @GetMapping
-    public ResponseEntity getDebateAll() {
-        Iterable<DebateEntity> debatelist = debateService.getDebateAll();
-        return ResponseEntity.status(HttpStatus.OK).body(debatelist);
-    }
-
-    /**
-     * 상세보기
-     */
-    @GetMapping("/find{id}")
-    public ResponseEntity getDebateById(@PathVariable long id) {
-        Optional<DebateEntity> debateEntity = debateService.getDebateById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(debateEntity);
-    }
-
-    /**
-     * 수정 : 제목, 내용, 이미지만
-     */
-    @PutMapping("/update{id}")
-    public ResponseEntity update(@PathVariable long id, long movie_id, long member_id, String title, String description, String img) {
-        DebateDto dto = DebateDto.builder()
-                .debate_id(id)
-                .debate_title(title)
-                .debate_description(description)
-                .debate_img(img)
-                .movie_id(movie_id)
-                .member_id(member_id)
-                .build();
-        debateService.update(dto);
-        return ResponseEntity.status(HttpStatus.OK).body(dto);
-    }
-
-
-    /**
-     * 삭제 : delete문 1로 바꾸기
-     */
-    @PutMapping("/delete{id}")
-    public ResponseEntity delete(@PathVariable long id) {
-        debateService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).body("삭제완료");
+    @GetMapping("/read/{debateId}") // 채팅방 상세보기
+    public ResponseEntity<?> readDebate(@RequestHeader HttpHeaders headers, @PathVariable Long debateId){
+        // Http Header 에서 Access-Token 받기
+        String access_token = headers.get("access_token").toString();
+        log.info("access_token : {}", access_token);
+        ResponseDto responseDto = debateService.readDebate(access_token, debateId);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 }

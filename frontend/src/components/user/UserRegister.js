@@ -17,7 +17,7 @@ function UserRegister() {
     const dispatch = useDispatch();
     function goMain(){
         movePage('/');
-      }  
+      } 
 
     const nicknameHandler = (event) => {
         setNickname(event.target.value);
@@ -55,7 +55,7 @@ function UserRegister() {
           headers: {
             "Content-Type": "application/json",
             access_token: access_token,
-            refresh_token: refresh_token,
+            refresh_token : refresh_token,
             }
           }
       const requestBody = {

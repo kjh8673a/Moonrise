@@ -12,7 +12,6 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class BoardInfo {
     @Id @GeneratedValue
     @Column(name = "board_info_id")
@@ -24,7 +23,9 @@ public class BoardInfo {
     private BoardStatus boardStatus = BoardStatus.NORMAL;
     private int likeCnt;
     private int viewCnt;
-    private int commentCnt;
 
-
+    public BoardInfo() {
+        this.likeCnt = 0;
+        this.viewCnt = 0;
+    }
 }

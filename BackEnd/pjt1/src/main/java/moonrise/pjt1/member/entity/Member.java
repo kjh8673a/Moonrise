@@ -20,10 +20,13 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "memberInfo_id")
+    private MemberInfo memberInfo;
 
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus = MemberStatus.NORMAL;    // default
@@ -36,6 +39,9 @@ public class Member {
 
     public void addProfile(Profile memberProfile) {
         this.profile = memberProfile;
+    }
+    public void addMemberInfo(MemberInfo memberInfo){
+        this.memberInfo = memberInfo;
     }
     public void addId(Long userId) {
         this.id = userId;

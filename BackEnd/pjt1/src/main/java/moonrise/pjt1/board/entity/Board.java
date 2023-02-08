@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import moonrise.pjt1.board.dto.BoardCreateDto;
-import moonrise.pjt1.board.dto.BoardDetailDto;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.movie.entity.Movie;
 
@@ -26,7 +25,7 @@ public class Board {
 
     private String title;
     private String content;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -41,8 +40,9 @@ public class Board {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "board_info_id")
+    @JsonIgnore
     private BoardInfo boardInfo;
-
+//    @JsonIgnore
     @OneToMany(mappedBy = "board")
     private List<BoardComment> boardComments = new ArrayList<>();
 
@@ -72,7 +72,7 @@ public class Board {
 //    }
 
     //  게시글 삭제
-    public void cancle(){
+    public void deleted(){
         this.boardInfo.setBoardStatus(DELETED);
     }
     public void banned(){

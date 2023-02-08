@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 9002
   servlet:
     context-path: /auth
 
@@ -7,6 +7,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://15.164.232.221:3306/test1
+    #url: jdbc:mysql://mysql-container:3306/moonrise
     username: ssafy
     password: qwer1234
   jpa:
@@ -19,6 +20,9 @@ spring:
       hibernate:
         # show_sql: true
         format_sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
