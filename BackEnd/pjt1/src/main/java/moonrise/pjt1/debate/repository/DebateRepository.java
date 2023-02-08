@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface DebateRepository extends JpaRepository<Debate, Long> {
-    @Query(value = "select new moonrise.pjt1.debate.dto.DebateListResponseDto" +"(d.id, d.title, d.member.profile.nickname, d.maxppl,d.debateInfo.nowppl, d.debateStatus) from Debate d  where d.movie.id = :movieId")
+    @Query(value = "select new moonrise.pjt1.debate.dto.DebateListResponseDto(d.id, d.title, d.member.profile.nickname, d.maxppl,d.debateInfo.nowppl, d.debateStatus) from Debate d  where d.movie.id = :movieId")
     Page<Debate> findDebateList(@Param("movieId") Long movieId, Pageable pageable);
 
 //    @Query(value = "select d from Debate d join fetch d.debateInfo where d.movie.id = :movieId")

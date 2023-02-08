@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import moonrise.pjt3.debate.dto.DebateChatDto;
+import moonrise.pjt3.debate.entity.DebateInfo;
+import moonrise.pjt3.debate.repository.DebateInfoRepository;
 import moonrise.pjt3.debate.repository.MessageRepository;
 import moonrise.pjt3.debate.service.DebateService;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,12 +23,13 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Log4j2
 public class RedisSchedule {
+    private final DebateInfoRepository debateInfoRepository;
     private final MessageRepository messageRepository;
     private final RedisTemplate redisTemplate;
     private final DebateService debateService;
     @Transactional
-    @Scheduled(cron = "0 0/1 * * * ?")
-    public void deleteCacheFromRedis() throws IOException {
+    @Scheduled(cron = "0 0/10 * * * ?")
+    public void deleteChatCacheFromRedis() throws IOException {
         Set<String> redisKeys = redisTemplate.keys("debateChat*");
         Iterator<String> it = redisKeys.iterator();
         ObjectMapper mapper = new ObjectMapper();
@@ -47,6 +50,21 @@ public class RedisSchedule {
             }
             redisTemplate.delete(data);
             redisTemplate.delete("debateChat::"+debateId);
+        }
+    }
+    @Transactional
+    @Scheduled(cron = "0 0/5 * * * ?")
+    public void deleteLivePeopleCacheFromRedis() {
+        Set<String> redisKeys = redisTemplate.keys("debateLivePeopleCnt*");
+        Iterator<String> it = redisKeys.iterator();
+        while (it.hasNext()) {
+            String data = it.next();
+            Long debateId = Long.parseLong(data.split("::")[1]);
+            int debateLivePeopleCnt = Integer.parseInt((String) redisTemplate.opsForValue().get(data));
+            DebateInfo debateInfo = debateInfoRepository.findById(debateId).get();
+            debateInfo.setNowppl(debateLivePeopleCnt);
+            redisTemplate.delete(data);
+            redisTemplate.delete("debateLivePeopleCnt::"+debateId);
         }
     }
 }
