@@ -28,12 +28,12 @@ public class RedisSchedule {
     private final RedisTemplate redisTemplate;
     private final DebateService debateService;
     @Transactional
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void deleteChatCacheFromRedis() throws IOException {
         Set<String> redisKeys = redisTemplate.keys("debateChat*");
         Iterator<String> it = redisKeys.iterator();
         ObjectMapper mapper = new ObjectMapper();
-
+        log.info("스케줄링 : 채팅내역 db 백업");
         while (it.hasNext()) {
             String data = it.next();
             Long debateId = Long.parseLong(data.split("::")[1]);
@@ -57,6 +57,7 @@ public class RedisSchedule {
     public void deleteLivePeopleCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("debateLivePeopleCnt*");
         Iterator<String> it = redisKeys.iterator();
+        log.info("스케줄링 : 채팅방 현재인원 db 백업");
         while (it.hasNext()) {
             String data = it.next();
             Long debateId = Long.parseLong(data.split("::")[1]);
