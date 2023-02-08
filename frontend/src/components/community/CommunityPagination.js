@@ -1,32 +1,29 @@
-import React, { Component } from 'react'
+import React from 'react'
 
-export default class CommunityPagination extends Component {
-  render() {
-    const numPages = Math.ceil(this.props.total / this.props.limit);
-    let page = 1;
-    function setPage(i){
-        page = i;
-    }
+function CommunityPagination(props) {
+  const numPages = props.total;
 
-    const numButton = Array(numPages).fill().map((arr, i) => (
-          <button className="text-white mx-2"
-            key={i + 1}
-            onClick={() => setPage(i + 1)}
-            aria-current={page === i + 1 ? "page" : "none"}
-          >
-            {i + 1}
-          </button>
-        ));
-    return (
-        <div className='flex justify-center mt-2'>
-            <button className="text-white mx-2" onClick={() => setPage(page - 1)} disabled={page === 1}>
-                &lt;
-            </button>
-            {numButton}    
-            <button className="text-white mx-2" onClick={() => setPage(page + 1)} disabled={page === numPages}>
-                &gt;
-            </button>
-        </div>
-    )
-  }
+  const numButton = Array(numPages).fill().map((arr, i) => (
+        <button className="mx-2 text-white"
+          key={i + 1}
+          onClick={() => props.setPage(i)}
+          aria-current={props.page === i + 1 ? "page" : "none"}
+          disabled={props.page === i}
+        >
+          {i + 1}
+        </button>
+      ));
+  return (
+    <div className='flex justify-center mt-2 pagination'>
+      <button className="mx-2 text-white" onClick={() => props.setPage(props.page - 1)} disabled={props.page === 0}>
+          &lt;
+      </button>
+      {numButton}   
+      <button className="mx-2 text-white" onClick={() => props.setPage(props.page + 1)} disabled={props.page + 1 === numPages}>
+          &gt;
+      </button>
+    </div>
+  )
 }
+
+export default CommunityPagination

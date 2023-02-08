@@ -3,7 +3,6 @@ import React from 'react'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { setMovieDetail, setMovieId } from '../../feature/reducer/MovieReducer';
-import { setPartyList } from '../../feature/reducer/PartyReducer';
 
 function MovieCard(props) {
   const movePage = useNavigate();
@@ -23,10 +22,6 @@ function MovieCard(props) {
     dispatch(setMovieDetail({poster: imgURL, title: props.movie.title}))
     console.log(movieData)
     axios.post(baseURL + '/api/movie',movieData).then(res => {console.log(res)})
-    axios.get(baseURL+ '/api/party/list?movieId=' + props.movie.id)
-            .then(res => {
-              dispatch(setPartyList(res.data.data.findParties));
-    });
     movePage('/community/list/party');
   }
   return (

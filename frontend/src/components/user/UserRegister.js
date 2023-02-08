@@ -67,6 +67,7 @@ function UserRegister() {
       axios.post('http://3.35.149.202:80/auth/member/join', requestBody, config)
           .then(response => {
               if (response.status === 200) {
+                console.log(response.data);
                 goMain();
                 dispatch(setIsLogin(true));
               }

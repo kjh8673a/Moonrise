@@ -7,7 +7,7 @@ function UserLogin() {
   const kakao_redirect_uri = process.env.REACT_APP_KAKAO_REDIRECT_URI;
 
   async function goKaKaoLogin(){
-    window.location.href = 'https://kauth.kakao.com/oauth/authorize?client_id='+kakao_rest_api_key+'&redirect_uri='+ kakao_redirect_uri+'&response_type=code';
+    window.location.href = 'https://kauth.kakao.com/oauth/authorize?client_id='+kakao_rest_api_key+'&redirect_uri='+ kakao_redirect_uri+'&response_type=code&prompt=login';
   }
 
   return (
