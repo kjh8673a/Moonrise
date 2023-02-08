@@ -6,15 +6,16 @@ import { useSelector } from "react-redux";
 
 function BoardList() {
   const [boards, setBoards] = useState([]);
+  const [page, setPage] = useState(1);
   const movieId = useSelector((state) => state.movie.movieId);
 
   useEffect(() => {
     axios
-      .get("http://3.35.149.202:80/api/board/list/" + movieId)
+      .get("http://3.35.149.202:80/api/board/list/" + movieId + "?page=" + page)
       .then((response) => {
-        setBoards(response.data.findBoards);
+        setBoards(response.data.data.find_boards);
       });
-  },[movieId]);
+  },[movieId, page]);
 
   return (
     <div>

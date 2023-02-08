@@ -27,7 +27,7 @@ function MovieCard(props) {
             .then(res => {
               dispatch(setPartyList(res.data.data.findParties));
     });
-    movePage('/community/list/party');
+    movePage('/community/list/');
   }
   return (
     <div className='relative col-span-1 movieCard' onClick={goCommunity}>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import BoardComment from "./BoardComment";
@@ -13,10 +14,19 @@ function BoardDetail() {
   const params = new URLSearchParams(window.location.search);
   const id = parseInt(params.get("id"));
 
+  const access_token = useSelector((state) => state.member.accessToken);
+  const config = {
+    headers: {
+      access_token: access_token,
+    },
+  };
+  
   useEffect(() => {
-    axios.get("http://3.35.149.202:80/api/board/" + id).then((response) => {
-      setBoard(response.data.findBoard);
-    });
+    axios
+      .get("http://3.35.149.202:80/api/board/" + id, config)
+      .then((response) => {
+        setBoard(response.data.data.find_board);
+      });
   }, [id]);
 
   const goBack = () => {
