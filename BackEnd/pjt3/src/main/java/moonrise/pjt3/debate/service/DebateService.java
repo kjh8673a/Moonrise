@@ -124,7 +124,7 @@ public class DebateService {
         }
         else debateLivePeople = (int) valueOperations.get(key);
 
-        if(debateLivePeople == maxPpl) return false;
+        if(debateLivePeople >= maxPpl) return false;
         else valueOperations.increment(key);
 
         return true;

@@ -7,6 +7,7 @@ import moonrise.pjt1.debate.dto.DebateListResponseDto;
 import moonrise.pjt1.debate.dto.DebateReadResponseDto;
 import moonrise.pjt1.debate.entity.Debate;
 import moonrise.pjt1.debate.entity.DebateInfo;
+import moonrise.pjt1.debate.repository.DebateInfoRepository;
 import moonrise.pjt1.debate.repository.DebateRepository;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
@@ -15,17 +16,21 @@ import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.util.HttpUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class DebateService {
-
+    private final RedisTemplate redisTemplate;
     private final MovieRepository movieRepository;
     private final MemberRepository memberRepository;
     private final DebateRepository debateRepository;
+    private final DebateInfoRepository debateInfoRepository;
 //    public Map<String, Object> listDebate(Long movieId) {
 //        Map<String,Object> result = new HashMap<>();
 //        List<Debate> dabateList = debateRepository.findDebateList(movieId);
@@ -101,6 +106,19 @@ public class DebateService {
         }
         Optional<Debate> findDebate = debateRepository.findById(debateId);
         Debate debate;
+        String key = "debateLivePeopleCnt::"+debateId;
+        int debateLivePeople;
+        //캐시에 값이 없으면 레포지토리에서 조회, 있으면 캐시 조회.
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        if(valueOperations.get(key)==null){
+            debateLivePeople = debateInfoRepository.findDebateLivePeople(debateId);
+            valueOperations.set(
+                    key,
+                    String.valueOf(debateLivePeople),
+                    20,
+                    TimeUnit.MINUTES);
+        }
+        else debateLivePeople = (int) valueOperations.get(key);
         if(findDebate.isPresent()){
             debate = findDebate.get();
             DebateReadResponseDto debateReadResponseDto = DebateReadResponseDto.builder()
@@ -110,7 +128,7 @@ public class DebateService {
                     .writer(debate.getMember().getProfile().getNickname())
                     .debateStatus(debate.getDebateStatus())
                     .maxppl(debate.getMaxppl())
-                    .nowppl(debate.getDebateInfo().getNowppl())
+                    .nowppl(debateLivePeople)
                     .build();
             result.put("readDebate",debateReadResponseDto);
             if(debate.getMember().getId() == user_id) result.put("isWriter",true);
