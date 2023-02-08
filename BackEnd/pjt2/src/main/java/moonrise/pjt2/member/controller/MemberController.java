@@ -151,11 +151,8 @@ public class MemberController {
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @Value("${kakao.url.logout}")
+    @Value("${kakao_logout_url}")
     private String kakao_logout_url;
-
-    @Value("${logout_redirect_uri}")
-    private String logout_redirect_uri;
 
     /**
      * 카카오 계정과 함께 로그아웃
@@ -164,35 +161,32 @@ public class MemberController {
      * 카카오계정 로그아웃 처리 후 Logout Redirect URI로 302 리다이렉트(Redirect)
      */
     @GetMapping("/logout")
-    public void logout(){
-        StringBuilder sb = new StringBuilder();
-        sb.append(kakao_logout_url);
-        sb.append("?");
-        sb.append("client_id=" + client_id);
-        sb.append("&logout_redirect_uri=" + logout_redirect_uri);
-
-        String requestUrl = sb.toString();
+    public ResponseEntity<?> logout(@RequestHeader HttpHeaders headers){
+        ResponseDto responseDto = new ResponseDto();
         try{
-            URL url = new URL(requestUrl);
+            String access_token = headers.get("access_token").toString();
+
+            URL url = new URL(kakao_logout_url);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            conn.setRequestProperty("Authorization","Bearer " + access_token);
 
             // 응답 코드
             int responseCode = conn.getResponseCode();
             log.info("logout_res_code : {}", responseCode);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            responseDto.setStatus_code(200);
+            responseDto.setMessage("로그아웃 완료");
 
-            String line = "";
-            String result = "";
-
-            while((line = br.readLine()) != null) {
-                result += line;
-            }
-            log.info("logout_res_body : {}", result);
+            return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
         }catch (Exception e) {
             e.printStackTrace();
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("로그아웃 실패.. 그냥 로그아웃 해..");
+
+            return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
         }
     }
     @PostMapping("/join")

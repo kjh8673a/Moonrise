@@ -16,15 +16,15 @@ import java.util.HashMap;
 @Component
 public class HttpUtil {
     private static String parse_token_url;
+
     @Value("${kakao.url.token}")
     public void setUrl(String url){
         parse_token_url = url;
     }
+
     public static HashMap<String, Object> parseToken(String token){
-        String requestUrl = parse_token_url;
-        log.info("url : {}" , parse_token_url);
         try{
-            URL url = new URL(requestUrl);  // URL 객체
+            URL url = new URL(parse_token_url);  // URL 객체
 
             // KAKAO 서버에 HTTP 요청
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

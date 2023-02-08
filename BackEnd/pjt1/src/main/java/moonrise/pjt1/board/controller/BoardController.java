@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import moonrise.pjt1.board.dto.BoardCreateDto;
+import moonrise.pjt1.board.dto.BoardLikeDto;
 import moonrise.pjt1.board.dto.BoardUpdateDto;
 import moonrise.pjt1.board.service.BoardService;
 import moonrise.pjt1.commons.response.ResponseDto;
@@ -88,8 +89,14 @@ public class BoardController {
     }
 
 
-    // 게시글 인기목록 (1순위)
     // 게시글 좋아요 (1순위)
+    @PostMapping("/like")
+    public ResponseEntity<?> boardLike(@RequestHeader HttpHeaders headers, @RequestBody BoardLikeDto boardLikeDto){
+        String access_token = headers.get("access_token").toString();
+        ResponseDto responseDto = boardService.likeBoard(access_token, boardLikeDto);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
+    // 게시글 인기목록 (1순위)
     // 게시글 북마크 (1순위)
 
     @GetMapping("/test")

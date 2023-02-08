@@ -31,7 +31,7 @@ public class BoardCommentService {
         Map<String, Object> result = new HashMap<>();
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -49,11 +49,11 @@ public class BoardCommentService {
         boardCommentRepository.save(boardComment);
         Long commentId = boardComment.getId();
         // 원댓글이면 groupId 본인 pk로 저장
-        if (boardComment.getGroupId() == 0L){
+        if (boardComment.getGroupId().equals(0L)){
             boardComment.setGroupId(commentId);
         }
         //responseDto 작성
-        result.put("board_comment_id",commentId);
+        result.put("boardCommentId",commentId);
         responseDto.setMessage("댓글 작성 성공");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
@@ -66,7 +66,7 @@ public class BoardCommentService {
         Map<String, Object> result = new HashMap<>();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -77,7 +77,7 @@ public class BoardCommentService {
             throw new IllegalStateException("수정할 댓글을 찾을 수 없습니다.");
         }
         BoardComment boardComment = findComment.get();
-        if(user_id == boardComment.getMember().getId()) {
+        if(user_id.equals(boardComment.getMember().getId())) {
             boardComment.setContent(boardCommentUpdateDto.getContent());
             boardComment.setWriteDate(LocalDateTime.now());
         }
@@ -87,7 +87,7 @@ public class BoardCommentService {
             return responseDto;
         }
         //responseDto 작성
-        result.put("board_comment_id",boardComment.getId());
+        result.put("boardCommentId",boardComment.getId());
         responseDto.setMessage("소모임 댓글수정 성공");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
@@ -99,7 +99,7 @@ public class BoardCommentService {
         Map<String, Object> result = new HashMap<>();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -109,7 +109,7 @@ public class BoardCommentService {
             throw new IllegalStateException("존재하지 않는 댓글입니다.");
         }
         BoardComment boardComment = findComment.get();
-        if(user_id == boardComment.getMember().getId()) {
+        if(user_id.equals(boardComment.getMember().getId())) {
             // 1:normal 2: banned 3: deleted
             switch (statusCode) {
                 case 1:
@@ -129,7 +129,7 @@ public class BoardCommentService {
             return responseDto;
         }
         //responseDto 작성
-        result.put("board_comment_id",boardComment.getId());
+        result.put("boardCommentId",boardComment.getId());
         responseDto.setMessage("소모임 댓글상태 변경 성공");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
