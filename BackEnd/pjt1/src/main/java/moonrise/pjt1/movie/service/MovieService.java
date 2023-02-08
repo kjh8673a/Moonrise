@@ -25,7 +25,6 @@ public class MovieService {
         //movie 있는지 검사??
         Optional<Movie> findMovieOptinal = movieRepository.findById(movie.getId());
 
-
         //영화 데이터가 없다면 저장 후 기존 데이터 반환
         if(!findMovieOptinal.isPresent()){
             movieRepository.save(movie);

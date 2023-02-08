@@ -32,4 +32,7 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie")
     private List<Party> parties = new ArrayList<>();
+
+//    @OneToMany
+//    private List<String> genres = new ArrayList<>();
 }
