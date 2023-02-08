@@ -139,7 +139,7 @@ public class PartyService {
         partyRepository.save(party);
 
         //responseDto 작성
-        result.put("party_id",party.getId());
+        result.put("partyId",party.getId());
         responseDto.setMessage("소모임 작성 완료");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
@@ -167,7 +167,7 @@ public class PartyService {
             return responseDto;
         }
         //responseDto 작성
-        result.put("party_id",party.getId());
+        result.put("partyId",party.getId());
         responseDto.setMessage("소모임 수정 성공");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
