@@ -7,6 +7,7 @@ import moonrise.pjt3.commons.response.ResponseDto;
 import moonrise.pjt3.debate.dto.DebateChatDto;
 import moonrise.pjt3.debate.dto.DebateCreateDto;
 import moonrise.pjt3.debate.service.DebateService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -3,6 +3,7 @@ package moonrise.pjt3.debate.entity;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import moonrise.pjt3.member.entity.Member;
 
 import javax.persistence.*;
 
@@ -17,9 +18,14 @@ public class Message {
     private String content;
     private int groupNum;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "member_id")
+//    private Member member;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "debate_id")
     private Debate debate;
+
     @Builder
     public Message(String writer, String content, int groupNum, Debate debate) {
         this.writer = writer;
