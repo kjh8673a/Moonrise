@@ -83,7 +83,6 @@ public class BoardService {
         String listKey = "UserBoardLikeList::"+ user_id;
         if(valueOperations.get(listKey)==null){
             likeBoard = findMember.get().getMemberInfo().getLikeBoard();
-            valueOperations.set(listKey, likeBoard,20, TimeUnit.MINUTES);
         }else {
             likeBoard = (String) valueOperations.get(listKey);
         }
