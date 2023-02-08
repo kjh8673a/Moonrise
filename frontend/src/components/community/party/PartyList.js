@@ -17,9 +17,6 @@ const GetList = () => {
 }
 
 function PartyList() {
-  // const partyList = partyInfo.map((pi) => (
-  //   <PartyCard title={pi.title} partyDate={pi.partyDate} partyPeople={pi.partyPeople} partyLocation={pi.partyLocation} key={pi.id} />
-  // ));
   return (
     <div className='party-list'>
       <CommunityHeader type="뒷풀이"/>

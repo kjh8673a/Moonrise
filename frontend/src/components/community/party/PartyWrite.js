@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 function PartyWrite() {
   const movePage = useNavigate();
-  
+  const movieId = useSelector(state => state.movie.movieId);
+
   function changeBoard(){
     movePage('/community/list/party');
   }
@@ -14,12 +16,13 @@ function PartyWrite() {
     deadLine: "2023-02-02T06:23:05.082Z",
     location: "",
     meetOnline: true,
-    memberId: "2630362777",
-    movieId: "257211",
+    movieId: movieId,
     partyDate: "2023-02-02T06:23:05.082Z",
     partyPeople: 0,
     title: ""
   });
+
+  const access_token = useSelector(state => state.member.accessToken);
   
   const titleChangeHandler = (event) => {
     setRequestBody((prevState) => {
@@ -50,26 +53,26 @@ function PartyWrite() {
     console.log(requestBody)
     const config = { 
         headers: {
-          "Content-Type": "application/json",
+          "access_token": access_token,
           }
         }
     axios.post('http://3.35.149.202:80/api/party/write', requestBody, config)
-    
         .then(response => {
             console.log(response);
+            // changeBoard()
         });
   }
   return (
-    <div className='partyWrite mx-64 mt-10'>
+    <div className='mx-64 mt-10 partyWrite'>
         <div className="grid grid-cols-3">
             <div className="col-span-1">
-                <button className='text-white mt-2' onClick={changeBoard}>&lt; 이전으로</button>
+                <button className='mt-2 text-white' onClick={changeBoard}>&lt; 이전으로</button>
             </div>
             <div className='col-span-1'>
                 <p className='text-2xl text-center text-white'>새로운 뒷풀이</p>
             </div>
         </div>
-        <div className='bg-gray-600 bg-opacity-30 rounded-lg mt-4 py-2'>
+        <div className='py-2 mt-4 bg-gray-600 rounded-lg bg-opacity-30'>
             <div className="grid grid-cols-2">
                 <div className="col-span-1">
                     <div className='relative m-4'>
@@ -115,7 +118,7 @@ function PartyWrite() {
                 </div>              
             </div>
             <div className='text-center'>
-                <button onClick={submitParty} className='rounded-lg px-4 py-2 bg-orange-300 hover:bg-orange-600 hover:text-white'>뒷풀이 모집 시작</button>
+                <button onClick={submitParty} className='px-4 py-2 bg-orange-300 rounded-lg hover:bg-orange-600 hover:text-white'>뒷풀이 모집 시작</button>
             </div>
         </div>
     </div>
