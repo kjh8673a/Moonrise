@@ -77,10 +77,9 @@ public class PartyService {
         int commentsCnt = partyComments.size();
         int likeCnt = party.getPartyInfo().getLikeCnt();
         if(findParty.isPresent()){
-
             PartyReadResponseDto partyReadResponseDto = new PartyReadResponseDto(party.getId(),party.getTitle(),party.getContent(),party.getPartyDate(),
                     party.getPartyPeople(),party.getLocation(),party.getPartyStatus(),
-                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine(), viewCnt, likeCnt, commentsCnt);
+                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine(), viewCnt, likeCnt, commentsCnt,party.getMember().getProfile().getNickname());
             result.put("findParty",partyReadResponseDto);
         }
         if(user_id.equals(party.getMember().getId())){
