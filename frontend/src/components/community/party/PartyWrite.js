@@ -55,11 +55,11 @@ function PartyWrite() {
         headers: {
           "access_token": access_token,
           }
-        }
+    }
     axios.post('http://3.35.149.202:80/api/party/write', requestBody, config)
         .then(response => {
             console.log(response);
-            // changeBoard()
+            changeBoard()
         });
   }
   return (

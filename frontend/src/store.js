@@ -1,6 +1,5 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import movieReducer from "./feature/reducer/MovieReducer";
-import partyReducer from "./feature/reducer/PartyReducer";
 import memberReducer from "./feature/reducer/MemberReducer";
 import storage from "redux-persist/lib/storage/session";
 import { persistReducer } from "redux-persist";
@@ -11,7 +10,6 @@ const persistConfig = {
 };
 
 const reducers = combineReducers({
-  party: partyReducer,
   movie: movieReducer,
   member: memberReducer,
 });
