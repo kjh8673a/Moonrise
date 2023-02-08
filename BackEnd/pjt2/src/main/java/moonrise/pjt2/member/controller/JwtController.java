@@ -30,7 +30,7 @@ public class JwtController {
     public ResponseEntity<?> parseAccessToken(@RequestHeader HttpHeaders headers){
         // Http Header 에서 Access-Token 받기
         String access_token = headers.get("access_token").toString();
-        log.info("access-Token : {}", access_token);
+        log.info("JwtContaoller - access-Token : {}", access_token);
 
         ResponseDto responseDto = new ResponseDto();
         HashMap<String, Object> resultMap = new HashMap<>();
