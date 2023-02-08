@@ -69,7 +69,7 @@ public class DebateService {
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -99,7 +99,7 @@ public class DebateService {
         ResponseDto responseDto = new ResponseDto();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;

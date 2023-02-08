@@ -77,7 +77,7 @@ public class BoardCommentService {
             throw new IllegalStateException("수정할 댓글을 찾을 수 없습니다.");
         }
         BoardComment boardComment = findComment.get();
-        if(user_id == boardComment.getMember().getId()) {
+        if(user_id.equals(boardComment.getMember().getId())) {
             boardComment.setContent(boardCommentUpdateDto.getContent());
             boardComment.setWriteDate(LocalDateTime.now());
         }
@@ -109,7 +109,7 @@ public class BoardCommentService {
             throw new IllegalStateException("존재하지 않는 댓글입니다.");
         }
         BoardComment boardComment = findComment.get();
-        if(user_id == boardComment.getMember().getId()) {
+        if(user_id.equals(boardComment.getMember().getId())) {
             // 1:normal 2: banned 3: deleted
             switch (statusCode) {
                 case 1:

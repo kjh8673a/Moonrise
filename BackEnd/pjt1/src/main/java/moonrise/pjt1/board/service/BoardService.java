@@ -102,7 +102,7 @@ public class BoardService {
         BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList, viewCnt,commentCnt,likeCnt);
 
         //responseDto 작성
-        if(user_id == board.getMember().getId()){
+        if(user_id.equals(board.getMember().getId())){
             result.put("isWriter",true);
         }
         else result.put("isWriter",false);
@@ -155,7 +155,7 @@ public class BoardService {
         Long boardId = boardUpdateDto.getBoardId();
         Optional<Board> findBoard = boardRepository.findById(boardId);
         Board board = findBoard.get();
-        if(user_id == board.getMember().getId()) {
+        if(user_id.equals(board.getMember().getId())) {
             board.setTitle(boardUpdateDto.getTitle());
             board.setContent(boardUpdateDto.getContent());
             board.setDateTime(LocalDateTime.now());
@@ -187,7 +187,7 @@ public class BoardService {
         }
         Optional<Board> findBoard = boardRepository.findById(boardId);
         Board board = findBoard.get();
-        if(user_id == board.getMember().getId()) {
+        if(user_id.equals(board.getMember().getId())) {
             // 1:normal 2: banned 3: deleted
             switch (statusCode) {
                 case 1:
