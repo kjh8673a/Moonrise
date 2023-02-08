@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { setIsLogin } from '../../feature/reducer/MemberReducer';
 
 
 
@@ -13,6 +14,7 @@ function UserRegister() {
     const refresh_token = useSelector(state=> state.member.refresh_token);
     const genreList = ["코미디", "SF", "멜로", "액션", "범죄", "스릴러", "전쟁", "판타지", "스포츠"];
     const movePage = useNavigate(); 
+    const dispatch = useDispatch();
     function goMain(){
         movePage('/');
       } 
@@ -66,6 +68,7 @@ function UserRegister() {
           .then(response => {
               if (response.status === 200) {
                 goMain();
+                dispatch(setIsLogin(true));
               }
           });
   }

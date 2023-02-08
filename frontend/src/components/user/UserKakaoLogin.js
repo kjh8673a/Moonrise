@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setAccessToken, setNickname, setRefreshToken } from '../../feature/reducer/MemberReducer';
+import { setAccessToken, setIsLogin, setNickname, setRefreshToken } from '../../feature/reducer/MemberReducer';
 
 function UserKakaoLogin() {
   const PARAMS = new URL(document.location).searchParams;
@@ -31,6 +31,7 @@ function UserKakaoLogin() {
               dispatch(setAccessToken(res.data.data.access_token))
               dispatch(setRefreshToken(res.data.data.refresh_token))
               dispatch(setNickname(res.data.data.nickname))
+              dispatch(setIsLogin())
               goMain();
             }
             else if (res.data.status_code === 400) {
