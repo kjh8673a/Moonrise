@@ -21,7 +21,7 @@ function UserKakaoLogin() {
       try {
           axios.post('http://3.35.149.202:80/auth/member/kakao', {},{
             headers: {
-            authorization: KAKAO_CODE,
+            authorization_code: KAKAO_CODE,
             },
           })
           .then(res => {
