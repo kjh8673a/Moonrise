@@ -51,10 +51,10 @@ function UserRegister() {
       const config = { 
           headers: {
             "Content-Type": "application/json",
+            accesstoken: access_token,
             }
           }
       const requestBody = {
-        access_token: access_token,
         nickname: nickname,
         like_genre: likeGenre,
         gender : gender,
