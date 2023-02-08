@@ -247,7 +247,7 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
             System.out.println("s = " + s);
         }else { // 캐시에서 값 가져온 다음 변경 후 저장
             String s =  valueOperations.get(listKey) + String.valueOf(boardId)+",";
-            valueOperations.set(listKey, s);
+            valueOperations.set(listKey, s,20, TimeUnit.MINUTES);
             System.out.println("캐시에 값 있는 경우 캐시에서 받아옴");
             System.out.println("s = " + s);
         }
@@ -271,9 +271,10 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
             StringBuilder sb = new StringBuilder(s);
             String boardIdString = boardId+",";
             int boardIdIndex = sb.indexOf(boardIdString);
+            System.out.println("boardIdIndex = " + boardIdIndex);
             int boardIdStringLen = boardIdString.length();
             sb.delete(boardIdIndex, boardIdIndex+boardIdStringLen);
-            valueOperations.set(listKey, sb,20,TimeUnit.MINUTES);
+            valueOperations.set(listKey, sb.toString(),20,TimeUnit.MINUTES);
         }else {
             System.out.println("캐시에 값있음   ----------------------------------------");
             String s = (String) valueOperations.get(listKey);
@@ -282,7 +283,7 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
             int boardIdIndex = sb.indexOf(boardIdString);
             int boardIdStringLen = boardIdString.length();
             sb.delete(boardIdIndex, boardIdIndex+boardIdStringLen);
-            valueOperations.set(listKey, sb,20,TimeUnit.MINUTES);
+            valueOperations.set(listKey, sb.toString(),20,TimeUnit.MINUTES);
 
         }
     }
