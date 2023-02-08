@@ -217,6 +217,16 @@ public class MemberController {
         responseDto.setData(memberJoinDto);
         responseDto.setMessage("회원가입 완료~~~");
 
+
+        log.info("responseDto.ATK : {}", memberJoinDto.getAccess_token());
+        log.info("responseDto.RTK : {}", memberJoinDto.getRefresh_token());
+
         return ResponseEntity.ok().body(responseDto);
+    }
+    @GetMapping("/check")
+    public ResponseEntity<?> nicknameCheck(@RequestParam String nickname){
+        ResponseDto responseDto = memberService.nicknameCheck(nickname);
+
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 }
