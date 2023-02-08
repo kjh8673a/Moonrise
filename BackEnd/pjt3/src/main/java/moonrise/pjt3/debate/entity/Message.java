@@ -1,11 +1,12 @@
 package moonrise.pjt3.debate.entity;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity @NoArgsConstructor
+@Entity @NoArgsConstructor @Data
 public class Message {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +27,6 @@ public class Message {
         this.groupNum = groupNum;
         this.debate = debate;
     }
-
     @Override
     public String toString() {
         return "Message{" +
