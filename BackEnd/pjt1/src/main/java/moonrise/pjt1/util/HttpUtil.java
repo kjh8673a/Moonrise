@@ -3,6 +3,7 @@ package moonrise.pjt1.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -10,10 +11,9 @@ import java.net.URL;
 
 @Slf4j
 public class HttpUtil {
+    @Value("${pjt2_request_url}")
+    private static String requestUrl;
     public static Long requestParingToken(String token){
-        //String requestUrl = "http://pjt2-container:9002/auth/jwt/parse";
-        String requestUrl = "http://localhost:9002/auth/jwt/parse";
-
         try{
             URL url = new URL(requestUrl);  // URL 객체
 
