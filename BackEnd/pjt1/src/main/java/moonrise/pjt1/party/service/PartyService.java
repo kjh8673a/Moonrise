@@ -312,6 +312,7 @@ public class PartyService {
         }
         PartyComment partyComment = findComment.get();
         Long id = partyComment.getMember().getId();
+        log.info("현재 사용자 user_id : "+user_id);
         log.info("해당 댓글 작성자 id : "+id);
         if(user_id == id){
             partyComment.setContent(partyCommentUpdateDto.getContent());
