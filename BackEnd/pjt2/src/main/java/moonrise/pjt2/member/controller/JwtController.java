@@ -43,13 +43,15 @@ public class JwtController {
             responseDto.setStatus_code(200);
             responseDto.setMessage("토큰 파싱 완료");
             responseDto.setData(resultMap);
-
-            return ResponseEntity.ok().body(responseDto);
+            
         }catch (UnauthorizedException e){
             log.error(e.getMessage());
 
-            return ResponseEntity.status(401).body(null);
+            responseDto.setStatus_code(400);
+            responseDto.setMessage(e.getMessage());
+
         }
+        return ResponseEntity.ok().body(responseDto);
     }
     /**
      * Refresh-Token을 받아 Access-Token을 재발급 받는다.
@@ -62,13 +64,15 @@ public class JwtController {
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestHeader HttpHeaders headers){
-        // Http Header 에서 Refresh-Token 받기
-        String refresh_token = headers.get("refresh_token").toString();
-        log.info("refresh : refresh_token : {}", refresh_token);
-
-        String requestURL = get_token_url;
-        HashMap<String, Object> resultMap = new HashMap<>();
         try {
+            // Http Header 에서 Refresh-Token 받기
+            String refresh_token = headers.get("refresh_token").toString();
+            System.out.println("refresh_token = " + refresh_token);
+            log.info("refresh : refresh_token : {}", refresh_token);
+
+            String requestURL = get_token_url;
+            HashMap<String, Object> resultMap = new HashMap<>();
+
             URL url = new URL(requestURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -94,18 +98,17 @@ public class JwtController {
                 //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
                 JsonElement element = GetResponse.getJsonResponse(connection);
 
-                String new_Access_Token = element.getAsJsonObject().get("access_token").getAsString();
-                String new_Refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
+                String access_token = element.getAsJsonObject().get("access_token").getAsString();
 
-                log.info("access_token : {}", new_Access_Token);
-                log.info("refresh_token : {}", new_Refresh_Token);
+                log.info("access_token : {}", access_token);
+                log.info("refresh_token : {}", refresh_token);
 
-                resultMap.put("access_token", new_Access_Token);
-                resultMap.put("refresh_token", new_Refresh_Token);
+                resultMap.put("access_token", access_token);
+                resultMap.put("refresh_token", refresh_token);
 
                 ResponseDto responseDto = new ResponseDto();
                 responseDto.setStatus_code(200);
-                responseDto.setMessage("Token 재발급 성공");
+                responseDto.setMessage("토큰 재발급 성공");
                 responseDto.setData(resultMap);
 
                 return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
