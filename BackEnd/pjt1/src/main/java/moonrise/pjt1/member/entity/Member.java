@@ -21,7 +21,7 @@ public class Member {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "profile_id")
     private Profile profile;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
