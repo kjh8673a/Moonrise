@@ -1,6 +1,8 @@
 package moonrise.pjt1.movie;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.movie.service.MovieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,25 +16,26 @@ import javax.validation.constraints.Null;
 @RestController
 @RequestMapping("/movie")
 @RequiredArgsConstructor
+@Slf4j
 public class MovieController {
 
     @Autowired
     private final MovieService movieService;
-    private final Logger logger = LoggerFactory.getLogger(MovieController.class);
     @PostMapping
     public ResponseEntity<?> save(@RequestBody MovieInsertRequestDto requestDto){
-        logger.info("movieDto : {}", requestDto);
+        log.info("movieDto : {}", requestDto);
 
-        movieService.insertMovie(requestDto);
+        ResponseDto responseDto = movieService.insertMovie(requestDto);
 
-        return new ResponseEntity<Null>(HttpStatus.OK);
+
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
     @GetMapping("/{movieId}")
     public ResponseEntity<?> getMovie(@PathVariable Long movieId){
-        logger.info("movieId : {}", movieId);
+        log.info("movieId : {}", movieId);
 
-        MovieResponseDto movie = movieService.findMovie(movieId);
+        ResponseDto responseDto = movieService.findMovie(movieId);
         //null 처리 해야함.
-        return new ResponseEntity<MovieResponseDto>(movie, HttpStatus.OK);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 }
