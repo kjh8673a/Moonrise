@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+
 @Service
 @RequiredArgsConstructor
 @Log4j2
@@ -67,7 +68,7 @@ public class BoardService {
     }
 
     public ResponseDto detailBoard(String access_token,Long boardId){
-
+        ValueOperations valueOperations = redisTemplate.opsForValue();
         Map<String, Object> result = new HashMap<>();
         ResponseDto responseDto = new ResponseDto();
         // token parsing 요청
@@ -79,11 +80,16 @@ public class BoardService {
         }
         Optional<Board> findBoard = boardRepository.findById(boardId);
         Optional<Member> findMember = memberRepository.findById(user_id);
-        String likeBoard = findMember.get().getMemberInfo().getLikeBoard();
-        boolean isLike = likeBoard.contains(boardId + ",");
+        String likeBoard;
+        String listKey = "UserBoardLikeList::"+ user_id;
+        if(valueOperations.get(listKey)==null){
+            likeBoard = findMember.get().getMemberInfo().getLikeBoard();
+        }else {
+            likeBoard = (String) valueOperations.get(listKey);
+        }
+        boolean isLike = likeBoard.contains(boardId + "");
         //***************redis 캐시서버**********************
         String key = "boardViewCnt::"+boardId;
-        ValueOperations valueOperations = redisTemplate.opsForValue();
         Long boardInfoId = findBoard.get().getBoardInfo().getId();
         if(valueOperations.get(key)==null){
             valueOperations.set(key, String.valueOf(boardInfoRepository.findBoardViewCnt(boardInfoId)+1),20, TimeUnit.MINUTES);
