@@ -18,8 +18,8 @@ function MovieRatingModal(props) {
       <button className="absolute text-white right-2" onClick={closeModal}>
         X
       </button>
-      <div className="flex items-center row-span-1 px-4 text-xl font-semibold text-white border-b">
-        {props.movieTitle}
+      <div className="flex items-center row-span-1 px-4 overflow-hidden text-xl font-semibold text-white border-b ">
+        <span className="overflow-hidden text-ellipsis whitespace-nowrap">{props.movieTitle}</span>
       </div>
 
       <div className="row-span-4 text-white">
@@ -58,50 +58,93 @@ function MovieRatingModal(props) {
           <div className="grid grid-rows-6 gap-1 px-4 py-2">
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">스토리</b>{" "}
-              <input type="number" className="col-span-2 px-2 text-black"></input>
+              <input
+                type="number"
+                className="col-span-2 px-2 text-black"
+              ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">연기</b>{" "}
-              <input type="number" className="col-span-2 px-2 text-black"></input>
+              <input
+                type="number"
+                className="col-span-2 px-2 text-black"
+              ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">연출</b>{" "}
-              <input type="number" className="col-span-2 px-2 text-black"></input>
+              <input
+                type="number"
+                className="col-span-2 px-2 text-black"
+              ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">영상미</b>{" "}
-              <input type="number" className="col-span-2 px-2 text-black"></input>
+              <input
+                type="number"
+                className="col-span-2 px-2 text-black"
+              ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">사운드</b>{" "}
-              <input type="number" className="col-span-2 px-2 text-black"></input>
+              <input
+                type="number"
+                className="col-span-2 px-2 text-black"
+              ></input>
             </div>
-            <div className="row-span-1 text-center"><button className="bg-[#FA9E13] px-3 rounded-lg font-semibold w-full">평가하기</button></div>
+            <div className="row-span-1 text-center">
+              <button className="bg-[#FA9E13] px-3 rounded-lg font-semibold w-full">
+                평가하기
+              </button>
+            </div>
           </div>
         )}
         {props.type === "EDIT" && (
           <div className="grid grid-rows-6 gap-1 px-4 py-2">
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">스토리</b>{" "}
-              <input type="number" className="col-span-2 px-2 text-black" defaultValue={props.story}></input>
+              <input
+                type="number"
+                className="col-span-2 px-2 text-black"
+                defaultValue={props.story}
+              ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">연기</b>{" "}
-              <input type="number" className="col-span-2 px-2 text-black" defaultValue={props.acting}></input>
+              <input
+                type="number"
+                className="col-span-2 px-2 text-black"
+                defaultValue={props.acting}
+              ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">연출</b>{" "}
-              <input type="number" className="col-span-2 px-2 text-black" defaultValue={props.direction}></input>
+              <input
+                type="number"
+                className="col-span-2 px-2 text-black"
+                defaultValue={props.direction}
+              ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">영상미</b>{" "}
-              <input type="number" className="col-span-2 px-2 text-black" defaultValue={props.visual}></input>
+              <input
+                type="number"
+                className="col-span-2 px-2 text-black"
+                defaultValue={props.visual}
+              ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">사운드</b>{" "}
-              <input type="number" className="col-span-2 px-2 text-black" defaultValue={props.sound}></input>
+              <input
+                type="number"
+                className="col-span-2 px-2 text-black"
+                defaultValue={props.sound}
+              ></input>
             </div>
-            <div className="row-span-1 text-center"><button className="bg-[#FA9E13] px-3 rounded-lg font-semibold w-full">수정하기</button></div>
+            <div className="row-span-1 text-center">
+              <button className="bg-[#FA9E13] px-3 rounded-lg font-semibold w-full">
+                수정하기
+              </button>
+            </div>
           </div>
         )}
       </div>

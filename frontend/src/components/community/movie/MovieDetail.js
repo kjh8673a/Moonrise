@@ -48,6 +48,8 @@ function MovieDetail() {
           )}
         </p>
         {ratingDetailModalOpen && (
+          <>
+          <div className="fixed top-0 left-0 z-20 w-full h-full bg-black opacity-70" onClick={() => {setRatingDetailModalOpen(false)}}></div>
           <MovieRatingModal
             type="DETAIL"
             setRatingDetailModalOpen={setRatingDetailModalOpen}
@@ -59,16 +61,22 @@ function MovieDetail() {
             visual={rating[3]}
             sound={rating[4]}
           />
+          </>
         )}
         {ratingCreateModalOpen && (
+          <>
+          <div className="fixed top-0 left-0 z-20 w-full h-full bg-black opacity-70" onClick={() => {setRatingCreateModalOpen(false)}}></div>
           <MovieRatingModal
             type="CREATE"
             setRatingCreateModalOpen={setRatingCreateModalOpen}
             movieId={data.movieId}
             movieTitle={data.movieTitle}
           />
+          </>
         )}
         {ratingEditModalOpen && (
+          <>
+          <div className="fixed top-0 left-0 z-20 w-full h-full bg-black opacity-70" onClick={() => {setRatingEditModalOpen(false)}}></div>
           <MovieRatingModal
             type="EDIT"
             setRatingEditModalOpen={setRatingEditModalOpen}
@@ -80,6 +88,7 @@ function MovieDetail() {
             visual={DUMMY_DATA[3]}
             sound={DUMMY_DATA[4]}
           />
+          </>
         )}
         <p className="overflow-hidden text-gray-300 text-ellipsis whitespace-nowrap">
           <b className="text-lg text-white">감독</b>
