@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import moonrise.pjt2.member.controller.MemberJoinRequestDto;
 import moonrise.pjt2.member.exception.NotExistMemberException;
 import moonrise.pjt2.member.model.entity.Member;
+import moonrise.pjt2.member.model.entity.MemberInfo;
 import moonrise.pjt2.member.model.entity.Profile;
 import moonrise.pjt2.member.model.repository.MemberRepository;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ public class MemberService {
         // Member에 profile 매핑
         Member member = new Member();
         member.addId(user_id);
+        member.addMemberInfo(new MemberInfo());
         member.addProfile(memberProfile);
 
         memberRepository.save(member);
