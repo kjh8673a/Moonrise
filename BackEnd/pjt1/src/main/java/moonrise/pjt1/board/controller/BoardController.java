@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import moonrise.pjt1.board.dto.BoardCreateDto;
+import moonrise.pjt1.board.dto.BoardLikeDto;
 import moonrise.pjt1.board.dto.BoardUpdateDto;
 import moonrise.pjt1.board.service.BoardService;
 import moonrise.pjt1.commons.response.ResponseDto;
@@ -47,7 +48,8 @@ public class BoardController {
     public ResponseEntity<?> boardDetail(@RequestHeader HttpHeaders headers,
                                          @PathVariable("boardId") Long boardId){
         // Http Header 에서 Access-Token 받기
-        String access_token = headers.get("access_token").toString();
+        String access_token ="S0DVtF0N04rApnwwThWL0tLvSnSEVkVmHcXVZPLaCj11GwAAAYYwyC71";
+//        String access_token = headers.get("access_token").toString();
         log.info("access_token : {}", access_token);
         ResponseDto responseDto = boardService.detailBoard(access_token, boardId);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
@@ -57,7 +59,8 @@ public class BoardController {
     public ResponseEntity<?> boardCreate(@RequestHeader HttpHeaders headers,
                                          @RequestBody BoardCreateDto boardCreateDto){
         // Http Header 에서 Access-Token 받기
-        String access_token = headers.get("access_token").toString();
+//        String access_token = headers.get("access_token").toString();
+        String access_token = "S0DVtF0N04rApnwwThWL0tLvSnSEVkVmHcXVZPLaCj11GwAAAYYwyC71";
         log.info("access_token : {}", access_token);
         ResponseDto responseDto = boardService.createBoard(access_token, boardCreateDto);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
@@ -88,8 +91,15 @@ public class BoardController {
     }
 
 
-    // 게시글 인기목록 (1순위)
     // 게시글 좋아요 (1순위)
+    @PostMapping("/like")
+    public ResponseEntity<?> boardLike(@RequestHeader HttpHeaders headers, @RequestBody BoardLikeDto boardLikeDto){
+//        String access_token = headers.get("access_token").toString();
+        String access_token = "S0DVtF0N04rApnwwThWL0tLvSnSEVkVmHcXVZPLaCj11GwAAAYYwyC71";
+        ResponseDto responseDto = boardService.likeBoard(access_token, boardLikeDto);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
+    // 게시글 인기목록 (1순위)
     // 게시글 북마크 (1순위)
 
     @GetMapping("/test")

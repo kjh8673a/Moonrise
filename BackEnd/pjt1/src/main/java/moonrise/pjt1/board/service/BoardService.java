@@ -1,10 +1,8 @@
 package moonrise.pjt1.board.service;
 
 import lombok.RequiredArgsConstructor;
-import moonrise.pjt1.board.dto.BoardCreateDto;
-import moonrise.pjt1.board.dto.BoardDetailDto;
-import moonrise.pjt1.board.dto.BoardListResponseDto;
-import moonrise.pjt1.board.dto.BoardUpdateDto;
+import lombok.extern.log4j.Log4j2;
+import moonrise.pjt1.board.dto.*;
 import moonrise.pjt1.board.entity.Board;
 import moonrise.pjt1.board.entity.BoardComment;
 import moonrise.pjt1.board.entity.BoardInfo;
@@ -30,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class BoardService {
     private final BoardRepository boardRepository;
     private final MovieRepository movieRepository;
@@ -93,6 +92,7 @@ public class BoardService {
         if(!findBoard.isPresent()) throw new IllegalStateException("존재하지 않는 게시글 입니다");
         Board board = findBoard.get();
         String writer = board.getMember().getProfile().getNickname();
+        System.out.println("writer = " + writer);
         List<BoardComment> commentList = boardCommentRepository.getCommentList(boardId);
         int commentCnt = commentList.size();
         int likeCnt = board.getBoardInfo().getLikeCnt();
@@ -125,6 +125,7 @@ public class BoardService {
         Optional<Member> findMember = memberRepository.findById(user_id);
         Optional<Movie> findMovie = movieRepository.findById(boardCreateDto.getMovieId());
         BoardInfo boardInfo = new BoardInfo();
+
         Board board = Board.createBoard(boardCreateDto, findMember.get(), findMovie.get(), boardInfo);
         boardRepository.save(board);
         //responseDto 작성
@@ -208,4 +209,92 @@ public class BoardService {
         responseDto.setStatus_code(200);
         return responseDto;
     }
+
+@Transactional
+public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
+    Map<String, Object> result = new HashMap<>();
+    ResponseDto responseDto = new ResponseDto();
+
+    // token parsing 요청
+    Long user_id = HttpUtil.requestParingToken(access_token);
+    if(user_id == 0L){
+        responseDto.setStatus_code(400);
+        responseDto.setMessage("회원 정보가 없습니다.");
+        return responseDto;
+    }
+    // DB
+    Long boardId = boardLikeDto.getBoardId();
+    Optional<Member> findMember = memberRepository.findById(user_id);
+    Optional<Board> findBoard = boardRepository.findById(boardId);
+    int status = boardLikeDto.getStatus();
+    String cntKey = "boardLikeCnt::"+boardId;
+    String listKey = "UserBoardLikeList::"+ user_id;
+    ValueOperations valueOperations = redisTemplate.opsForValue();
+
+    // 좋아요 -> LIKECNT ++, LIKEBOARD 에 boardid 추가
+    if(status ==1 ){
+        // cnt 캐시
+        if(valueOperations.get(cntKey)==null){ // 캐시에 값이 없을 경우 레포지토리에서 조회 후 저장
+            valueOperations.set(cntKey, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()+1),20,TimeUnit.MINUTES);
+        }else{ // 캐시에 값이 있는 경우
+            valueOperations.increment(cntKey);
+        }
+        // list 캐시
+        if(valueOperations.get(listKey)==null){ // 캐시에 값없는 경우 레포지토리에서 조회 후 저장
+            String s = findMember.get().getMemberInfo().getLikeBoard() +boardId +",";
+            valueOperations.set(listKey, s);
+            System.out.println("캐시에 값 없는 경우 ");
+            System.out.println("s = " + s);
+        }else { // 캐시에서 값 가져온 다음 변경 후 저장
+            String s =  valueOperations.get(listKey) + String.valueOf(boardId)+",";
+            valueOperations.set(listKey, s,20, TimeUnit.MINUTES);
+            System.out.println("캐시에 값 있는 경우 캐시에서 받아옴");
+            System.out.println("s = " + s);
+        }
+
+    }else{ // 좋아요취소
+//        String boardIdString = boardId+",";
+//        int boardIdIndex = likelist.indexOf(boardIdString);
+//        int boardIdStringLen = boardIdString.length();
+//        likelist.delete(boardIdIndex, boardIdIndex+boardIdStringLen);
+//
+        // cnt 캐시
+        if(valueOperations.get(cntKey)==null){ // 캐시에 값이 없을 경우 레포지토리에서 조회 후 저장
+            valueOperations.set(cntKey, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()-1),20,TimeUnit.MINUTES);
+
+        }else { // 캐시에 값이 있는 경우
+            valueOperations.decrement(cntKey);
+        }
+        // list 캐시
+        if(valueOperations.get(listKey)==null){ // 캐시에 값없는 경우 레포지토리에서 조회 후 저장
+            String s = findMember.get().getMemberInfo().getLikeBoard();
+            StringBuilder sb = new StringBuilder(s);
+            String boardIdString = boardId+",";
+            int boardIdIndex = sb.indexOf(boardIdString);
+            System.out.println("boardIdIndex = " + boardIdIndex);
+            int boardIdStringLen = boardIdString.length();
+            sb.delete(boardIdIndex, boardIdIndex+boardIdStringLen);
+            valueOperations.set(listKey, sb.toString(),20,TimeUnit.MINUTES);
+        }else {
+            System.out.println("캐시에 값있음   ----------------------------------------");
+            String s = (String) valueOperations.get(listKey);
+            StringBuilder sb = new StringBuilder(s);
+            String boardIdString = boardId+",";
+            int boardIdIndex = sb.indexOf(boardIdString);
+            int boardIdStringLen = boardIdString.length();
+            sb.delete(boardIdIndex, boardIdIndex+boardIdStringLen);
+            valueOperations.set(listKey, sb.toString(),20,TimeUnit.MINUTES);
+
+        }
+    }
+    int likeCnt = Integer.parseInt((String) valueOperations.get(cntKey));
+    String likeList  = (String) valueOperations.get(listKey);
+    result.put("boardId", boardId);
+    result.put("likeCnt", likeCnt);
+    result.put("likeList", likeList);
+    responseDto.setData(result);
+    responseDto.setMessage("게시글 좋아요 성공");
+    responseDto.setStatus_code(200);
+    return responseDto;
+}
 }
