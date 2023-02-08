@@ -57,8 +57,8 @@ public class BoardService {
             BoardListResponseDto boardListResponseDto = new BoardListResponseDto(b.getId(),b.getTitle(),b.getContent(),b.getDateTime(),likeCnt,commentsCnt,viewCnt,nickname);
             findBoards.add(boardListResponseDto);
         }
-        result.put("find_boards", findBoards);
-        result.put("total_pages", boardList.getTotalPages());
+        result.put("findBoards", findBoards);
+        result.put("totalPages", boardList.getTotalPages());
         //responseDto 작성
         responseDto.setMessage("게시글 목록 리턴");
         responseDto.setData(result);
@@ -67,16 +67,20 @@ public class BoardService {
     }
 
     public ResponseDto detailBoard(String access_token,Long boardId){
+
         Map<String, Object> result = new HashMap<>();
         ResponseDto responseDto = new ResponseDto();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
         Optional<Board> findBoard = boardRepository.findById(boardId);
+        Optional<Member> findMember = memberRepository.findById(user_id);
+        String likeBoard = findMember.get().getMemberInfo().getLikeBoard();
+        boolean isLike = likeBoard.contains(boardId + ",");
         //***************redis 캐시서버**********************
         String key = "boardViewCnt::"+boardId;
         ValueOperations valueOperations = redisTemplate.opsForValue();
@@ -92,7 +96,6 @@ public class BoardService {
         if(!findBoard.isPresent()) throw new IllegalStateException("존재하지 않는 게시글 입니다");
         Board board = findBoard.get();
         String writer = board.getMember().getProfile().getNickname();
-        System.out.println("writer = " + writer);
         List<BoardComment> commentList = boardCommentRepository.getCommentList(boardId);
         int commentCnt = commentList.size();
         int likeCnt = board.getBoardInfo().getLikeCnt();
@@ -103,7 +106,8 @@ public class BoardService {
             result.put("isWriter",true);
         }
         else result.put("isWriter",false);
-        result.put("find_board", boardDetailDto);
+        result.put("findBoard", boardDetailDto);
+        result.put("isLike", isLike);
         responseDto.setMessage("게시글 상세보기 리턴");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
@@ -116,7 +120,7 @@ public class BoardService {
 
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -129,7 +133,7 @@ public class BoardService {
         Board board = Board.createBoard(boardCreateDto, findMember.get(), findMovie.get(), boardInfo);
         boardRepository.save(board);
         //responseDto 작성
-        result.put("board_id",board.getId());
+        result.put("boardId",board.getId());
         responseDto.setMessage("게시글 작성 완료");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
@@ -142,7 +146,7 @@ public class BoardService {
 
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -162,7 +166,7 @@ public class BoardService {
             return responseDto;
         }
         //responseDto 작성
-        result.put("board_id",board.getId());
+        result.put("boardId",board.getId());
         responseDto.setMessage("게시글 수정 완료");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
@@ -176,7 +180,7 @@ public class BoardService {
 
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -203,7 +207,7 @@ public class BoardService {
             return responseDto;
         }
         //responseDto 작성
-        result.put("board_status",board.getBoardInfo().getBoardStatus());
+        result.put("boardStatus",board.getBoardInfo().getBoardStatus());
         responseDto.setMessage("게시글 상태 변경 성공");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
@@ -217,7 +221,7 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
 
     // token parsing 요청
     Long user_id = HttpUtil.requestParingToken(access_token);
-    if(user_id == 0L){
+    if(user_id.equals(0L)){
         responseDto.setStatus_code(400);
         responseDto.setMessage("회원 정보가 없습니다.");
         return responseDto;
@@ -243,21 +247,15 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
         if(valueOperations.get(listKey)==null){ // 캐시에 값없는 경우 레포지토리에서 조회 후 저장
             String s = findMember.get().getMemberInfo().getLikeBoard() +boardId +",";
             valueOperations.set(listKey, s);
-            System.out.println("캐시에 값 없는 경우 ");
-            System.out.println("s = " + s);
+
         }else { // 캐시에서 값 가져온 다음 변경 후 저장
             String s =  valueOperations.get(listKey) + String.valueOf(boardId)+",";
             valueOperations.set(listKey, s,20, TimeUnit.MINUTES);
-            System.out.println("캐시에 값 있는 경우 캐시에서 받아옴");
-            System.out.println("s = " + s);
+
         }
 
     }else{ // 좋아요취소
-//        String boardIdString = boardId+",";
-//        int boardIdIndex = likelist.indexOf(boardIdString);
-//        int boardIdStringLen = boardIdString.length();
-//        likelist.delete(boardIdIndex, boardIdIndex+boardIdStringLen);
-//
+
         // cnt 캐시
         if(valueOperations.get(cntKey)==null){ // 캐시에 값이 없을 경우 레포지토리에서 조회 후 저장
             valueOperations.set(cntKey, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt()-1),20,TimeUnit.MINUTES);
