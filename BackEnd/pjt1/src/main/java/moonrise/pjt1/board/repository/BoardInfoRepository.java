@@ -9,5 +9,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface BoardInfoRepository extends JpaRepository<BoardInfo, Long> {
     @Query(value = "select bi.viewCnt from BoardInfo bi where bi.id = :boardId")
-    int findBoardViewCnt(@Param("boardId") Long boardId);
+    Integer findBoardViewCnt(@Param("boardId") Long boardId);
 }

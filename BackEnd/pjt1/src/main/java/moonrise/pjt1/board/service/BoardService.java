@@ -77,18 +77,19 @@ public class BoardService {
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
+        Optional<Board> findBoard = boardRepository.findById(boardId);
         //***************redis 캐시서버**********************
         String key = "boardViewCnt::"+boardId;
         ValueOperations valueOperations = redisTemplate.opsForValue();
+        Long boardInfoId = findBoard.get().getBoardInfo().getId();
         if(valueOperations.get(key)==null){
-            valueOperations.set(key, String.valueOf(boardInfoRepository.findBoardViewCnt(boardId)+1),20, TimeUnit.MINUTES);
+            valueOperations.set(key, String.valueOf(boardInfoRepository.findBoardViewCnt(boardInfoId)+1),20, TimeUnit.MINUTES);
         }else {
             valueOperations.increment(key);
         }
         int viewCnt = Integer.parseInt((String) valueOperations.get(key));
         //***************redis 캐시서버**********************
         //***************DB 조회**********************
-        Optional<Board> findBoard = boardRepository.findById(boardId);
         if(!findBoard.isPresent()) throw new IllegalStateException("존재하지 않는 게시글 입니다");
         Board board = findBoard.get();
         String writer = board.getMember().getProfile().getNickname();
