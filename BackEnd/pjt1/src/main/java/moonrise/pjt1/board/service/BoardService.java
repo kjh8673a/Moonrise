@@ -115,7 +115,7 @@ public class BoardService {
         List<BoardComment> commentList = boardCommentRepository.getCommentList(boardId);
         int commentCnt = commentList.size();
         int likeCnt = board.getBoardInfo().getLikeCnt();
-        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList, viewCnt,commentCnt,likeCnt);
+        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList, viewCnt,commentCnt,likeCnt,isLike,isBookmark);
 
         //responseDto 작성
         if(user_id.equals(board.getMember().getId())){
@@ -124,8 +124,6 @@ public class BoardService {
         else result.put("isWriter",false);
 
         result.put("findBoard", boardDetailDto);
-        result.put("isLike", isLike);
-        result.put("isBookmark",isBookmark);
         responseDto.setMessage("게시글 상세보기 리턴");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
