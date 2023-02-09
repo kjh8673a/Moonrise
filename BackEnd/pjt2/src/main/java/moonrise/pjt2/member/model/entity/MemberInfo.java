@@ -20,4 +20,14 @@ public class MemberInfo {
     private String bookmarkBoard;
     private String likeParty;
     private String bookmarkParty;
+
+    public MemberInfo() {
+        this.bannedCnt = 0;
+        this.likeMovie = "";
+        this.likeGenre = "";
+        this.likeBoard = "";
+        this.bookmarkBoard = "";
+        this.likeParty = "";
+        this.bookmarkParty = "";
+    }
 }
