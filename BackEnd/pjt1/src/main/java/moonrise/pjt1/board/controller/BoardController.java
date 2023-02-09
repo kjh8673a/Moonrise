@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import moonrise.pjt1.board.dto.BoardBookmarkDto;
 import moonrise.pjt1.board.dto.BoardCreateDto;
 import moonrise.pjt1.board.dto.BoardLikeDto;
 import moonrise.pjt1.board.dto.BoardUpdateDto;
@@ -98,6 +99,13 @@ public class BoardController {
     }
     // 게시글 인기목록 (1순위)
     // 게시글 북마크 (1순위)
+    @PostMapping("/bookmark")
+    public ResponseEntity<?> boardBookmark(@RequestHeader HttpHeaders headers, @RequestBody BoardBookmarkDto boardBookmarkDto){
+        String access_token = headers.get("access_token").toString();
+        ResponseDto responseDto = boardService.bookmarkBoard(access_token, boardBookmarkDto);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
+
 
     @GetMapping("/test")
     public void test(String token){
