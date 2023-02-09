@@ -10,10 +10,12 @@ public class MypageResponseDto {
     private Long boardId;
     private LocalDateTime dateTime;
     private String title;
+    private String movieTitle;
 
-    public MypageResponseDto(Long boardId, LocalDateTime dateTime, String title) {
+    public MypageResponseDto(Long boardId, LocalDateTime dateTime, String title, String movieTitle) {
         this.boardId = boardId;
         this.dateTime = dateTime;
         this.title = title;
+        this.movieTitle = movieTitle;
     }
 }

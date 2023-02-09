@@ -412,7 +412,8 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
             Optional<Board> findBoard = boardRepository.findById(boardId);
             LocalDateTime dateTime = findBoard.get().getDateTime();
             String title = findBoard.get().getTitle();
-            MypageResponseDto mypageResponseDto = new MypageResponseDto(boardId, dateTime,title);
+            String movieTitle = findBoard.get().getMovie().getTitle();
+            MypageResponseDto mypageResponseDto = new MypageResponseDto(boardId, dateTime,title, movieTitle);
             findBoards.add(mypageResponseDto);
         }
         result.put("findBoards", findBoards);
