@@ -11,26 +11,33 @@ import moonrise.pjt1.board.dto.BoardUpdateDto;
 import moonrise.pjt1.board.service.BoardService;
 import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.util.GetResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/board")
+@RequiredArgsConstructor
 @Log4j2
 public class BoardController {
+
+
     private final BoardService boardService;
 
     // 게시글 목록보기 (0순위)
@@ -54,14 +61,17 @@ public class BoardController {
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
     // 게시글 생성 (0순위)
-    @PostMapping("/create")
-    public ResponseEntity<?> boardCreate(@RequestHeader HttpHeaders headers,
-                                         @RequestBody BoardCreateDto boardCreateDto){
+    @PostMapping(value = "/create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public void boardCreate(@RequestHeader HttpHeaders headers, @RequestPart MultipartFile file, @RequestPart BoardCreateDto boardCreateDto){
+        System.out.println("formData = " + file.toString());
+        System.out.println("boardCreateDto = " + boardCreateDto);
+
         // Http Header 에서 Access-Token 받기
         String access_token = headers.get("access_token").toString();
         log.info("access_token : {}", access_token);
-        ResponseDto responseDto = boardService.createBoard(access_token, boardCreateDto);
-        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+
+        //ResponseDto responseDto = boardService.createBoard(access_token, boardCreateDto);
+        //return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 
     // 게시글 수정 (0순위)
