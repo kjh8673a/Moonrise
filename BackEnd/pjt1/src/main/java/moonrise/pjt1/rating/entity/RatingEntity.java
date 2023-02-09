@@ -15,10 +15,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Table(name = "rating", indexes = @Index(name = "movie_id", columnList = "movie_id"))
 public class RatingEntity implements Serializable {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rating_id")
-    private long ratingId; //pk
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "movie_id")
+    private Movie movie; //index
     //평가항목5개
     @Column(nullable = false)
     private long direction; //연출
@@ -38,15 +40,9 @@ public class RatingEntity implements Serializable {
     private Member member; //fk
 
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id")
-    private Movie movie; //index
-
     @Builder
-    public RatingEntity(long ratingId, long direction, long sound, long story, long acting, long visual, long total,
+    public RatingEntity(long direction, long sound, long story, long acting, long visual, long total,
                         Member member, Movie movie) {
-        this.ratingId = ratingId;
         this.direction = direction;
         this.sound = sound;
         this.story = story;
