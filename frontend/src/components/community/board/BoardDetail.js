@@ -23,6 +23,7 @@ function BoardDetail() {
   const id = parseInt(params.get("id"));
 
   const access_token = useSelector((state) => state.member.accessToken);
+
   const config = {
     headers: {
       access_token: access_token,
@@ -30,12 +31,17 @@ function BoardDetail() {
   };
 
   useEffect(() => {
+    const config = {
+      headers: {
+        access_token: access_token,
+      },
+    };
     axios
       .get("http://3.35.149.202:80/api/board/" + id, config)
       .then((response) => {
         setBoard(response.data.data.findBoard);
       });
-  }, [id]);
+  }, [id, access_token]);
 
   const goBack = () => {
     movePage("/community/list/");

@@ -23,6 +23,11 @@ function MovieDetail() {
     setRatingEditModalOpen(true);
   };
 
+  // 임시
+  const checkRating = () => {
+    setHaveRating(false);
+  }
+
   const data = useSelector((state) => state.movie);
 
   return (
@@ -60,6 +65,7 @@ function MovieDetail() {
             direction={rating[2]}
             visual={rating[3]}
             sound={rating[4]}
+            tmp={checkRating}
           />
           </>
         )}
