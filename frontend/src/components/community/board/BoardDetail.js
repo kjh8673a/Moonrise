@@ -1,23 +1,41 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import BoardComment from "./BoardComment";
 
 function BoardDetail() {
   const [board, setBoard] = useState({});
-  const [commentValue, setCommentValue] = useState("");
-
+  const [comment, setComment] = useState("");
+  const [commentRequestBody, setCommentRequestBody] = useState({
+    boardId: 0,
+    content: "",
+    groupId: 0,
+    isNestedComment: 0,
+    memberId: "",
+  });
   const movePage = useNavigate();
+
+  const movieTitle = useSelector((state) => state.movie.movieTitle);
 
   const params = new URLSearchParams(window.location.search);
   const id = parseInt(params.get("id"));
 
+  const access_token = useSelector((state) => state.member.accessToken);
+  const config = {
+    headers: {
+      access_token: access_token,
+    },
+  };
+
   useEffect(() => {
-    axios.get("http://3.35.149.202/api/board/" + id).then((response) => {
-      setBoard(response.data.findBoard);
-    });
-  });
+    axios
+      .get("http://3.35.149.202:80/api/board/" + id, config)
+      .then((response) => {
+        setBoard(response.data.data.findBoard);
+      });
+  }, [id]);
 
   const goBack = () => {
     movePage("/community/list/");
@@ -25,20 +43,63 @@ function BoardDetail() {
 
   const addComment = (event) => {
     event.preventDefault();
+    if (comment === "") {
+      return;
+    }
+    axios
+      .post(
+        "http://3.35.149.202:80/api//board/comments/create",
+        commentRequestBody,
+        config
+      )
+      .then((response) => {
+        setComment("");
+      });
 
-    console.log(commentValue);
+    axios
+      .get("http://3.35.149.202:80/api/board/" + id, config)
+      .then((response) => {
+        setBoard(response.data.data.findBoard);
+      });
+  };
+
+  const addSubCommentConfirm = () => {
+    axios
+      .get("http://3.35.149.202:80/api/board/" + id, config)
+      .then((response) => {
+        setBoard(response.data.data.findBoard);
+      });
+  };
+
+  const editCommentConfirm = () => {
+    axios
+      .get("http://3.35.149.202:80/api/board/" + id, config)
+      .then((response) => {
+        setBoard(response.data.data.findBoard);
+      });
   };
 
   const getValue = (event) => {
-    setCommentValue(event.target.value);
+    setCommentRequestBody((prevState) => {
+      return { ...prevState, boardId: id, content: event.target.value };
+    });
+    setComment(event.target.value);
   };
 
   const comments = board.boardComments;
 
+  const deleteCommentConfirm = () => {
+    axios
+      .get("http://3.35.149.202:80/api/board/" + id, config)
+      .then((response) => {
+        setBoard(response.data.data.findBoard);
+      });
+  };
+
   return (
     <div className="w-4/5 min-h-screen p-2 m-auto bg-slate-400">
       <div className="flex flex-col items-center border-b">
-        <span className="text-[#FA9E13] font-semibold">{board.movieId}</span>
+        <span className="text-[#FA9E13] font-semibold">{movieTitle}</span>
         <span className="text-2xl font-extrabold">{board.title}</span>
         <div className="flex w-full">
           <span className="flex-1 cursor-pointer" onClick={goBack}>
@@ -60,23 +121,28 @@ function BoardDetail() {
             className="flex-1 p-2 rounded"
             placeholder="내용을 입력해 주세요"
             onChange={getValue}
+            value={comment}
           ></input>
           <button className="w-20 h-20 bg-[#FA9E13] rounded text-white">
             등록
           </button>
         </form>
       </div>
-      {comments && comments.map((comment) => (
-        <BoardComment
-          id={comment.id}
-          groupId={comment.groupId}
-          isNestedComment={comment.isNestedComment}
-          writeDate={comment.writeDate}
-          boardCommentStatus={comment.boardCommentStatus}
-          content={comment.content}
-          writer={comment.writer}
-        />
-      ))}
+      {comments &&
+        comments.map((comment) => (
+          <BoardComment
+            id={comment.id}
+            groupId={comment.groupId}
+            isNestedComment={comment.isNestedComment}
+            writeDate={comment.writeDate.replace("T", " ")}
+            boardCommentStatus={comment.boardCommentStatus}
+            content={comment.content}
+            writer={comment.writer}
+            addSubCommentConfirm={addSubCommentConfirm}
+            deleteCommentConfirm={deleteCommentConfirm}
+            editCommentConfirm={editCommentConfirm}
+          />
+        ))}
     </div>
   );
 }

@@ -22,7 +22,7 @@ function MovieCard(props) {
     dispatch(setMovieDetail({poster: imgURL, title: props.movie.title}))
     console.log(movieData)
     axios.post(baseURL + '/api/movie',movieData).then(res => {console.log(res)})
-    movePage('/community/list/party');
+    movePage('/community/list/');
   }
   return (
     <div className='relative col-span-1 movieCard' onClick={goCommunity}>

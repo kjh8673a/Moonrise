@@ -24,7 +24,7 @@ function BoardCard(props) {
         <div className="flex justify-between">
           <span className="text-sm text-white">{props.write_date}</span>
           <span className="text-sm text-white">
-            좋아요 {props.like_cnt} 댓글 {props.comment_cnt}
+            좋아요 {props.like_cnt} &nbsp; 조회수 {props.view_cnt}
           </span>
         </div>
       </div>
