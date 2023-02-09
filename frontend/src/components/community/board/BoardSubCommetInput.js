@@ -1,16 +1,53 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 function BoardSubCommetInput(props) {
-  const [commentValue, setCommentValue] = useState("@" + props.nick + " ");
+  const [commentValue, setCommentValue] = useState("");
 
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get("id"));
+  
+  const access_token = useSelector((state) => state.member.accessToken);
+  const config = {
+    headers: {
+      access_token: access_token,
+    },
+  };
+  
+  const [commentRequestBody, setCommentRequestBody] = useState({
+    boardId: 0,
+    content: "",
+    groupId: 0,
+    isNestedComment: 1,
+    memberId: "",
+  });
+  
   const addSubComment = (event) => {
     event.preventDefault();
-    props.addSubCommentConfirm();
+    if(commentValue === "") {
+      return;
+    }
+    console.log(commentRequestBody)
+    axios
+      .post(
+        "http://3.35.149.202:80/api//board/comments/create",
+        commentRequestBody,
+        config
+      )
+      .then((response) => {
+        setCommentValue("");
+        props.addSubCommentConfirm();
+      });
+    
+    
   };
 
   const getValue = (event) => {
-    let { value } = { ...event.target };
-    setCommentValue(value);
+    setCommentRequestBody((prevState) => {
+      return { ...prevState, boardId: id, content: event.target.value, groupId: props.comment_id };
+    });
+    setCommentValue(event.target.value);
   };
 
   return (
