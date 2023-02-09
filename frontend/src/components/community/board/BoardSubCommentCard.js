@@ -39,7 +39,6 @@ function BoardSubCommentCard(props) {
 
   const deleteComment = (event) => {
     event.preventDefault();
-    console.log(params);
     axios
       .post("http://3.35.149.202:80/api/board/comments/status", params, config)
       .then((response) => {
