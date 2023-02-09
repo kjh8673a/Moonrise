@@ -74,12 +74,19 @@ public class PartyService {
         Party party = findParty.get();
         List<PartyComment> partyComments = partyCommentRepository.getCommentList(partyId);
         List<PartyJoin> partyJoins = party.getPartyJoins();
+        List<PartyJoin> partyJoinAccept = new ArrayList<>();
+        List<PartyJoin> partyJoinWait = new ArrayList<>();
+        List<PartyJoin> partyJoinSurplus = new ArrayList<>();
+
         boolean flag = false;
         for (PartyJoin partyJoin : partyJoins) {
+            if(partyJoin.getPartyJoinStatus().toString().equals("승인대기")) partyJoinWait.add(partyJoin);
+            else if(partyJoin.getPartyJoinStatus().toString().equals("승인")) partyJoinAccept.add(partyJoin);
+            else partyJoinSurplus.add(partyJoin);
+
             if(partyJoin.getMember().getId().equals(user_id)){
                 result.put("joinStatus",partyJoin.getPartyJoinStatus());
                 flag = true;
-                break;
             }
         }
         if(!flag){
@@ -96,7 +103,9 @@ public class PartyService {
         if(findParty.isPresent()){
             PartyReadResponseDto partyReadResponseDto = new PartyReadResponseDto(party.getId(),party.getTitle(),party.getContent(),party.getPartyDate(),
                     party.getPartyPeople(),party.getLocation(),party.getPartyStatus(),
-                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine(), viewCnt, likeCnt, commentsCnt,party.getMember().getProfile().getNickname());
+                    party.getMovie().getId(),partyComments,party.getDeadLine(), viewCnt, likeCnt,
+                    commentsCnt,party.getMember().getProfile().getNickname(),
+                    partyJoinAccept,partyJoinWait,partyJoinSurplus);
             result.put("findParty",partyReadResponseDto);
         }
         //***************DB 조회**********************
@@ -345,7 +354,6 @@ public class PartyService {
     }
     @Transactional
     public ResponseDto statusComment(String access_token, Long commentId, int statusCode) {
-
         ResponseDto responseDto = new ResponseDto();
         Map<String, Object> result = new HashMap<>();
         // token parsing 요청
@@ -355,33 +363,32 @@ public class PartyService {
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
-        Optional<PartyComment> findComment = partyCommentRepository.findById(commentId);
-        if(!findComment.isPresent()){
+        List<PartyComment> changeCommentList = partyCommentRepository.getChangeCommentList(commentId);
+        if(changeCommentList.size() == 0){
             responseDto.setStatus_code(400);
             responseDto.setMessage("수정할 댓글을 찾을 수 없습니다.");
             return responseDto;
         }
-        PartyComment partyComment = findComment.get();
-        if(user_id.equals(partyComment.getMember().getId())) {
-            switch (statusCode) {
-                case 1:
-                    partyComment.normalize();
-                    break;
-                case 2:
-                    partyComment.banned();
-                    break;
-                case 3:
-                    partyComment.deleted();
-                    break;
+        else{
+            for (PartyComment partyComment : changeCommentList) {
+                if(user_id.equals(partyComment.getMember().getId())) {
+                    switch (statusCode) {
+                        case 1:
+                            partyComment.normalize();
+                            break;
+                        case 2:
+                            partyComment.banned();
+                            break;
+                        case 3:
+                            partyComment.deleted();
+                            break;
+                    }
+                }
             }
         }
-        else{
-            responseDto.setStatus_code(400);
-            responseDto.setMessage("해당 댓글 작성자가 아닙니다.");
-            return responseDto;
-        }
+
         //responseDto 작성
-        result.put("partyCommentStatus", partyComment.getPartyCommentStatus());
+        result.put("partyCommentStatus", statusCode);
         responseDto.setMessage("댓글 상태 변경 성공");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
