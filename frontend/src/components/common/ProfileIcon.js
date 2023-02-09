@@ -38,7 +38,7 @@ function ProfileIcon() {
     return(<div className="relative flex justify-end col-span-1">
     <div className="text-left" onMouseEnter={mouseEnterHandler} onMouseLeave={mouseLeaveHandler}>
       {!isHovering && <img  className="border-2 rounded-full w-9 h-9" src={Profile} alt="" />}
-      {isHovering && (<div className="absolute top-0 right-0 z-10 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+      {isHovering && (<div className="absolute top-0 right-0 z-10 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
         <div className="py-1 divide-y" role="none">
           <div className="flex p-3">
             <img  className="w-12 h-12 border-2 rounded-full" src={Profile} alt="" />
