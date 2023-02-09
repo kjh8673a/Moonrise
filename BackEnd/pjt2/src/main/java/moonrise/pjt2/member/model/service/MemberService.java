@@ -52,6 +52,18 @@ public class MemberService {
         }
         return m.get();
     }
+    public MemberJoinDto findMemberAll(Long userId){
+        Optional<Member> m = memberRepository.findMemberById(userId);
+        if(!m.isPresent()){
+            throw new NotExistMemberException("회원이 존재하지 않습니다.");
+        }
+        Member findMember = m.get();
+        MemberJoinDto dto = new MemberJoinDto();
+        dto.setGender(findMember.getProfile().getGender().toString());
+        dto.setNickname(findMember.getProfile().getNickname());
+//        dto.setGenres(findMember.getMemberInfo().getLikeGenre().toString());
+        return dto;
+    }
     public ResponseDto nicknameCheck(String nickname){
         Optional<Profile> findProfile = profileRepository.findByNickname(nickname);
 

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import moonrise.pjt2.member.exception.UnauthorizedException;
 import moonrise.pjt2.member.model.entity.Member;
+import moonrise.pjt2.member.model.entity.MemberInfo;
+import moonrise.pjt2.member.model.entity.Profile;
 import moonrise.pjt2.member.model.service.MemberService;
 
 import moonrise.pjt2.util.HttpUtil;
@@ -127,15 +129,14 @@ public class MemberController {
                 return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);  //200
 
             }else{  // 회원가입 되어 있어 그냥 token만 반환해
-                Member member = memberService.findMember(userId);
+                MemberJoinDto dto = memberService.findMemberAll(userId);
+                dto.setAccess_token(access_Token);
+                dto.setRefresh_token(refresh_Token);
 
-                //resultMap.put("nickname", member.getProfile().getNickname());
-                resultMap.put("access_token", access_Token);
-                resultMap.put("refresh_token", refresh_Token);
 
                 responseDto.setStatus_code(200);
                 responseDto.setMessage("로그인 완료!!");
-                responseDto.setData(resultMap);
+                responseDto.setData(dto);
             }
 
             br.close();
