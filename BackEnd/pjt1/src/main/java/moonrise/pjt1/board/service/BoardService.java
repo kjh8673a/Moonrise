@@ -92,8 +92,8 @@ public class BoardService {
         //************ 북마크 여부  ************
         String bookmarkBoardList;
         String bookmarkListKey = "UserBoardBookMarkList::"+ user_id;
-        if(valueOperations.get(likeListKey)==null){
-            bookmarkBoardList = findMember.get().getMemberInfo().getLikeBoard();
+        if(valueOperations.get(bookmarkListKey)==null){
+            bookmarkBoardList = findMember.get().getMemberInfo().getBookmarkBoard();
         }else {
             bookmarkBoardList = (String) valueOperations.get(bookmarkListKey);
         }
@@ -115,7 +115,7 @@ public class BoardService {
         List<BoardComment> commentList = boardCommentRepository.getCommentList(boardId);
         int commentCnt = commentList.size();
         int likeCnt = board.getBoardInfo().getLikeCnt();
-        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList, viewCnt,commentCnt,likeCnt);
+        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList, viewCnt,commentCnt,likeCnt,isLike,isBookmark);
 
         //responseDto 작성
         if(user_id.equals(board.getMember().getId())){
@@ -124,8 +124,6 @@ public class BoardService {
         else result.put("isWriter",false);
 
         result.put("findBoard", boardDetailDto);
-        result.put("isLike", isLike);
-        result.put("isBookmark",isBookmark);
         responseDto.setMessage("게시글 상세보기 리턴");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
@@ -378,5 +376,82 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
         responseDto.setStatus_code(200);
         return responseDto;
 
+    }
+
+    public ResponseDto bookmarkMypage(String access_token) {
+        Map<String, Object> result = new HashMap<>();
+        ResponseDto responseDto = new ResponseDto();
+        // token parsing 요청
+        Long user_id = HttpUtil.requestParingToken(access_token);
+        System.out.println("user_id = " + user_id);
+        if(user_id.equals(0L)){
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("회원 정보가 없습니다.");
+            return responseDto;
+        }
+        // DB
+        Optional<Member> findMember = memberRepository.findById(user_id);
+
+        // 먼저 캐시서버에서 찾아보기
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        String bookmarkBoardList;
+        String bookmarkListKey = "UserBoardBookMarkList::"+ user_id;
+        if(valueOperations.get(bookmarkListKey)==null){
+            bookmarkBoardList = findMember.get().getMemberInfo().getBookmarkBoard();
+        }else { // 없으면 DB 찾아서
+            bookmarkBoardList = (String) valueOperations.get(bookmarkListKey);
+        }
+        // String 받고 FOR 문 돌면서 boardid 찾고 dto에 정보 저장
+        String []bookmarks = bookmarkBoardList.split(",");
+        List<MypageResponseDto> findBoards = new ArrayList<>();
+
+        for (int i=0; i<bookmarks.length; i++){
+            Long boardId = Long.parseLong(bookmarks[i]);
+            Optional<Board> findBoard = boardRepository.findById(boardId);
+            LocalDateTime dateTime = findBoard.get().getDateTime();
+            String title = findBoard.get().getTitle();
+            String movieTitle = findBoard.get().getMovie().getTitle();
+            MypageResponseDto mypageResponseDto = new MypageResponseDto(boardId, dateTime,title, movieTitle);
+            findBoards.add(mypageResponseDto);
+        }
+        result.put("findBoards", findBoards);
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
+        responseDto.setMessage("마이페이지 북마크 리스트 성공 ~");
+
+        return responseDto;
+    }
+
+    public ResponseDto boardMypage(String access_token) {
+        Map<String, Object> result = new HashMap<>();
+        ResponseDto responseDto = new ResponseDto();
+        // token parsing 요청
+        Long user_id = HttpUtil.requestParingToken(access_token);
+        System.out.println("user_id = " + user_id);
+        if(user_id.equals(0L)){
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("회원 정보가 없습니다.");
+            return responseDto;
+        }
+        // DB
+
+        List<Board> boardList = boardRepository.findByUserId(user_id);
+
+        List<MypageResponseDto> findBoards = new ArrayList<>();
+
+        for(Board b : boardList){
+            Long boardId = b.getId();
+            String title = b.getTitle();
+            String movieTitle = b.getMovie().getTitle();
+            LocalDateTime dateTime = b.getDateTime();
+            MypageResponseDto mypageResponseDto = new MypageResponseDto(boardId,dateTime,title,movieTitle);
+            findBoards.add(mypageResponseDto);
+        }
+        result.put("findBoards", findBoards);
+        //responseDto 작성
+        responseDto.setMessage("내가 쓴 게시글 목록 리턴");
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
+        return responseDto;
     }
 }
