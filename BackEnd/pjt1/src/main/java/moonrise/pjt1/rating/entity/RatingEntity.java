@@ -17,10 +17,9 @@ import java.io.Serializable;
 public class RatingEntity implements Serializable {
 
     @Id
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id")
-    private Movie movie; //index
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "reting_id")
+    private long id;
     //평가항목5개
     @Column(nullable = false)
     private long direction; //연출
@@ -34,6 +33,10 @@ public class RatingEntity implements Serializable {
     private long visual; //영상미
     //총점
     private long total;
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "movie_id")
+    private Movie movie; //index
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
