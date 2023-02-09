@@ -436,9 +436,24 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
             return responseDto;
         }
         // DB
-        Long boardId = 3L;
-        Optional<Member> findMember = memberRepository.findById(user_id);
-        Optional<Board> findBoard = boardRepository.findById(boardId);
+
+        List<Board> boardList = boardRepository.findByUserId(user_id);
+
+        List<MypageResponseDto> findBoards = new ArrayList<>();
+
+        for(Board b : boardList){
+            Long boardId = b.getId();
+            String title = b.getTitle();
+            String movieTitle = b.getMovie().getTitle();
+            LocalDateTime dateTime = b.getDateTime();
+            MypageResponseDto mypageResponseDto = new MypageResponseDto(boardId,dateTime,title,movieTitle);
+            findBoards.add(mypageResponseDto);
+        }
+        result.put("findBoards", findBoards);
+        //responseDto 작성
+        responseDto.setMessage("내가 쓴 게시글 목록 리턴");
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
         return responseDto;
     }
 }
