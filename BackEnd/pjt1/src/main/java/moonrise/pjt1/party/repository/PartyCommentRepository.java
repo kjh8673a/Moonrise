@@ -8,6 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface PartyCommentRepository extends JpaRepository<PartyComment,Long> {
-    @Query(value = "select pc from PartyComment as pc where pc.party.id =:partyId order by pc.groupId, pc.id")
+
+    @Query(value = "select pc from PartyComment as pc where pc.party.id =:partyId and pc.partyCommentStatus = 'NORMAL' order by pc.groupId, pc.id")
     List<PartyComment> getCommentList(@Param("partyId") Long partyId);
+
+    @Query(value = "select pc from PartyComment pc where pc.id = :commentId or pc.groupId = :commentId")
+    List<PartyComment> getChangeCommentList(@Param("commentId") Long commentId);
 }
