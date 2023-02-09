@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 
 
 public interface BoardRepository extends JpaRepository<Board,Long> {
@@ -17,4 +18,6 @@ public interface BoardRepository extends JpaRepository<Board,Long> {
 
     Page<Board> findByMovieId(@Param("movieId") Long movieId, Pageable pageable);
 
+    @Query("select b from Board b where b.member.id =:userId")
+    List<Board> findByUserId(@Param("userId") Long userId);
 }

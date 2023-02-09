@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface BoardCommentRepository extends JpaRepository<BoardComment,Long> {
-    @Query(value = "select bc from BoardComment as bc where bc.board.id =:boardId order by bc.groupId ")
+    @Query(value = "select bc from BoardComment as bc where bc.board.id =:boardId order by bc.groupId, bc.id ")
     List<BoardComment> getCommentList(@Param("boardId") Long boardId);
 
 }
