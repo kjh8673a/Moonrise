@@ -7,7 +7,6 @@ import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.rating.dto.RatingDto;
 import moonrise.pjt1.rating.entity.RatingEntity;
 import moonrise.pjt1.rating.repository.RatingRepository;
-import moonrise.pjt1.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,23 +35,20 @@ public class RatingServiceImpl implements RatingService {
      */
     @Override
     public RatingEntity createRating(long movieId, long memberId, RatingDto dto) {
-        long sum = dto.getActing() + dto.getDirection() + dto.getSound() + dto.getStory() + dto.getVisual();
         Optional<Movie> movie = movieRepository.findById(movieId);
         Optional<Member> member = memberRepository.findById(memberId);
         //DB에 저장
-        dto.setTotal(sum);
         RatingEntity ratingEntity = RatingEntity.builder()
                 .acting(dto.getActing())
                 .direction(dto.getDirection())
                 .sound(dto.getSound())
                 .story(dto.getStory())
                 .visual(dto.getVisual())
-                .total(sum)
+                .total(dto.getTotal())
                 .movie(movie.get())
                 .member(member.get())
                 .build();
         ratingRepository.save(ratingEntity);
-        dto.setTotal(sum);
         String key = "rating::" + movieId;
         ListOperations listOperations = redisTemplate.opsForList();
         if (listOperations.size(key) == 0) {
@@ -122,7 +118,7 @@ public class RatingServiceImpl implements RatingService {
         try {
             RatingEntity db = ratingRepository.findPersonal(movieId, memberId);
             List<Long> result = new ArrayList<>();
-            result.add(db.getTotal());
+            result.add(db.getId());
             result.add(db.getStory());
             result.add(db.getActing());
             result.add(db.getDirection());
@@ -148,8 +144,8 @@ public class RatingServiceImpl implements RatingService {
             result[3] += db.get(i).getDirection();
             result[4] += db.get(i).getVisual();
             result[5] += db.get(i).getSound();
-            result[6] += ratingRepository.countByMovieIdEquals(movieId); //개수
         }
+        result[6] = ratingRepository.countByMovieIdEquals(movieId); //개수
         String key = "rating::" + movieId;
         ListOperations listOperations = redisTemplate.opsForList();
         listOperations.leftPush(key, String.valueOf(result[0]));

@@ -68,10 +68,10 @@ public class RatingController {
 
     @GetMapping("find/{movieId}")
     public ResponseEntity findRating(@PathVariable long movieId) {
-        List<Long> result = ratingService.findRating(movieId);
-        if (result.size() == 0) {
-            return null;
+        if (ratingService.findRating(movieId) == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(null);
         } else {
+            List<Long> result = ratingService.findRating(movieId);
             return ResponseEntity.status(HttpStatus.OK).body(result);
         }
     }
