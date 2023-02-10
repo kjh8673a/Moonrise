@@ -56,9 +56,6 @@ public class DebateService {
         else{
             chatOperations.rightPush(key,value);
         }
-
-
-
     }
 
     public void saveRdbChat(List<DebateChatDto> debateChatDtos, int groupNum){
@@ -122,7 +119,7 @@ public class DebateService {
                     20,
                     TimeUnit.MINUTES);
         }
-        else debateLivePeople = (int) valueOperations.get(key);
+        else debateLivePeople = Integer.parseInt((String) valueOperations.get(key));
 
         if(debateLivePeople >= maxPpl) return false;
         else valueOperations.increment(key);

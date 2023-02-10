@@ -27,7 +27,7 @@ public class ChatController {
 
     @MessageMapping(value = "/chat/message") // 채팅 메시지 들어옴
     public void message(DebateChatDto debateChatDto){
-        System.out.println(debateChatDto);
+        log.info(debateChatDto);
         debateService.saveCacheChat(debateChatDto);
         template.convertAndSend("/sub/chat/room/" + debateChatDto.getDebateId(), debateChatDto);
     }
