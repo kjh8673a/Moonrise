@@ -97,7 +97,13 @@ public class BoardService {
         }else {
             bookmarkBoardList = (String) valueOperations.get(bookmarkListKey);
         }
-        boolean isBookmark = bookmarkBoardList.contains(boardId + "");
+        boolean isBookmark;
+        if(bookmarkBoardList == null){
+            isBookmark = false;
+        }
+        else {
+            isBookmark = bookmarkBoardList.contains(boardId + "");
+        }
         //***************redis 캐시서버**********************
         String key = "boardViewCnt::"+boardId;
         Long boardInfoId = findBoard.get().getBoardInfo().getId();
