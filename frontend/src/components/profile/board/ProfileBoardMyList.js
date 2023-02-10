@@ -1,4 +1,6 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import ProfileSeeMoreButton from "../ProfileSeeMoreButton";
 import ProfileBoardCard from "./ProfileBoardCard";
 
@@ -114,9 +116,25 @@ const DUMMY_DATA = [
 ];
 
 function ProfileBoardMyList() {
-  const data = DUMMY_DATA;
+  const [data, setData] = useState([]);
   const [limit, setLimit] = useState(8);
   const [list, setList] = useState([]);
+
+  const access_token = useSelector((state) => state.member.accessToken);
+
+  useEffect(() => {
+    const config = {
+      headers: {
+        access_token: access_token,
+      },
+    };
+    axios
+      .get("http://3.35.149.202:80/api/board/mypage/board", config)
+      .then((response) => {
+        console.log(response)
+        // setData(response.data.data.findBoards);
+      });
+  }, [access_token]);
 
   useEffect(() => {
     setList(data.filter((item, index) => index < limit));

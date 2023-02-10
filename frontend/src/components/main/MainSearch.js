@@ -31,6 +31,7 @@ function MainSearch() {
     axios.get('https://api.themoviedb.org/3/search/movie?api_key=' + tmdbToken+ '&language=ko-KR&page=1&include_adult=false&query='+keyword)
         .then(response => {
             dispatch(setMovieList(response.data.results))
+            console.log(response)
         })
         .then(() => {
             if (keyword === "") {
