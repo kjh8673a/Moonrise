@@ -1,14 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router";
 
 function ProfileBoardCard(props) {
+  const movePage = useNavigate();
+
+  const moveBoardDetail = () => {
+    movePage(`/community/detail/board?id=${props.board_id}`)
+  }
+
   return (
-    <div className="w-48 h-48 rounded-lg">
+    <div className="w-48 h-48 rounded-lg cursor-pointer" onClick={moveBoardDetail}>
       <div
         style={{
           backgroundImage: `url(${props.image})`,
           backgroundSize: "cover",
         }}
-        className="w-48 h-3/5 rounded-lg"
+        className="w-48 h-3/5 rounded-lg bg-white"
       ></div>
       <div className="w-48 h-2/5 rounded-lg grid grid-rows-3 p-1">
         <div className="row-span-1 text-xs overflow-hidden text-[#FA9E13] flex items-center">
