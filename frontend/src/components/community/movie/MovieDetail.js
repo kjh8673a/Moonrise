@@ -7,6 +7,8 @@ function MovieDetail() {
   const [rating, setRating] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [myRating, setMyRating] = useState([0, 0, 0, 0, 0, 0]);
   const [average, setAverage] = useState(0);
+  const [genres, setGenres] = useState([]);
+  const [overview, setOverview] = useState("");
   const [haveRating, setHaveRating] = useState(false);
   const [ratingDetailModalOpen, setRatingDetailModalOpen] = useState(false);
   const [ratingCreateModalOpen, setRatingCreateModalOpen] = useState(false);
@@ -21,6 +23,23 @@ function MovieDetail() {
   };
 
   const data = useSelector((state) => state.movie);
+
+  const tmdbToken = process.env.REACT_APP_TMDB_TOKEN;
+  useEffect(() => {
+    axios
+      .get(
+        "https://api.themoviedb.org/3/movie/" +
+          data.movieId +
+          "?api_key=" +
+          tmdbToken +
+          "&language=ko-KR"
+      )
+      .then((response) => {
+        setGenres(response.data.genres);
+        setOverview(response.data.overview);
+      });
+  }, [data.movieId, tmdbToken]);
+
   useEffect(() => {
     const config = {
       headers: {
@@ -116,16 +135,17 @@ function MovieDetail() {
           {!noneMessage && <span>{average}</span>}
           {noneMessage && (
             <>
-              <span className="text-[#FA9E13] font-semibold">{noneMessage}</span>
-              <br />
+              <span className="text-[#FA9E13] font-semibold">
+                {noneMessage}
+              </span>
             </>
           )}
-          <button onClick={showRatingDetailModal}>평점상세</button>
+          <button onClick={showRatingDetailModal} className="ml-2">평점상세</button>
           {!haveRating && (
-            <button onClick={showRatingCreateModal}>평가하기</button>
+            <button onClick={showRatingCreateModal} className="ml-2">평가하기</button>
           )}
           {haveRating && (
-            <button onClick={showRatingEditModal}>평가수정</button>
+            <button onClick={showRatingEditModal} className="ml-2">평가수정</button>
           )}
         </p>
         {ratingDetailModalOpen && (
@@ -190,13 +210,14 @@ function MovieDetail() {
           </>
         )}
         <p className="overflow-hidden text-gray-300 text-ellipsis whitespace-nowrap">
-          <b className="text-lg text-white">감독</b>
-        </p>
-        <p className="overflow-hidden text-gray-300 text-ellipsis whitespace-nowrap">
-          <b className="text-lg text-white">주연</b>
-        </p>
-        <p className="overflow-hidden text-gray-300 text-ellipsis whitespace-nowrap">
           <b className="text-lg text-white">장르</b>
+          {genres.map((genre)=> (
+            <span className="ml-2">{genre.name}</span>
+          ))}
+        </p>
+        <p className="text-gray-300">
+          <b className="text-lg text-white">줄거리</b>
+          <div className="pr-10">{overview}</div>
         </p>
       </ul>
     </div>
