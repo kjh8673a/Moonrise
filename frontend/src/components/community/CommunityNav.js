@@ -25,7 +25,7 @@ function CommunityNav() {
     <div className='mb-4'>
         <ul className="flex pb-2 border-b navbar-nav">
             <li className="flex-1 text-center">
-                <bitton className={menu === "board" ? selected : notSelected} onClick={changeBoard}>게시글</bitton>
+                <button className={menu === "board" ? selected : notSelected} onClick={changeBoard}>게시글</button>
             </li>
             <li className="flex-1 text-center">
                 <button className={menu === "talk" ? selected : notSelected}  onClick={changeTalk}>담소</button>
