@@ -30,7 +30,7 @@ public class RatingController {
         String access_token = headers.get("access_token").toString();
         log.info("access_token : {}", access_token);
         Long memberId = HttpUtil.requestParingToken(access_token);
-        long total = ratingDto.getStory() + ratingDto.getActing() + ratingDto.getSound() + ratingDto.getVisual() + ratingDto.getDirection() / 5;
+        long total = ratingDto.getStory() + ratingDto.getActing() + ratingDto.getSound() + ratingDto.getVisual() + ratingDto.getDirection();
         RatingDto dto = RatingDto.builder()
                 .story(ratingDto.getStory())
                 .acting(ratingDto.getActing())
@@ -51,7 +51,7 @@ public class RatingController {
         String access_token = headers.get("access_token").toString();
         log.info("access_token : {}", access_token);
         Long memberId = HttpUtil.requestParingToken(access_token);
-        long total = ratingDto.getStory() + ratingDto.getActing() + ratingDto.getSound() + ratingDto.getVisual() + ratingDto.getDirection() / 5;
+        long total = ratingDto.getStory() + ratingDto.getActing() + ratingDto.getSound() + ratingDto.getVisual() + ratingDto.getDirection();
         ratingDto = RatingDto.builder()
                 .story(ratingDto.getStory())
                 .acting(ratingDto.getActing())
@@ -68,10 +68,10 @@ public class RatingController {
 
     @GetMapping("find/{movieId}")
     public ResponseEntity findRating(@PathVariable long movieId) {
-        List<Long> result = ratingService.findRating(movieId);
-        if (result.size() == 0) {
-            return null;
+        if (ratingService.findRating(movieId) == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(null);
         } else {
+            List<Long> result = ratingService.findRating(movieId);
             return ResponseEntity.status(HttpStatus.OK).body(result);
         }
     }

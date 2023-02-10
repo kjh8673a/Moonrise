@@ -15,7 +15,7 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     //이유는 왜 그런지 아직 찾지 못함
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/socket") //이주소로 SockJS 연결 ex)var sock = new SockJS("/chat");
+        registry.addEndpoint("/socket") //이주소로 SockJS 연결 ex)var sock = new SockJS("/socket");
                 //에서 새로운 핸드쉐이크 커넥션을 생성할 때 사용됨.
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
