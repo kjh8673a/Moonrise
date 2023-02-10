@@ -86,7 +86,7 @@ public class DebateService {
         }
         else{ //채팅방 입장 후 위로 스크롤 올리는 등 mysql저장된 채팅 내역 요청 시 리턴
             Integer maxGroupNum = messageRepository.findMaxGroupId(debateId);
-            if(maxGroupNum < findCnt){
+            if(maxGroupNum == null || maxGroupNum < findCnt){
                 responseDto.setMessage("더이상 채팅내역이 없습니다.");
                 responseDto.setData(null);
                 responseDto.setStatus_code(400);
