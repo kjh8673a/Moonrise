@@ -48,18 +48,23 @@ public class MemberController {
     @PostMapping("/kakao")
     @Transactional
     public ResponseEntity<?> getKaKaoToken(@RequestHeader HttpHeaders headers){
-        // Http Header 에서 인가 코드 받기
-        String authorization_code = headers.get("authorization_code").toString();
-
-        log.info("auth_code : {}", authorization_code);
-
-        String access_Token = "";
-        String refresh_Token = "";
-
-        HashMap<String, Object> resultMap = new HashMap<>();
         ResponseDto responseDto = new ResponseDto();
-        String requestURL = get_token_url;
         try{
+            // Http Header 에서 인가 코드 받기
+            String authorization_code = headers.get("authorization_code").toString();
+
+            log.info("auth_code : {}", authorization_code);
+
+            String access_Token = "";
+            String refresh_Token = "";
+
+            HashMap<String, Object> resultMap = new HashMap<>();
+
+            String requestURL = get_token_url;
+            log.info("requestURL : {}", requestURL);
+            log.info("client_id : {}", client_id);
+            log.info("redirect_uri : {}", redirect_uri);
+
             URL url = new URL(requestURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
