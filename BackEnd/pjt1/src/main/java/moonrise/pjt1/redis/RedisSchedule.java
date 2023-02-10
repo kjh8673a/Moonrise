@@ -43,7 +43,6 @@ public class RedisSchedule {
             int viewCnt = Integer.parseInt((String) redisTemplate.opsForValue().get(data));
             PartyInfo partyInfo = partyInfoRepository.findById(partyId).get();
             partyInfo.setViewCnt(viewCnt);
-            redisTemplate.delete(data);
             redisTemplate.delete("partyViewCnt::"+partyId);
         }
 
@@ -55,7 +54,6 @@ public class RedisSchedule {
             int viewCnt = Integer.parseInt((String) redisTemplate.opsForValue().get(data));
             Board board = boardRepository.findById(boardId).get();
             board.getBoardInfo().setViewCnt(viewCnt);
-            redisTemplate.delete(data);
             redisTemplate.delete("boardViewCnt::"+boardId);
 
         }
@@ -72,7 +70,6 @@ public class RedisSchedule {
             int likeCnt = Integer.parseInt((String) redisTemplate.opsForValue().get(data));
             Board board = boardRepository.findById(boardId).get();
             board.getBoardInfo().setLikeCnt(likeCnt);
-            redisTemplate.delete(data);
             redisTemplate.delete("boardLikeCnt::" + boardId);
         }
 
@@ -84,7 +81,6 @@ public class RedisSchedule {
             String likeList = (String) redisTemplate.opsForValue().get(data);
             Member member = memberRepository.findById(memberId).get();
             member.getMemberInfo().setLikeBoard(likeList);
-            redisTemplate.delete(data);
             redisTemplate.delete("UserBoardLikeList::"+memberId);
 
         }
@@ -101,23 +97,7 @@ public class RedisSchedule {
             String bookmarkList = (String) redisTemplate.opsForValue().get(data);
             Member member = memberRepository.findById(memberId).get();
             member.getMemberInfo().setBookmarkBoard(bookmarkList);
-            redisTemplate.delete(data);
             redisTemplate.delete("UserBoardBookMarkList::"+memberId);
-        }
-    }
-    @Transactional
-    @Scheduled(cron = "0 0/10 * * * ?")
-    public void deleteNowpplCacheFromRedis() {
-        Set<String> redisKeys = redisTemplate.keys("debateLivePeopleCnt*");
-        Iterator<String> it = redisKeys.iterator();
-        while (it.hasNext()) {
-            String data = it.next();
-            Long debateId = Long.parseLong(data.split("::")[1]);
-            int nowppl = Integer.parseInt((String) redisTemplate.opsForValue().get(data));
-            DebateInfo debateInfo = debateInfoRepository.findById(debateId).get();
-            debateInfo.setNowppl(nowppl);
-            redisTemplate.delete(data);
-            redisTemplate.delete("debateLivePeopleCnt::"+debateId);
         }
     }
 }
