@@ -2,10 +2,10 @@ package moonrise.pjt1.rating.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import moonrise.pjt1.rating.dto.RatingDto;
-import moonrise.pjt1.rating.repository.RatingRepository;
 import moonrise.pjt1.rating.service.RatingService;
+import moonrise.pjt1.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +25,11 @@ public class RatingController {
     }
 
     @PostMapping("/create/{movieId}")
-    public ResponseEntity createRating(@PathVariable long movieId, long memberId, @RequestBody RatingDto ratingDto) {
+    public ResponseEntity createRating(@RequestHeader HttpHeaders headers, @PathVariable long movieId, @RequestBody RatingDto ratingDto) {
+        // Http Header 에서 Access-Token 받기
+        String access_token = headers.get("access_token").toString();
+        log.info("access_token : {}", access_token);
+        Long memberId = HttpUtil.requestParingToken(access_token);
         long total = ratingDto.getStory() + ratingDto.getActing() + ratingDto.getSound() + ratingDto.getVisual() + ratingDto.getDirection() / 5;
         RatingDto dto = RatingDto.builder()
                 .story(ratingDto.getStory())
@@ -42,7 +46,11 @@ public class RatingController {
     }
 
     @PutMapping("/update/{ratingId}")
-    public ResponseEntity updateRating(@PathVariable long ratingId, @RequestBody RatingDto ratingDto) {
+    public ResponseEntity updateRating(@RequestHeader HttpHeaders headers, @PathVariable long ratingId, @RequestBody RatingDto ratingDto) {
+        // Http Header 에서 Access-Token 받기
+        String access_token = headers.get("access_token").toString();
+        log.info("access_token : {}", access_token);
+        Long memberId = HttpUtil.requestParingToken(access_token);
         long total = ratingDto.getStory() + ratingDto.getActing() + ratingDto.getSound() + ratingDto.getVisual() + ratingDto.getDirection() / 5;
         ratingDto = RatingDto.builder()
                 .story(ratingDto.getStory())
@@ -52,7 +60,7 @@ public class RatingController {
                 .direction(ratingDto.getDirection())
                 .total(total)
                 .movieId(ratingDto.getMovieId())
-                .memberId(ratingDto.getMemberId())
+                .memberId(memberId)
                 .build();
         ratingService.updateRating(ratingId, ratingDto);
         return ResponseEntity.status(HttpStatus.OK).body(ratingDto);
@@ -61,12 +69,25 @@ public class RatingController {
     @GetMapping("find/{movieId}")
     public ResponseEntity findRating(@PathVariable long movieId) {
         List<Long> result = ratingService.findRating(movieId);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        if (result.size() == 0) {
+            return null;
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        }
     }
 
     @GetMapping("personal")
-    public ResponseEntity findPersonal(long movieId, long memberId) {
+    public ResponseEntity findPersonal(@RequestHeader HttpHeaders headers, @RequestParam long movieId) {
+        // Http Header 에서 Access-Token 받기
+        String access_token = headers.get("access_token").toString();
+        log.info("access_token : {}", access_token);
+        Long memberId = HttpUtil.requestParingToken(access_token);
+        //없는 사람 null
         List<Long> result = ratingService.findPersonal(movieId, memberId);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        if (result.size() == 0) {
+            return null;
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        }
     }
 }

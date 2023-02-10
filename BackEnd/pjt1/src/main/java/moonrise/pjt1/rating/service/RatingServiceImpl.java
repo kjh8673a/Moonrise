@@ -7,6 +7,7 @@ import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.rating.dto.RatingDto;
 import moonrise.pjt1.rating.entity.RatingEntity;
 import moonrise.pjt1.rating.repository.RatingRepository;
+import moonrise.pjt1.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -35,7 +36,7 @@ public class RatingServiceImpl implements RatingService {
      */
     @Override
     public RatingEntity createRating(long movieId, long memberId, RatingDto dto) {
-        long sum = dto.getActing() + dto.getDirection() + dto.getSound() + dto.getStory() + dto.getVisual();
+       long sum = dto.getActing() + dto.getDirection() + dto.getSound() + dto.getStory() + dto.getVisual();
         Optional<Movie> movie = movieRepository.findById(movieId);
         Optional<Member> member = memberRepository.findById(memberId);
         //DB에 저장
@@ -98,7 +99,6 @@ public class RatingServiceImpl implements RatingService {
                 for (int i = 0; i < 7; i++) {
                     result.add(Long.parseLong(obj[i].toString()));
                 }
-                System.out.println(result);
                 return result;
             } else { //없으면 만들기
                 long[] arr = createToCache(movieId);
