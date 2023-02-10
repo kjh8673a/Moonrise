@@ -6,6 +6,8 @@ import moonrise.pjt1.board.entity.Board;
 import moonrise.pjt1.board.entity.BoardInfo;
 import moonrise.pjt1.board.repository.BoardInfoRepository;
 import moonrise.pjt1.board.repository.BoardRepository;
+import moonrise.pjt1.debate.entity.DebateInfo;
+import moonrise.pjt1.debate.repository.DebateInfoRepository;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.entity.MemberInfo;
 import moonrise.pjt1.member.repository.MemberRepository;
@@ -23,6 +25,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Log4j2
 public class RedisSchedule {
+    private final DebateInfoRepository debateInfoRepository;
     private final PartyInfoRepository partyInfoRepository;
     private final BoardInfoRepository boardInfoRepository;
     private final MemberRepository memberRepository;
@@ -30,7 +33,7 @@ public class RedisSchedule {
     private final RedisTemplate redisTemplate;
 
     @Transactional
-    @Scheduled(cron = "0 0/3 * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void deleteViewCntCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("partyViewCnt*");
         Iterator<String> it = redisKeys.iterator();
@@ -59,7 +62,7 @@ public class RedisSchedule {
     }
 
     @Transactional
-    @Scheduled(cron = "0 0/3 * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void deleteLikeCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("boardLikeCnt*");
         Iterator<String> it = redisKeys.iterator();
@@ -88,7 +91,7 @@ public class RedisSchedule {
     }
 
     @Transactional
-    @Scheduled(cron = "0 0/3 * * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void deleteBookmarkCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("UserBoardBookMarkList*");
         Iterator<String> it = redisKeys.iterator();
@@ -100,10 +103,21 @@ public class RedisSchedule {
             member.getMemberInfo().setBookmarkBoard(bookmarkList);
             redisTemplate.delete(data);
             redisTemplate.delete("UserBoardBookMarkList::"+memberId);
-
         }
-
     }
-
-
+    @Transactional
+    @Scheduled(cron = "0 0/10 * * * ?")
+    public void deleteNowpplCacheFromRedis() {
+        Set<String> redisKeys = redisTemplate.keys("debateLivePeopleCnt*");
+        Iterator<String> it = redisKeys.iterator();
+        while (it.hasNext()) {
+            String data = it.next();
+            Long debateId = Long.parseLong(data.split("::")[1]);
+            int nowppl = Integer.parseInt((String) redisTemplate.opsForValue().get(data));
+            DebateInfo debateInfo = debateInfoRepository.findById(debateId).get();
+            debateInfo.setNowppl(nowppl);
+            redisTemplate.delete(data);
+            redisTemplate.delete("debateLivePeopleCnt::"+debateId);
+        }
+    }
 }
