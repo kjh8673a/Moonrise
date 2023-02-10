@@ -88,7 +88,12 @@ public class BoardService {
         }else {
             likeBoardList = (String) valueOperations.get(likeListKey);
         }
-        boolean isLike = likeBoardList.contains(boardId + "");
+        boolean isLike;
+        if(likeBoardList == null){
+            isLike = false;
+        }else {
+            isLike = likeBoardList.contains(boardId + "");
+        }
         //************ 북마크 여부  ************
         String bookmarkBoardList;
         String bookmarkListKey = "UserBoardBookMarkList::"+ user_id;
@@ -403,7 +408,17 @@ public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
         String bookmarkBoardList;
         String bookmarkListKey = "UserBoardBookMarkList::"+ user_id;
         if(valueOperations.get(bookmarkListKey)==null){
-            bookmarkBoardList = findMember.get().getMemberInfo().getBookmarkBoard();
+            String bookmarkBoard = findMember.get().getMemberInfo().getBookmarkBoard();
+            // 북마크 목록이 없는 경우
+            if (bookmarkBoard == null){
+                responseDto.setStatus_code(200);
+                responseDto.setData(result);
+                responseDto.setMessage("북마크 목록이 없습니다");
+                return responseDto;
+            }else {
+                bookmarkBoardList = bookmarkBoard;
+            }
+
         }else { // 없으면 DB 찾아서
             bookmarkBoardList = (String) valueOperations.get(bookmarkListKey);
         }
