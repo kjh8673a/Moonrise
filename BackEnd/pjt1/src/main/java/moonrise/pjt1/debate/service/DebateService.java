@@ -129,6 +129,7 @@ public class DebateService {
                     .debateStatus(debate.getDebateStatus())
                     .maxppl(debate.getMaxppl())
                     .nowppl(debateLivePeople)
+                    .createDate(debate.getCreateDate())
                     .build();
             result.put("readDebate",debateReadResponseDto);
             if(debate.getMember().getId().equals(user_id)) result.put("isWriter",true);
