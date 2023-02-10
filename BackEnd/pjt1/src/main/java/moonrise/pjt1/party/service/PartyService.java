@@ -141,6 +141,39 @@ public class PartyService {
 
         return responseDto;
     }
+    public ResponseDto listMyParty(String access_token) {
+        ResponseDto responseDto = new ResponseDto();
+        Map<String, Object> result = new HashMap<>();
+        // token parsing 요청
+        Long user_id = HttpUtil.requestParingToken(access_token);
+        if(user_id.equals(0L)){
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("회원 정보가 없습니다.");
+            return responseDto;
+        }
+        List<Party> myPartyList = partyRepository.findMyPartyList(user_id);
+        List<PartyListResponseDto> findParties = new ArrayList<>();
+        for (Party party : myPartyList) {
+            PartyListResponseDto partyListResponseDto = PartyListResponseDto.builder()
+                    .partyPeople(party.getPartyPeople())
+                    .partyId(party.getId())
+                    .partyDate(party.getPartyDate())
+                    .writer(party.getMember().getProfile().getNickname())
+                    .title(party.getTitle())
+                    .location(party.getLocation())
+                    .likeCnt(party.getPartyInfo().getLikeCnt())
+                    .viewCnt(party.getPartyInfo().getViewCnt())
+                    .commentCnt(party.getPartyComments().size())
+                    .deadline(party.getDeadLine())
+                    .build();
+            findParties.add(partyListResponseDto);
+        }
+        result.put("findParties",findParties);
+        responseDto.setMessage("내가 만든 소모임 리스트");
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
+        return responseDto;
+    }
     public ResponseDto createParty(String access_token, PartyCreateDto partyCreateDto) {
         Map<String, Object> result = new HashMap<>();
         ResponseDto responseDto = new ResponseDto();
@@ -420,11 +453,12 @@ public class PartyService {
                     .build();
             partyJoinListDtos.add(partyJoinListDto);
         }
-
         result.put("myPartyJoinList", partyJoinListDtos);
         responseDto.setMessage("참가 신청 리스트");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
         return responseDto;
     }
+
+
 }

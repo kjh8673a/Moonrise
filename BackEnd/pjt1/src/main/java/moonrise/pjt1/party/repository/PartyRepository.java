@@ -15,4 +15,7 @@ public interface PartyRepository extends JpaRepository<Party,Long> {
 
 //    @Query(value = "select p from Party p join fetch p.partyInfo where p.movie.id = :movieId")
 //    List<Party> findPartyList(@Param("movieId") Long movieId);
+
+    @Query(value = "select p from Party p where p.member.id = :userId")
+    List<Party> findMyPartyList(@Param("userId") Long userId);
 }
