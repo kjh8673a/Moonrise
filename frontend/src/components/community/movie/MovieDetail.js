@@ -4,9 +4,9 @@ import { useSelector } from "react-redux";
 import MovieRatingModal from "./MovieRatingModal";
 
 function MovieDetail() {
-  const rating = [4.8, 3.5, 4.0, 4.3, 3.9];
-  const DUMMY_DATA = [4.8, 3.5, 4.0, 4.3, 3.9];
-  const average = rating.reduce((a, c) => a + c) / rating.length;
+  const [rating, setRating] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [myRating, setMyRating] = useState([0, 0, 0, 0, 0, 0]);
+  const [average, setAverage] = useState(0);
   const [haveRating, setHaveRating] = useState(false);
   const [ratingDetailModalOpen, setRatingDetailModalOpen] = useState(false);
   const [ratingCreateModalOpen, setRatingCreateModalOpen] = useState(false);
@@ -21,13 +21,35 @@ function MovieDetail() {
 
   const data = useSelector((state) => state.movie);
   useEffect(() => {
-    console.log(data.movieId);
+    const config = {
+      headers: {
+        access_token: access_token,
+      },
+    };
     axios
       .get("http://3.35.149.202:80/api/rating/find/" + data.movieId, config)
       .then((response) => {
-        console.log(response);
+        console.log(response.data);
+        if (response != null) {
+          setRating(response.data);
+          setAverage(response.data[6] / (response.data[0] * 5));
+        }
       });
-  }, [data.movieId]);
+    axios
+      .get(
+        "http://3.35.149.202:80/api/rating/personal?movieId=" + data.movieId,
+        config
+      )
+      .then((response) => {
+        console.log(response);
+        if (response != null) {
+          setMyRating(response.data);
+          setHaveRating(true);
+        } else {
+          setHaveRating(false);
+        }
+      });
+  }, [data.movieId, access_token]);
 
   const showRatingDetailModal = () => {
     setRatingDetailModalOpen(true);
@@ -42,10 +64,36 @@ function MovieDetail() {
   };
 
   const createRatingConfirm = () => {
+    roadRating();
+  };
+
+  const editRatingConfirm = () => {
+    roadRating();
+  };
+
+  const roadRating = () => {
     axios
       .get("http://3.35.149.202:80/api/rating/find/" + data.movieId, config)
       .then((response) => {
+        console.log(response.data);
+        if (response != null) {
+          setRating(response.data);
+          setAverage(response.data[6] / (response.data[0] * 5));
+        }
+      });
+    axios
+      .get(
+        "http://3.35.149.202:80/api/rating/personal?movieId=" + data.movieId,
+        config
+      )
+      .then((response) => {
         console.log(response);
+        if (response != null) {
+          setMyRating(response.data);
+          setHaveRating(true);
+        } else {
+          setHaveRating(false);
+        }
       });
   };
 
@@ -122,11 +170,13 @@ function MovieDetail() {
               setRatingEditModalOpen={setRatingEditModalOpen}
               movieId={data.movieId}
               movieTitle={data.movieTitle}
-              story={DUMMY_DATA[0]}
-              acting={DUMMY_DATA[1]}
-              direction={DUMMY_DATA[2]}
-              visual={DUMMY_DATA[3]}
-              sound={DUMMY_DATA[4]}
+              ratingId={myRating[0]}
+              story={myRating[1]}
+              acting={myRating[2]}
+              direction={myRating[3]}
+              visual={myRating[4]}
+              sound={myRating[5]}
+              editRatingConfirm={editRatingConfirm}
             />
           </>
         )}

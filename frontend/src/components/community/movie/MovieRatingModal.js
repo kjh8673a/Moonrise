@@ -30,27 +30,47 @@ function MovieRatingModal(props) {
 
   const createRating = (event) => {
     event.preventDefault();
-
-    const params = new URLSearchParams();
-    params.append("story", story);
-    params.append("acting", acting);
-    params.append("direction", direction);
-    params.append("visual", visual);
-    params.append("sound", sound);
-    params.append("memberId", "");
-    params.append("movieId", props.movieId);
-
     axios
       .post(
         "http://3.35.149.202:80/api/rating/create/" + props.movieId,
-        params,
+        {
+          movieId: props.movieId,
+          story: story,
+          acting: acting,
+          direction: direction,
+          visual: visual,
+          sound: sound,
+        },
         config
       )
       .then((response) => {
         props.createRatingConfirm();
+        console.log("평점 등록!")
         closeModal();
       });
   };
+
+  const editRating = (event) => {
+    event.preventDefault();
+    axios
+    .post(
+      "http://3.35.149.202:80/api/rating/update/" + props.movieId,
+      {
+        ratingId: props.ratingId,
+        story: story,
+        acting: acting,
+        direction: direction,
+        visual: visual,
+        sound: sound,
+      },
+      config
+    )
+    .then((response) => {
+      props.createRatingConfirm();
+      console.log("평점 등록!")
+      closeModal();
+    });
+  }
 
   const getStoryValue = (event) => {
     setStory(event.target.value);
@@ -211,7 +231,7 @@ function MovieRatingModal(props) {
               ></input>
             </div>
             <div className="row-span-1 text-center">
-              <button className="bg-[#FA9E13] px-3 rounded-lg font-semibold w-full">
+              <button onClick={editRating} className="bg-[#FA9E13] px-3 rounded-lg font-semibold w-full">
                 수정하기
               </button>
             </div>

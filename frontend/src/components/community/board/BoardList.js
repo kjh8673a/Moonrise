@@ -14,6 +14,7 @@ function BoardList() {
       .get("http://3.35.149.202:80/api/board/list/" + movieId + "?page=" + page)
       .then((response) => {
         setBoards(response.data.data.findBoards);
+        setPage(0); // 임시
       });
   }, [movieId, page]);
 
