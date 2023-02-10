@@ -28,7 +28,7 @@ public class RedisSchedule {
     private final RedisTemplate redisTemplate;
     private final DebateService debateService;
     @Transactional
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 0/5 * * * ?")
     public void deleteChatCacheFromRedis() throws IOException {
         Set<String> redisKeys = redisTemplate.keys("debateChat*");
         Iterator<String> it = redisKeys.iterator();
@@ -48,7 +48,6 @@ public class RedisSchedule {
             else{
                 debateService.saveRdbChat(dtos,groupNum+1);
             }
-            redisTemplate.delete(data);
             redisTemplate.delete("debateChat::"+debateId);
         }
     }
@@ -64,7 +63,6 @@ public class RedisSchedule {
             int debateLivePeopleCnt = Integer.parseInt((String) redisTemplate.opsForValue().get(data));
             DebateInfo debateInfo = debateInfoRepository.findById(debateId).get();
             debateInfo.setNowppl(debateLivePeopleCnt);
-            redisTemplate.delete(data);
             redisTemplate.delete("debateLivePeopleCnt::"+debateId);
         }
     }
