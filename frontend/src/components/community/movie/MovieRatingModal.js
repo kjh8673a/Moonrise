@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import RatingStar from "../../../feature/UI/RatingStar";
 
 function MovieRatingModal(props) {
   const [story, setStory] = useState();
@@ -87,6 +88,21 @@ function MovieRatingModal(props) {
     setSound(event.target.value);
   };
 
+  const changeStory = (val) => {
+    setStory(val);
+  }
+  const changeActing = (val) => {
+    setActing(val);
+  }
+  const changeDirection = (val) => {
+    setDirection(val);
+  }
+  const changeVisual = (val) => {
+    setVisual(val);
+  }
+  const changeSound = (val) => {
+    setSound(val);
+  }
   return (
     <div className="grid grid-rows-5 absolute z-50 bg-[#315B4C] border-2 border-yellow-400 h-60 w-60 top-96 left-96 rounded-lg p-2">
       <button className="absolute text-white right-2" onClick={closeModal}>
@@ -133,49 +149,24 @@ function MovieRatingModal(props) {
         {props.type === "CREATE" && (
           <div className="grid grid-rows-6 gap-1 px-4 py-2">
             <div className="grid grid-cols-3 row-span-1">
-              <b className="col-span-1">스토리</b>{" "}
-              <input
-                type="number"
-                className="col-span-2 px-2 text-black"
-                onChange={getStoryValue}
-                value={story}
-              ></input>
+              <b className="col-span-1">스토리</b>
+              <RatingStar sendScore={changeStory} />
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">연기</b>{" "}
-              <input
-                type="number"
-                className="col-span-2 px-2 text-black"
-                onChange={getActingValue}
-                value={acting}
-              ></input>
+              <RatingStar sendScore={changeActing} />
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">연출</b>{" "}
-              <input
-                type="number"
-                className="col-span-2 px-2 text-black"
-                onChange={getDirectionValue}
-                value={direction}
-              ></input>
+              <RatingStar sendScore={changeDirection} />
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">영상미</b>{" "}
-              <input
-                type="number"
-                className="col-span-2 px-2 text-black"
-                onChange={getVisualValue}
-                value={visual}
-              ></input>
+              <RatingStar sendScore={changeVisual} />
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">사운드</b>{" "}
-              <input
-                type="number"
-                className="col-span-2 px-2 text-black"
-                onChange={getSoundValue}
-                value={sound}
-              ></input>
+              <RatingStar sendScore={changeSound} />
             </div>
             <div className="row-span-1 text-center">
               <button
