@@ -19,8 +19,10 @@ public class BoardDetailDto {
     private int viewCnt;
     private int commentCnt;
     private int likeCnt;
+    private Boolean isLike;
+    private Boolean isBookmark;
 
-    public BoardDetailDto(Long movieId, String title, String content, LocalDateTime dateTime, String writer, List<BoardComment> boardComments, int viewCnt, int commentCnt, int likeCnt) {
+    public BoardDetailDto(Long movieId, String title, String content, LocalDateTime dateTime, String writer, List<BoardComment> boardComments, int viewCnt, int commentCnt, int likeCnt, Boolean isLike, Boolean isBookmark) {
         this.movieId = movieId;
         this.title = title;
         this.content = content;
@@ -30,6 +32,8 @@ public class BoardDetailDto {
         this.viewCnt = viewCnt;
         this.commentCnt = commentCnt;
         this.likeCnt = likeCnt;
+        this.isLike = isLike;
+        this.isBookmark = isBookmark;
     }
 
 

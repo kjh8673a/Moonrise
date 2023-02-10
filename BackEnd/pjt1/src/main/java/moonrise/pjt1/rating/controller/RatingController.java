@@ -1,5 +1,6 @@
 package moonrise.pjt1.rating.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import moonrise.pjt1.rating.dto.RatingDto;
 import moonrise.pjt1.rating.repository.RatingRepository;
 import moonrise.pjt1.rating.service.RatingService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping("/rating")
 public class RatingController {
 
@@ -23,39 +25,37 @@ public class RatingController {
     }
 
     @PostMapping("/create/{movieId}")
-    public ResponseEntity createRating(@PathVariable long movieId, long story, long acting, long direction, long visual,
-                                       long sound, long memberId) {
-        long total = story + acting + direction + visual + sound / 5;
+    public ResponseEntity createRating(@PathVariable long movieId, @RequestBody RatingDto ratingDto) {
+        long total = ratingDto.getStory() + ratingDto.getActing() + ratingDto.getSound() + ratingDto.getVisual() + ratingDto.getDirection() / 5;
         RatingDto dto = RatingDto.builder()
-                .story(story)
-                .acting(acting)
-                .sound(sound)
-                .visual(visual)
-                .direction(direction)
+                .story(ratingDto.getStory())
+                .acting(ratingDto.getActing())
+                .sound(ratingDto.getSound())
+                .visual(ratingDto.getVisual())
+                .direction(ratingDto.getDirection())
                 .total(total)
-                .movieId(movieId)
-                .memberId(memberId)
+                .movieId(ratingDto.getMovieId())
+                .memberId(ratingDto.getMemberId())
                 .build();
-        ratingService.createRating(movieId, memberId, dto);
+        ratingService.createRating(movieId, ratingDto.getMovieId(), dto);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
     @PutMapping("/update/{ratingId}")
-    public ResponseEntity updateRating(@PathVariable long ratingId, long story, long acting, long direction, long visual,
-                                       long sound, long memberId, long movieId) {
-        long total = story + acting + direction + visual + sound / 5;
-        RatingDto dto = RatingDto.builder()
-                .story(story)
-                .acting(acting)
-                .sound(sound)
-                .visual(visual)
-                .direction(direction)
+    public ResponseEntity updateRating(@PathVariable long ratingId,  @RequestBody RatingDto ratingDto) {
+        long total = ratingDto.getStory() + ratingDto.getActing() + ratingDto.getSound() + ratingDto.getVisual() + ratingDto.getDirection() / 5;
+        ratingDto = RatingDto.builder()
+                .story(ratingDto.getStory())
+                .acting(ratingDto.getActing())
+                .sound(ratingDto.getSound())
+                .visual(ratingDto.getVisual())
+                .direction(ratingDto.getDirection())
                 .total(total)
-                .movieId(movieId)
-                .memberId(memberId)
+                .movieId(ratingDto.getMovieId())
+                .memberId(ratingDto.getMemberId())
                 .build();
-        ratingService.updateRating(ratingId, dto);
-        return ResponseEntity.status(HttpStatus.OK).body(dto);
+        ratingService.updateRating(ratingId, ratingDto);
+        return ResponseEntity.status(HttpStatus.OK).body(ratingDto);
     }
 
     @GetMapping("find/{movieId}")

@@ -118,4 +118,13 @@ public class PartyController {
         ResponseDto responseDto = partyService.modifyParty(access_token,partyModifyDto);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
+
+    @GetMapping("/join/list")
+    public ResponseEntity<?> listPartyJoin(@RequestHeader HttpHeaders headers){
+        // Http Header 에서 Access-Token 받기
+        String access_token = headers.get("access_token").toString();
+        log.info("access_token : {}", access_token);
+        ResponseDto responseDto = partyService.listPartyJoin(access_token);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
 }

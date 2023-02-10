@@ -60,7 +60,7 @@ public class RedisSchedule {
 
     @Transactional
     @Scheduled(cron = "0 0/3 * * * ?")
-    public void deleteLikeCntCacheFromRedis() {
+    public void deleteLikeCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("boardLikeCnt*");
         Iterator<String> it = redisKeys.iterator();
         while (it.hasNext()) {
@@ -86,5 +86,24 @@ public class RedisSchedule {
 
         }
     }
+
+    @Transactional
+    @Scheduled(cron = "0 0/3 * * * ?")
+    public void deleteBookmarkCacheFromRedis() {
+        Set<String> redisKeys = redisTemplate.keys("UserBoardBookMarkList*");
+        Iterator<String> it = redisKeys.iterator();
+        while (it.hasNext()) {
+            String data = it.next();
+            Long memberId = Long.parseLong(data.split("::")[1]);
+            String bookmarkList = (String) redisTemplate.opsForValue().get(data);
+            Member member = memberRepository.findById(memberId).get();
+            member.getMemberInfo().setBookmarkBoard(bookmarkList);
+            redisTemplate.delete(data);
+            redisTemplate.delete("UserBoardBookMarkList::"+memberId);
+
+        }
+
+    }
+
 
 }

@@ -67,9 +67,7 @@ public class Board {
         board.setMovie(movie);
         return board;
     }
-//    public void addBoardInfo(BoardInfo boardInfo){
-//        this.boardInfo = boardInfo;
-//    }
+
 
     //  게시글 삭제
     public void deleted(){
