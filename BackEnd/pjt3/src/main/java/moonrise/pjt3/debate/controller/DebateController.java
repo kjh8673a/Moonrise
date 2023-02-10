@@ -30,7 +30,7 @@ public class DebateController {
                                              @RequestParam(value = "findCnt",defaultValue = "0") int findCnt) throws JsonProcessingException {
         log.info(debateId);
         if(findCnt == 0){ // 0이면 채팅방 첫 입장임
-            boolean isMax = debateService.updateLivePeopleCnt(debateId);
+            boolean isMax = debateService. updateLivePeopleCnt(debateId);
             if(!isMax){
                 ResponseDto responseDto = new ResponseDto();
                 responseDto.setMessage("참가인원이 꽉찼습니다.");
