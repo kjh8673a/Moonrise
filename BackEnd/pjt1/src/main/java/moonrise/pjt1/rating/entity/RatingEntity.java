@@ -18,7 +18,7 @@ public class RatingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reting_id")
+    @Column(name = "rating_id")
     private long id;
     //평가항목5개
     @Column(nullable = false)
