@@ -118,7 +118,7 @@ public class DebateService {
                     20,
                     TimeUnit.MINUTES);
         }
-        else debateLivePeople = (int) valueOperations.get(key);
+        else debateLivePeople = Integer.parseInt((String) valueOperations.get(key));
         if(findDebate.isPresent()){
             debate = findDebate.get();
             DebateReadResponseDto debateReadResponseDto = DebateReadResponseDto.builder()
