@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface RatingRepository extends JpaRepository<RatingEntity, Long> {
     long countByMovieIdEquals(Long movieId);
+
     @Query(value = "select r from RatingEntity r where r.movie.id = :movieId")
     List<RatingEntity> findRatingList(@Param("movieId") long movieId);
+
+    @Query(value = "select r from RatingEntity r where r.movie.id = :movieId and r.member.id= :memberId")
+    RatingEntity findPersonal(@Param("movieId") long movieId, @Param("memberId") long memberId);
 }

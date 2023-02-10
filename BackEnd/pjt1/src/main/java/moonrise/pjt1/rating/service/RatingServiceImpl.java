@@ -36,8 +36,8 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public RatingEntity createRating(long movieId, long memberId, RatingDto dto) {
         long sum = dto.getActing() + dto.getDirection() + dto.getSound() + dto.getStory() + dto.getVisual();
-        Optional<Movie>movie=movieRepository.findById(movieId);
-        Optional<Member> member=memberRepository.findById(memberId);
+        Optional<Movie> movie = movieRepository.findById(movieId);
+        Optional<Member> member = memberRepository.findById(memberId);
         //DB에 저장
         dto.setTotal(sum);
         RatingEntity ratingEntity = RatingEntity.builder()
@@ -94,25 +94,39 @@ public class RatingServiceImpl implements RatingService {
             ListOperations listOperations = redisTemplate.opsForList();
             if (redisTemplate.hasKey(key)) { //캐시에 값있으면
                 Object[] obj = listOperations.range(key, 0, 6).toArray();
-                List<Long>result=new ArrayList<>();
-                for(int i=0; i<7; i++){
+                List<Long> result = new ArrayList<>();
+                for (int i = 0; i < 7; i++) {
                     result.add(Long.parseLong(obj[i].toString()));
                 }
                 System.out.println(result);
                 return result;
             } else { //없으면 만들기
-                long[] arr=createToCache(movieId);
-                List<Long>result=new ArrayList<>();
-                for(int i=0; i<7; i++){
+                long[] arr = createToCache(movieId);
+                List<Long> result = new ArrayList<>();
+                for (int i = 0; i < 7; i++) {
                     result.add(arr[i]);
                 }
                 return result;
-
-
             }
         } else {
             return null;
         }
+    }
+
+    /**
+     * 개인별 평점조회
+     */
+    @Override
+    public List<Long> findPersonal(long movieId, long memberId) {
+        RatingEntity db = ratingRepository.findPersonal(movieId, memberId);
+        List<Long> result = new ArrayList<>();
+        result.add(db.getTotal());
+        result.add(db.getStory());
+        result.add(db.getActing());
+        result.add(db.getDirection());
+        result.add(db.getVisual());
+        result.add(db.getSound());
+        return result;
     }
 
     /**
