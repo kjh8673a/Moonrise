@@ -11,6 +11,7 @@ function MovieDetail() {
   const [ratingDetailModalOpen, setRatingDetailModalOpen] = useState(false);
   const [ratingCreateModalOpen, setRatingCreateModalOpen] = useState(false);
   const [ratingEditModalOpen, setRatingEditModalOpen] = useState(false);
+  const [noneMessage, setNoneMessage] = useState("");
 
   const access_token = useSelector((state) => state.member.accessToken);
   const config = {
@@ -29,10 +30,12 @@ function MovieDetail() {
     axios
       .get("http://3.35.149.202:80/api/rating/find/" + data.movieId, config)
       .then((response) => {
-        console.log(response.data);
-        if (response != null) {
+        if (response.data[0] !== 0) {
           setRating(response.data);
           setAverage(response.data[6] / (response.data[0] * 5));
+          setNoneMessage("");
+        } else {
+          setNoneMessage("평점을 등록해주세요!");
         }
       });
     axios
@@ -41,8 +44,7 @@ function MovieDetail() {
         config
       )
       .then((response) => {
-        console.log(response);
-        if (response != null) {
+        if (response.data !== "") {
           setMyRating(response.data);
           setHaveRating(true);
         } else {
@@ -75,10 +77,12 @@ function MovieDetail() {
     axios
       .get("http://3.35.149.202:80/api/rating/find/" + data.movieId, config)
       .then((response) => {
-        console.log(response.data);
-        if (response != null) {
+        if (response.data[0] !== 0) {
           setRating(response.data);
           setAverage(response.data[6] / (response.data[0] * 5));
+          setNoneMessage("");
+        } else {
+          setNoneMessage("평점을 등록해주세요!");
         }
       });
     axios
@@ -87,9 +91,7 @@ function MovieDetail() {
         config
       )
       .then((response) => {
-        console.log(response);
-        if (response != null) {
-          setMyRating(response.data);
+        if (response !== "") {
           setHaveRating(true);
         } else {
           setHaveRating(false);
@@ -111,12 +113,19 @@ function MovieDetail() {
           {useSelector((state) => state.movie.movieTitle)}
         </li>
         <p className="text-sm text-white">
-          {average} <button onClick={showRatingDetailModal}>평점상세</button>
+          {!noneMessage && <span>{average}</span>}
+          {noneMessage && (
+            <>
+              <span className="text-[#FA9E13] font-semibold">{noneMessage}</span>
+              <br />
+            </>
+          )}
+          <button onClick={showRatingDetailModal}>평점상세</button>
           {!haveRating && (
             <button onClick={showRatingCreateModal}>평가하기</button>
           )}
           {haveRating && (
-            <button onClick={showRatingEditModal}>평가하기</button>
+            <button onClick={showRatingEditModal}>평가수정</button>
           )}
         </p>
         {ratingDetailModalOpen && (

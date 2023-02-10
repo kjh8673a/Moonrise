@@ -45,7 +45,6 @@ function MovieRatingModal(props) {
       )
       .then((response) => {
         props.createRatingConfirm();
-        console.log("평점 등록!")
         closeModal();
       });
   };
@@ -53,10 +52,11 @@ function MovieRatingModal(props) {
   const editRating = (event) => {
     event.preventDefault();
     axios
-    .post(
-      "http://3.35.149.202:80/api/rating/update/" + props.movieId,
+    .put(
+      "http://3.35.149.202:80/api/rating/update/" + props.ratingId,
       {
         ratingId: props.ratingId,
+        movieId: props.movieId,
         story: story,
         acting: acting,
         direction: direction,
@@ -66,8 +66,7 @@ function MovieRatingModal(props) {
       config
     )
     .then((response) => {
-      props.createRatingConfirm();
-      console.log("평점 등록!")
+      props.editRatingConfirm();
       closeModal();
     });
   }
@@ -196,6 +195,7 @@ function MovieRatingModal(props) {
                 type="number"
                 className="col-span-2 px-2 text-black"
                 defaultValue={props.story}
+                onChange={getStoryValue}
               ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
@@ -204,6 +204,7 @@ function MovieRatingModal(props) {
                 type="number"
                 className="col-span-2 px-2 text-black"
                 defaultValue={props.acting}
+                onChange={getActingValue}
               ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
@@ -212,6 +213,7 @@ function MovieRatingModal(props) {
                 type="number"
                 className="col-span-2 px-2 text-black"
                 defaultValue={props.direction}
+                onChange={getDirectionValue}
               ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
@@ -220,6 +222,7 @@ function MovieRatingModal(props) {
                 type="number"
                 className="col-span-2 px-2 text-black"
                 defaultValue={props.visual}
+                onChange={getVisualValue}
               ></input>
             </div>
             <div className="grid grid-cols-3 row-span-1">
@@ -228,6 +231,7 @@ function MovieRatingModal(props) {
                 type="number"
                 className="col-span-2 px-2 text-black"
                 defaultValue={props.sound}
+                onChange={getSoundValue}
               ></input>
             </div>
             <div className="row-span-1 text-center">
