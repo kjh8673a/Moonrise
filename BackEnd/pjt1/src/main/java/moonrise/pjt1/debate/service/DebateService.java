@@ -131,7 +131,7 @@ public class DebateService {
                     .nowppl(debateLivePeople)
                     .build();
             result.put("readDebate",debateReadResponseDto);
-            if(debate.getMember().getId() == user_id) result.put("isWriter",true);
+            if(debate.getMember().getId().equals(user_id)) result.put("isWriter",true);
             else result.put("isWriter",false);
         }
         //responseDto 작성

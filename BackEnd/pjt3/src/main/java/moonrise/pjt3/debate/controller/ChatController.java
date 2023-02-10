@@ -1,6 +1,7 @@
 package moonrise.pjt3.debate.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import moonrise.pjt3.debate.dto.DebateChatDto;
 import moonrise.pjt3.debate.entity.Message;
 import moonrise.pjt3.debate.service.DebateService;
@@ -9,7 +10,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController @Log4j2
 @RequiredArgsConstructor
 public class ChatController {
     private final SimpMessagingTemplate template; //특정 Broker로 메세지를 전달
@@ -20,6 +21,7 @@ public class ChatController {
                 .content(writer +"님이 채팅방에 입장했습니다.")
                 .writer("[알림]") // 채팅방 입장 시 다른 참가자들에게 안내
                 .build();
+        log.info("[알림] " + writer + "님이 채팅방에 입장했습니다.");
         template.convertAndSend("/sub/chat/room/" + debateId, debateChatDto);
     }
 
