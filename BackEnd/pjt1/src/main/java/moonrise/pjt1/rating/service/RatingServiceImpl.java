@@ -36,7 +36,7 @@ public class RatingServiceImpl implements RatingService {
      */
     @Override
     public RatingEntity createRating(long movieId, long memberId, RatingDto dto) {
-       long sum = dto.getActing() + dto.getDirection() + dto.getSound() + dto.getStory() + dto.getVisual();
+        long sum = dto.getActing() + dto.getDirection() + dto.getSound() + dto.getStory() + dto.getVisual();
         Optional<Movie> movie = movieRepository.findById(movieId);
         Optional<Member> member = memberRepository.findById(memberId);
         //DB에 저장
@@ -89,8 +89,8 @@ public class RatingServiceImpl implements RatingService {
      */
     @Override
     public List<Long> findRating(long movieId) {
-        List<RatingEntity> db = ratingRepository.findRatingList(movieId);
-        if (db.size() != 0) {
+        try {
+            List<RatingEntity> db = ratingRepository.findRatingList(movieId);
             String key = "rating::" + movieId;
             ListOperations listOperations = redisTemplate.opsForList();
             if (redisTemplate.hasKey(key)) { //캐시에 값있으면
@@ -108,7 +108,8 @@ public class RatingServiceImpl implements RatingService {
                 }
                 return result;
             }
-        } else {
+
+        } catch (NullPointerException e) {
             return null;
         }
     }
@@ -118,15 +119,19 @@ public class RatingServiceImpl implements RatingService {
      */
     @Override
     public List<Long> findPersonal(long movieId, long memberId) {
-        RatingEntity db = ratingRepository.findPersonal(movieId, memberId);
-        List<Long> result = new ArrayList<>();
-        result.add(db.getTotal());
-        result.add(db.getStory());
-        result.add(db.getActing());
-        result.add(db.getDirection());
-        result.add(db.getVisual());
-        result.add(db.getSound());
-        return result;
+        try {
+            RatingEntity db = ratingRepository.findPersonal(movieId, memberId);
+            List<Long> result = new ArrayList<>();
+            result.add(db.getTotal());
+            result.add(db.getStory());
+            result.add(db.getActing());
+            result.add(db.getDirection());
+            result.add(db.getVisual());
+            result.add(db.getSound());
+            return result;
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     /**

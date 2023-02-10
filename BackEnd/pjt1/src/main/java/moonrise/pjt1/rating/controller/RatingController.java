@@ -83,10 +83,10 @@ public class RatingController {
         log.info("access_token : {}", access_token);
         Long memberId = HttpUtil.requestParingToken(access_token);
         //없는 사람 null
-        List<Long> result = ratingService.findPersonal(movieId, memberId);
-        if (result.size() == 0) {
-            return null;
+        if (ratingService.findPersonal(movieId, memberId) == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(null);
         } else {
+            List<Long> result = ratingService.findPersonal(movieId, memberId);
             return ResponseEntity.status(HttpStatus.OK).body(result);
         }
     }
