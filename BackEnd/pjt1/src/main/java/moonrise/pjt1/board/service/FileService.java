@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -28,6 +29,9 @@ public class FileService {
         try {
             for (MultipartFile multipartFile : multipartFileList) {
                 String originalName = multipartFile.getOriginalFilename();
+                UUID uuid = UUID.randomUUID();
+                System.out.println("uuid = " + uuid);
+                String newFileName = uuid + "_" + originalName;
 
                 //파일 크기
                 long size = multipartFile.getSize();
@@ -38,10 +42,10 @@ public class FileService {
 
                 // s3에 업로드
                 amazonS3Client.putObject(
-                        new PutObjectRequest(S3Bucket, originalName, multipartFile.getInputStream(), objectMetadata)
+                        new PutObjectRequest(S3Bucket, newFileName, multipartFile.getInputStream(), objectMetadata)
                                 .withCannedAcl(CannedAccessControlList.PublicRead)
             );
-                String imagePath = amazonS3Client.getUrl(S3Bucket, originalName).toString(); // 접근가능한 URL 가져오기
+                String imagePath = amazonS3Client.getUrl(S3Bucket, newFileName).toString(); // 접근가능한 URL 가져오기
                 log.info("imagePath : {}", imagePath);
                 imagePathList.add(imagePath);
             }
