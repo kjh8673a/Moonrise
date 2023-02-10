@@ -61,9 +61,6 @@ public class MemberController {
             HashMap<String, Object> resultMap = new HashMap<>();
 
             String requestURL = get_token_url;
-            log.info("requestURL : {}", requestURL);
-            log.info("client_id : {}", client_id);
-            log.info("redirect_uri : {}", redirect_uri);
 
             URL url = new URL(requestURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -88,8 +85,11 @@ public class MemberController {
             int responseCode = connection.getResponseCode();
             log.info("get_token_res_code : {}", responseCode);
 
-            if(responseCode == 401){
+            if(responseCode == 400){
                 //Error
+                responseDto.setMessage("인가 코드로 토큰 받는 과정에서 오류");
+                responseDto.setStatus_code(400);
+                return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
             }
 
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
@@ -132,17 +132,16 @@ public class MemberController {
                 responseDto.setData(resultMap);
 
                 return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);  //200
-
-            }else{  // 회원가입 되어 있어 그냥 token만 반환해
-                MemberJoinDto dto = memberService.findMemberAll(userId);
-                dto.setAccess_token(access_Token);
-                dto.setRefresh_token(refresh_Token);
-
-
-                responseDto.setStatus_code(200);
-                responseDto.setMessage("로그인 완료!!");
-                responseDto.setData(dto);
             }
+            // 회원가입 되어 있어 그냥 token만 반환해
+            MemberJoinDto dto = memberService.findMemberAll(userId);
+            dto.setAccess_token(access_Token);
+            dto.setRefresh_token(refresh_Token);
+
+
+            responseDto.setStatus_code(200);
+            responseDto.setMessage("로그인 완료!!");
+            responseDto.setData(dto);
 
             br.close();
             bw.close();
