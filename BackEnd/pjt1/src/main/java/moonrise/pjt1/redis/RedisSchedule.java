@@ -35,6 +35,7 @@ public class RedisSchedule {
     @Transactional
     @Scheduled(cron = "0 0/10 * * * ?")
     public void deleteViewCntCacheFromRedis() {
+        log.info("조회수 DB 백업");
         Set<String> redisKeys = redisTemplate.keys("partyViewCnt*");
         Iterator<String> it = redisKeys.iterator();
         while (it.hasNext()) {
@@ -62,6 +63,7 @@ public class RedisSchedule {
     @Transactional
     @Scheduled(cron = "0 0/10 * * * ?")
     public void deleteLikeCacheFromRedis() {
+        log.info("좋아요게시글 DB 백업");
         Set<String> redisKeys = redisTemplate.keys("boardLikeCnt*");
         Iterator<String> it = redisKeys.iterator();
         while (it.hasNext()) {
@@ -89,6 +91,7 @@ public class RedisSchedule {
     @Transactional
     @Scheduled(cron = "0 0/10 * * * ?")
     public void deleteBookmarkCacheFromRedis() {
+        log.info("북마크리스트 DB 백업");
         Set<String> redisKeys = redisTemplate.keys("UserBoardBookMarkList*");
         Iterator<String> it = redisKeys.iterator();
         while (it.hasNext()) {
