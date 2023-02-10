@@ -27,7 +27,7 @@ public class DebateController {
     }
     @GetMapping("/pastChats") // 채팅방 입장 시 redis서버 채팅내역 리턴
     public ResponseEntity<?> enterDebateRoom(@RequestParam(value = "debateId") Long debateId,
-                                                               @RequestParam(value = "findCnt",defaultValue = "0") int findCnt) throws JsonProcessingException {
+                                             @RequestParam(value = "findCnt",defaultValue = "0") int findCnt) throws JsonProcessingException {
         log.info(debateId);
         if(findCnt == 0){ // 0이면 채팅방 첫 입장임
             boolean isMax = debateService.updateLivePeopleCnt(debateId);
