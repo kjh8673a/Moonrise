@@ -12,8 +12,11 @@ public interface RatingService {
     //평점 수정
     long[] updateRating(long ratingId, RatingDto ratingDto);
 
-    //평점 조회
+    //전체 평점 조회
     List<Long> findRating(long movieId);
+
+    //개인 평점 조회
+    List<Long> findPersonal(long movieId, long memberId);
 
     //캐시에 추가
     long[] createToCache(long movieId);

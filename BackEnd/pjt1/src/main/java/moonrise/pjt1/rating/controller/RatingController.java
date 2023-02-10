@@ -25,7 +25,7 @@ public class RatingController {
     }
 
     @PostMapping("/create/{movieId}")
-    public ResponseEntity createRating(@PathVariable long movieId, @RequestBody RatingDto ratingDto) {
+    public ResponseEntity createRating(@PathVariable long movieId, long memberId, @RequestBody RatingDto ratingDto) {
         long total = ratingDto.getStory() + ratingDto.getActing() + ratingDto.getSound() + ratingDto.getVisual() + ratingDto.getDirection() / 5;
         RatingDto dto = RatingDto.builder()
                 .story(ratingDto.getStory())
@@ -34,15 +34,15 @@ public class RatingController {
                 .visual(ratingDto.getVisual())
                 .direction(ratingDto.getDirection())
                 .total(total)
-                .movieId(ratingDto.getMovieId())
-                .memberId(ratingDto.getMemberId())
+                .movieId(movieId)
+                .memberId(memberId)
                 .build();
-        ratingService.createRating(movieId, ratingDto.getMovieId(), dto);
+        ratingService.createRating(movieId, memberId, dto);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
     @PutMapping("/update/{ratingId}")
-    public ResponseEntity updateRating(@PathVariable long ratingId,  @RequestBody RatingDto ratingDto) {
+    public ResponseEntity updateRating(@PathVariable long ratingId, @RequestBody RatingDto ratingDto) {
         long total = ratingDto.getStory() + ratingDto.getActing() + ratingDto.getSound() + ratingDto.getVisual() + ratingDto.getDirection() / 5;
         ratingDto = RatingDto.builder()
                 .story(ratingDto.getStory())
@@ -60,7 +60,13 @@ public class RatingController {
 
     @GetMapping("find/{movieId}")
     public ResponseEntity findRating(@PathVariable long movieId) {
-        List<Long> result=ratingService.findRating(movieId);
+        List<Long> result = ratingService.findRating(movieId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("personal")
+    public ResponseEntity findPersonal(long movieId, long memberId) {
+        List<Long> result = ratingService.findPersonal(movieId, memberId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }
