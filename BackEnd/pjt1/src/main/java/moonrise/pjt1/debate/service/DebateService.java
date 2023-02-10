@@ -118,7 +118,7 @@ public class DebateService {
                     20,
                     TimeUnit.MINUTES);
         }
-        else debateLivePeople = (int) valueOperations.get(key);
+        else debateLivePeople = Integer.parseInt((String) valueOperations.get(key));
         if(findDebate.isPresent()){
             debate = findDebate.get();
             DebateReadResponseDto debateReadResponseDto = DebateReadResponseDto.builder()
@@ -129,9 +129,10 @@ public class DebateService {
                     .debateStatus(debate.getDebateStatus())
                     .maxppl(debate.getMaxppl())
                     .nowppl(debateLivePeople)
+                    .createDate(debate.getCreateDate())
                     .build();
             result.put("readDebate",debateReadResponseDto);
-            if(debate.getMember().getId() == user_id) result.put("isWriter",true);
+            if(debate.getMember().getId().equals(user_id)) result.put("isWriter",true);
             else result.put("isWriter",false);
         }
         //responseDto 작성
