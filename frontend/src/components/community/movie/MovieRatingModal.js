@@ -104,7 +104,7 @@ function MovieRatingModal(props) {
     setSound(val);
   }
   return (
-    <div className="grid grid-rows-5 absolute z-50 bg-[#315B4C] border-2 border-yellow-400 h-60 w-60 top-96 left-96 rounded-lg p-2">
+    <div className="grid grid-rows-5 absolute z-50 bg-[#315B4C] border-2 border-yellow-400 h-100 w-72 top-96 left-96 rounded-lg p-2">
       <button className="absolute text-white right-2" onClick={closeModal}>
         X
       </button>
@@ -147,26 +147,28 @@ function MovieRatingModal(props) {
         )}
 
         {props.type === "CREATE" && (
-          <div className="grid grid-rows-6 gap-1 px-4 py-2">
+          <div className="grid grid-rows-6 gap-3 px-4 py-2 ">
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">스토리</b>
-              <RatingStar sendScore={changeStory} />
+              <div className="flex items-center justify-center col-span-2"><RatingStar sendScore={changeStory} score={4} /></div>
+              
             </div>
             <div className="grid grid-cols-3 row-span-1">
-              <b className="col-span-1">연기</b>{" "}
-              <RatingStar sendScore={changeActing} />
+              <b className="col-span-1">연기</b>
+              <div className="flex items-center justify-center col-span-2"><RatingStar sendScore={changeActing} /></div>
             </div>
             <div className="grid grid-cols-3 row-span-1">
-              <b className="col-span-1">연출</b>{" "}
-              <RatingStar sendScore={changeDirection} />
+              <b className="col-span-1">연출</b>
+              <div className="flex items-center justify-center col-span-2"><RatingStar sendScore={changeDirection} /></div>
+              
             </div>
             <div className="grid grid-cols-3 row-span-1">
-              <b className="col-span-1">영상미</b>{" "}
-              <RatingStar sendScore={changeVisual} />
+              <b className="col-span-1">영상미</b>
+              <div className="flex items-center justify-center col-span-2"><RatingStar sendScore={changeVisual} /></div>
             </div>
             <div className="grid grid-cols-3 row-span-1">
-              <b className="col-span-1">사운드</b>{" "}
-              <RatingStar sendScore={changeSound} />
+              <b className="col-span-1">사운드</b>
+              <div className="flex items-center justify-center col-span-2"><RatingStar sendScore={changeSound} /></div>
             </div>
             <div className="row-span-1 text-center">
               <button

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaMoon } from "react-icons/fa";
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const ARRAY = [0, 1, 2, 3, 4];
 
@@ -16,6 +16,16 @@ function RatingStar(props) {
   };
 
   useEffect(() => {
+    if(props.score > 0) {
+      let clickStates = [];
+      for (let i = 0; i < props.score; i++) {
+        clickStates[i] = true;
+      }
+      setClicked(clickStates);
+    }
+  }, [props.score])
+
+  useEffect(() => {
     let score = clicked.filter(Boolean).length;
     props.sendScore(score);
   }, [clicked, props]);
@@ -27,9 +37,9 @@ function RatingStar(props) {
           return (
             <FaMoon
               key={idx}
-              size="30"
+              size="20"
               onClick={() => handleStarClick(el)}
-              className={clicked[el] && 'yellowStar'}
+              className={clicked[el] && "yellowStar"}
             />
           );
         })}
