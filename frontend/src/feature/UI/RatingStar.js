@@ -59,7 +59,7 @@ const Stars = styled.div`
   }
 
   :hover svg {
-    color: #fcc419;
+    color: #FA9E13;
   }
 
   & svg:hover ~ svg {
@@ -67,6 +67,6 @@ const Stars = styled.div`
   }
 
   .yellowStar {
-    color: #fcc419;
+    color: #FA9E13;
   }
 `;

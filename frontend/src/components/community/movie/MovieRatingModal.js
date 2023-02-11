@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { FaMoon } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import RatingStar from "../../../feature/UI/RatingStar";
 
@@ -52,59 +53,46 @@ function MovieRatingModal(props) {
 
   const editRating = (event) => {
     event.preventDefault();
+    console.log(
+      story + " " + acting + " " + direction + " " + visual + " " + sound
+    );
     axios
-    .put(
-      "http://3.35.149.202:80/api/rating/update/" + props.ratingId,
-      {
-        ratingId: props.ratingId,
-        movieId: props.movieId,
-        story: story,
-        acting: acting,
-        direction: direction,
-        visual: visual,
-        sound: sound,
-      },
-      config
-    )
-    .then((response) => {
-      props.editRatingConfirm();
-      closeModal();
-    });
-  }
-
-  const getStoryValue = (event) => {
-    setStory(event.target.value);
-  };
-  const getActingValue = (event) => {
-    setActing(event.target.value);
-  };
-  const getDirectionValue = (event) => {
-    setDirection(event.target.value);
-  };
-  const getVisualValue = (event) => {
-    setVisual(event.target.value);
-  };
-  const getSoundValue = (event) => {
-    setSound(event.target.value);
+      .put(
+        "http://3.35.149.202:80/api/rating/update/" + props.ratingId,
+        {
+          ratingId: props.ratingId,
+          movieId: props.movieId,
+          story: story,
+          acting: acting,
+          direction: direction,
+          visual: visual,
+          sound: sound,
+        },
+        config
+      )
+      .then((response) => {
+        props.editRatingConfirm();
+        closeModal();
+      });
   };
 
   const changeStory = (val) => {
     setStory(val);
-  }
+  };
   const changeActing = (val) => {
     setActing(val);
-  }
+  };
   const changeDirection = (val) => {
     setDirection(val);
-  }
+  };
   const changeVisual = (val) => {
     setVisual(val);
-  }
+  };
   const changeSound = (val) => {
     setSound(val);
-  }
+  };
   return (
-    <div className="grid grid-rows-5 absolute z-50 bg-[#315B4C] border-2 border-yellow-400 h-100 w-72 top-96 left-96 rounded-lg p-2">
+    <div className="grid grid-rows-5 absolute z-50 bg-[#315B4C] border-2 border-yellow-400 h-100 w-64 top-96 left-96 rounded-lg p-2">
       <button className="absolute text-white right-2" onClick={closeModal}>
         X
       </button>
@@ -120,27 +108,27 @@ function MovieRatingModal(props) {
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">스토리</b>{" "}
               <span className="col-span-1"></span>{" "}
-              <span className="col-span-1 text-right">{props.story}</span>
+              <span className="col-span-1 text-center"><FaMoon size="20" className="text-[#FA9E13] inline-block"/><b>{props.story}</b></span>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">연기</b>{" "}
               <span className="col-span-1"></span>{" "}
-              <span className="col-span-1 text-right">{props.acting}</span>
+              <span className="col-span-1 text-center"><FaMoon size="20" className="text-[#FA9E13] inline-block"/><b>{props.acting}</b></span>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">연출</b>{" "}
               <span className="col-span-1"></span>{" "}
-              <span className="col-span-1 text-right">{props.direction}</span>
+              <span className="col-span-1 text-center"><FaMoon size="20" className="text-[#FA9E13] inline-block"/><b>{props.direction}</b></span>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">영상미</b>{" "}
               <span className="col-span-1"></span>{" "}
-              <span className="col-span-1 text-right">{props.visual}</span>
+              <span className="col-span-1 text-center"><FaMoon size="20" className="text-[#FA9E13] inline-block"/><b>{props.visual}</b></span>
             </div>
             <div className="grid grid-cols-3 row-span-1">
               <b className="col-span-1">사운드</b>{" "}
               <span className="col-span-1"></span>{" "}
-              <span className="col-span-1 text-right">{props.sound}</span>
+              <span className="col-span-1 text-center"><FaMoon size="20" className="text-[#FA9E13] inline-block"/><b>{props.sound}</b></span>
             </div>
             <div className="row-span-1"></div>
           </div>
@@ -148,27 +136,40 @@ function MovieRatingModal(props) {
 
         {props.type === "CREATE" && (
           <div className="grid grid-rows-6 gap-3 px-4 py-2 ">
-            <div className="grid grid-cols-3 row-span-1">
+            <div className="grid grid-cols-4 row-span-1">
               <b className="col-span-1">스토리</b>
-              <div className="flex items-center justify-center col-span-2"><RatingStar sendScore={changeStory} score={4} /></div>
-              
+              <div className="flex items-center justify-center col-span-2">
+                <RatingStar sendScore={changeStory} />
+              </div>
+              <b className="col-span-1 text-center">{story}</b>
             </div>
-            <div className="grid grid-cols-3 row-span-1">
+            <div className="grid grid-cols-4 row-span-1">
               <b className="col-span-1">연기</b>
-              <div className="flex items-center justify-center col-span-2"><RatingStar sendScore={changeActing} /></div>
+              <div className="flex items-center justify-center col-span-2">
+                <RatingStar sendScore={changeActing} />
+              </div>
+              <b className="col-span-1 text-center">{acting}</b>
             </div>
-            <div className="grid grid-cols-3 row-span-1">
+            <div className="grid grid-cols-4 row-span-1">
               <b className="col-span-1">연출</b>
-              <div className="flex items-center justify-center col-span-2"><RatingStar sendScore={changeDirection} /></div>
-              
+              <div className="flex items-center justify-center col-span-2">
+                <RatingStar sendScore={changeDirection} />
+              </div>
+              <b className="col-span-1 text-center">{direction}</b>
             </div>
-            <div className="grid grid-cols-3 row-span-1">
+            <div className="grid grid-cols-4 row-span-1">
               <b className="col-span-1">영상미</b>
-              <div className="flex items-center justify-center col-span-2"><RatingStar sendScore={changeVisual} /></div>
+              <div className="flex items-center justify-center col-span-2">
+                <RatingStar sendScore={changeVisual} />
+              </div>
+              <b className="col-span-1 text-center">{visual}</b>
             </div>
-            <div className="grid grid-cols-3 row-span-1">
+            <div className="grid grid-cols-4 row-span-1">
               <b className="col-span-1">사운드</b>
-              <div className="flex items-center justify-center col-span-2"><RatingStar sendScore={changeSound} /></div>
+              <div className="flex items-center justify-center col-span-2">
+                <RatingStar sendScore={changeSound} />
+              </div>
+              <b className="col-span-1 text-center">{sound}</b>
             </div>
             <div className="row-span-1 text-center">
               <button
@@ -182,53 +183,49 @@ function MovieRatingModal(props) {
         )}
         {props.type === "EDIT" && (
           <div className="grid grid-rows-6 gap-1 px-4 py-2">
-            <div className="grid grid-cols-3 row-span-1">
-              <b className="col-span-1">스토리</b>{" "}
-              <input
-                type="number"
-                className="col-span-2 px-2 text-black"
-                defaultValue={props.story}
-                onChange={getStoryValue}
-              ></input>
+            <div className="grid grid-cols-4 row-span-1">
+              <b className="col-span-1">스토리</b>
+              <div className="flex items-center justify-center col-span-2">
+                <RatingStar sendScore={changeStory} score={props.story} />
+              </div>
+              <b className="col-span-1 text-center">{story}</b>
             </div>
-            <div className="grid grid-cols-3 row-span-1">
-              <b className="col-span-1">연기</b>{" "}
-              <input
-                type="number"
-                className="col-span-2 px-2 text-black"
-                defaultValue={props.acting}
-                onChange={getActingValue}
-              ></input>
+            <div className="grid grid-cols-4 row-span-1">
+              <b className="col-span-1">연기</b>
+              <div className="flex items-center justify-center col-span-2">
+                <RatingStar sendScore={changeActing} score={props.acting} />
+              </div>
+              <b className="col-span-1 text-center">{acting}</b>
             </div>
-            <div className="grid grid-cols-3 row-span-1">
-              <b className="col-span-1">연출</b>{" "}
-              <input
-                type="number"
-                className="col-span-2 px-2 text-black"
-                defaultValue={props.direction}
-                onChange={getDirectionValue}
-              ></input>
+            <div className="grid grid-cols-4 row-span-1">
+              <b className="col-span-1">연출</b>
+              <div className="flex items-center justify-center col-span-2">
+                <RatingStar
+                  sendScore={changeDirection}
+                  score={props.direction}
+                />
+              </div>
+              <b className="col-span-1 text-center">{direction}</b>
             </div>
-            <div className="grid grid-cols-3 row-span-1">
-              <b className="col-span-1">영상미</b>{" "}
-              <input
-                type="number"
-                className="col-span-2 px-2 text-black"
-                defaultValue={props.visual}
-                onChange={getVisualValue}
-              ></input>
+            <div className="grid grid-cols-4 row-span-1">
+              <b className="col-span-1">영상미</b>
+              <div className="flex items-center justify-center col-span-2">
+                <RatingStar sendScore={changeVisual} score={props.visual} />
+              </div>
+              <b className="col-span-1 text-center">{visual}</b>
             </div>
-            <div className="grid grid-cols-3 row-span-1">
-              <b className="col-span-1">사운드</b>{" "}
-              <input
-                type="number"
-                className="col-span-2 px-2 text-black"
-                defaultValue={props.sound}
-                onChange={getSoundValue}
-              ></input>
+            <div className="grid grid-cols-4 row-span-1">
+              <b className="col-span-1">사운드</b>
+              <div className="flex items-center justify-center col-span-2">
+                <RatingStar sendScore={changeSound} score={props.sound} />
+              </div>
+              <b className="col-span-1 text-center">{sound}</b>
             </div>
             <div className="row-span-1 text-center">
-              <button onClick={editRating} className="bg-[#FA9E13] px-3 rounded-lg font-semibold w-full">
+              <button
+                onClick={editRating}
+                className="bg-[#FA9E13] px-3 rounded-lg font-semibold w-full"
+              >
                 수정하기
               </button>
             </div>

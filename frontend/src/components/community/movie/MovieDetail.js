@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { FaMoon } from "react-icons/fa";
 import MovieRatingModal from "./MovieRatingModal";
 
 function MovieDetail() {
@@ -50,8 +51,12 @@ function MovieDetail() {
       .get("http://3.35.149.202:80/api/rating/find/" + data.movieId, config)
       .then((response) => {
         if (response.data[0] !== 0) {
-          setRating(response.data);
-          setAverage(response.data[6] / (response.data[0] * 5));
+          let ratings = [];
+          for(let i = 0; i < 5; i++) {
+            ratings[i] = (response.data[i + 1] / response.data[0]).toFixed(2);
+          }
+          setRating(ratings);
+          setAverage((response.data[6] / (response.data[0] * 5)).toFixed(2));
           setNoneMessage("");
         } else {
           setNoneMessage("평점을 등록해주세요!");
@@ -97,8 +102,12 @@ function MovieDetail() {
       .get("http://3.35.149.202:80/api/rating/find/" + data.movieId, config)
       .then((response) => {
         if (response.data[0] !== 0) {
-          setRating(response.data);
-          setAverage(response.data[6] / (response.data[0] * 5));
+          let ratings = [];
+          for(let i = 0; i < 5; i++) {
+            ratings[i] = (response.data[i + 1] / response.data[0]).toFixed(2);
+          }
+          setRating(ratings);
+          setAverage((response.data[6] / (response.data[0] * 5)).toFixed(2));
           setNoneMessage("");
         } else {
           setNoneMessage("평점을 등록해주세요!");
@@ -132,7 +141,7 @@ function MovieDetail() {
           {useSelector((state) => state.movie.movieTitle)}
         </li>
         <p className="text-sm text-white">
-          {!noneMessage && <span>{average}</span>}
+          {!noneMessage && <><FaMoon size="30" className="text-[#FA9E13] inline-block"/><b className="text-lg">{average}</b></>}
           {noneMessage && (
             <>
               <span className="text-[#FA9E13] font-semibold">
@@ -140,12 +149,12 @@ function MovieDetail() {
               </span>
             </>
           )}
-          <button onClick={showRatingDetailModal} className="ml-2">평점상세</button>
+          <button onClick={showRatingDetailModal} className="ml-4 hover:text-[#FA9E13] hover:font-bold">평점상세</button>
           {!haveRating && (
-            <button onClick={showRatingCreateModal} className="ml-2">평가하기</button>
+            <button onClick={showRatingCreateModal} className="ml-2 hover:text-[#FA9E13] hover:font-bold">평가하기</button>
           )}
           {haveRating && (
-            <button onClick={showRatingEditModal} className="ml-2">평가수정</button>
+            <button onClick={showRatingEditModal} className="ml-2 hover:text-[#FA9E13] hover:font-bold">평가수정</button>
           )}
         </p>
         {ratingDetailModalOpen && (
