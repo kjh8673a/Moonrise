@@ -1,8 +1,8 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
-import ProfileBoardCard from '../board/ProfileBoardCard';
-import ProfileSeeMoreButton from '../ProfileSeeMoreButton';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import ProfileBoardCard from "../board/ProfileBoardCard";
+import ProfileSeeMoreButton from "../ProfileSeeMoreButton";
 
 function ProfileBoardBookmarkList() {
   const [data, setData] = useState([]);
@@ -20,12 +20,14 @@ function ProfileBoardBookmarkList() {
     axios
       .get("http://3.35.149.202:80/api/board/mypage/bookmark", config)
       .then((response) => {
-        setData(response.data.data.findBoards);
+        setData(response.data.data);
       });
   }, [access_token]);
 
   useEffect(() => {
-    setList(data.filter((item, index) => index < limit));
+    if(data.length > 0) {
+      setList(data.filter((item, index) => index < limit));
+    }
   }, [data, limit]);
 
   const seeMore = () => {
@@ -34,22 +36,22 @@ function ProfileBoardBookmarkList() {
 
   return (
     <div>
-       <div className="p-2">
-      <ul className="grid grid-cols-4 gap-4 justify-items-center">
-        {list.map((board) => (
-          <ProfileBoardCard
-            board_id={board.boardId}
-            title={board.title}
-            movie={board.movieTitle}
-            write_date={board.dateTime.replace("T", " ")} 
-            image={board.image}
-          />
-        ))}
-      </ul>
-      {limit < data.length && <ProfileSeeMoreButton seeMore={seeMore} />}
+      <div className="p-2">
+        <ul className="grid grid-cols-4 gap-4 justify-items-center">
+          {list.map((board) => (
+            <ProfileBoardCard
+              board_id={board.boardId}
+              title={board.title}
+              movie={board.movieTitle}
+              write_date={board.dateTime.replace("T", " ")}
+              image={board.image}
+            />
+          ))}
+        </ul>
+        {limit < data.length && <ProfileSeeMoreButton seeMore={seeMore} />}
+      </div>
     </div>
-    </div>
-  )
+  );
 }
 
-export default ProfileBoardBookmarkList
+export default ProfileBoardBookmarkList;

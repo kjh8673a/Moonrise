@@ -20,13 +20,14 @@ function ProfilePartyParticipateList() {
     axios
       .get("http://3.35.149.202:80/api/party/join/list", config)
       .then((response) => {
-        console.log(response)
-        setData([]);
+        setData(response.data.data.myPartyJoinList);
       });
   }, [access_token]);
 
   useEffect(() => {
-    setList(data.filter((item, index) => index < limit));
+    if(data.length > 0) {
+      setList(data.filter((item, index) => index < limit));
+    }
   }, [data, limit]);
 
   const seeMore = () => {

@@ -25,7 +25,9 @@ function ProfileBoardMyList() {
   }, [access_token]);
 
   useEffect(() => {
-    setList(data.filter((item, index) => index < limit));
+    if(data.length > 0) {
+      setList(data.filter((item, index) => index < limit));
+    }
   }, [data, limit]);
 
   const seeMore = () => {
