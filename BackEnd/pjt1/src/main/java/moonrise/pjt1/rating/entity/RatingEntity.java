@@ -34,7 +34,7 @@ public class RatingEntity implements Serializable {
     //총점
     private long total;
     @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
     private Movie movie; //index
     @JsonIgnore
