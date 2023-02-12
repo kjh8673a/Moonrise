@@ -7,13 +7,14 @@ import CommunityHeader from "../CommunityHeader";
 import CommunityPagination from "../CommunityPagination";
 import TalkCard from "./TalkCard";
 
+
 function TalkList() {
   const movieId = useSelector(state => state.movie.movieId)
   const [talkList, setTalkList] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
-  const [page, setPage] = useState(0);
   const baseURL = process.env.REACT_APP_BASE_URL;
   
+  const [page, setPage] = useState(0);
   useEffect(() => {
     axios.get(baseURL + "/api/debate/list?movieId="+movieId+"&page="+page)
     .then(response => {
@@ -32,15 +33,15 @@ function TalkList() {
         appear={true} 
         show={true}
        enter="transition-all duration-1000"
-       enterFrom="opacity-0 transform translate-x-full"
+       enterFrom="opacity-0 transform translate-x-10"
        enterTo="opacity-100 transform translate-x-0"
       >
-        <ul className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {talkList.map((talk, idx) => (
             <TalkCard talkInfo={talk} key={idx}/>
           ))}
-        </ul>
-        <CommunityPagination total={totalPages} page={page} setPage={setPage}/>
+        </div>
+      <CommunityPagination total={totalPages} page={page} setPage={setPage}/>
       </Transition>
     </div>
   );

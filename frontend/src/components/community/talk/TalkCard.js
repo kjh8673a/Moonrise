@@ -34,15 +34,15 @@ function TalkCard(props) {
     
   }
   return (
-    <div>
-      <li
-        className="px-10 py-2 text-center cursor-pointer rounded-lg group text-white hover:"
+    <div className="col-span-1 overflow-auto">
+      <div
+        className="px-10 py-2 h-24 bg-white transition-all bg-opacity-5 text-center cursor-pointer rounded-lg group text-white hover:bg-opacity-20 hover:bg-orange-200"
         onClick={modalHandler}>
         <div className="overflow-hidden transition-all duration-200 text-lg group-hover:text-xl mb-7 text-ellipsis whitespace-nowrap">
-        {props.talkInfo.title}
+          {props.talkInfo.title}
         </div>
-        <div className="transition-all duration-200 group-hover:text-lg">{props.talkInfo.writer}</div>
-      </li>
+        <div className="">{props.talkInfo.writer}</div>
+      </div>
       <Transition appear show={onModal} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={modalCloseHandler}>
           <Transition.Child
