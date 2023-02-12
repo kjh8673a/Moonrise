@@ -50,7 +50,6 @@ function PartyWrite() {
     });
   }
   const submitParty = async () => {
-    console.log(requestBody)
     const config = { 
         headers: {
           "access_token": access_token,

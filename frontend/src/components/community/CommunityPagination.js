@@ -14,7 +14,7 @@ function CommunityPagination(props) {
         </button>
       ));
   return (
-    <div className='flex justify-center mt-2 pagination'>
+    <div className='flex justify-center mt-4 pagination'>
       <button className="mx-2 text-white" onClick={() => props.setPage(props.page - 1)} disabled={props.page === 0}>
           &lt;
       </button>
