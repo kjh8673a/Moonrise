@@ -12,8 +12,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "movie", indexes = {@Index(name = "idx_ko", columnList = "ko"),
-        @Index(name = "idx_en", columnList = "en")})
+@Table(name = "movie")
 public class Movie {
     @Id
     @Column(name = "movie_id")
