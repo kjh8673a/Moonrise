@@ -348,17 +348,17 @@ public class BoardService {
 
         if (status == 1) {  // 북마크 -> bookMarkBoard 에 boardid 추가
             // list 캐시
-            if (valueOperations.get(listKey) == null) { // 캐시에 값없는 경우 레포지토리에서 조회 후 저장
-                if(findMember.get().getMemberInfo().getBookmarkBoard() == null){
+            if (valueOperations.get(listKey) == null) { // 1 캐시에 값없는 경우 레포지토리에서 DB 조회 후 저장
+                if (findMember.get().getMemberInfo().getBookmarkBoard() == null) { //1-1 DB 에 처음 값(NULL)일때 null+id 방지
                     String s = boardId + ",";
                     valueOperations.set(listKey, s);
-                }else {
-                    String s = findMember.get().getMemberInfo().getBookmarkBoard() + boardId +",";
-                    valueOperations.set(listKey,s);
+                } else { // 1-2 DB 에 값이 존재할때
+                    String s = findMember.get().getMemberInfo().getBookmarkBoard() + boardId + ",";
+                    valueOperations.set(listKey, s);
                 }
 
 
-            } else { // 캐시에서 값 가져온 다음 변경 후 저장
+            } else { // 2 캐시에서 값 가져온 다음 변경 후 저장
                 String s = valueOperations.get(listKey) + String.valueOf(boardId) + ",";
                 valueOperations.set(listKey, s, 20, TimeUnit.MINUTES);
 
@@ -368,7 +368,7 @@ public class BoardService {
 
             // list 캐시
             if (valueOperations.get(listKey) == null) { // 캐시에 값없는 경우 레포지토리에서 조회 후 저장
-                String s = findMember.get().getMemberInfo().getLikeBoard();
+                String s = findMember.get().getMemberInfo().getBookmarkBoard();
                 StringBuilder sb = new StringBuilder(s);
                 String boardIdString = boardId + ",";
                 int boardIdIndex = sb.indexOf(boardIdString);
@@ -415,22 +415,32 @@ public class BoardService {
         ValueOperations valueOperations = redisTemplate.opsForValue();
         String bookmarkBoardList;
         String bookmarkListKey = "UserBoardBookMarkList::" + user_id;
-        if (valueOperations.get(bookmarkListKey) == null) {
-            String bookmarkBoard = findMember.get().getMemberInfo().getBookmarkBoard();
-            // 북마크 목록이 없는 경우
-            if (bookmarkBoard == null) {
+
+
+        if (valueOperations.get(bookmarkListKey) == null) { // 캐시 서버에 값이 없으면
+            String bookmarkBoard = findMember.get().getMemberInfo().getBookmarkBoard(); // 디비에서 찾고
+            if (bookmarkBoard == null) {   // 북마크 목록이 없는 경우 (한번도 북마크 한 적 없음)
                 responseDto.setStatus_code(200);
                 responseDto.setData(result);
                 responseDto.setMessage("북마크 목록이 없습니다");
                 return responseDto;
-            } else {
-                bookmarkBoardList = bookmarkBoard;
+            } else {  // 북마크 해본적 있음
+                String nullstring = "";
+                if (bookmarkBoard.equals(nullstring)){ // DB 에서 이미 한번 북마크를 했다가 다시 지워서 null 이 아니지만 빈 값일때
+                    responseDto.setStatus_code(200);
+                    responseDto.setData(result);
+                    responseDto.setMessage("북마크 목록이 없습니다");
+                    return responseDto;
+                }else bookmarkBoardList = bookmarkBoard;   // DB값 저장
+
             }
 
-        } else { // 없으면 DB 찾아서
+        } else { // 캐시 서버에 값이 있으면
             bookmarkBoardList = (String) valueOperations.get(bookmarkListKey);
+
         }
         // String 받고 FOR 문 돌면서 boardid 찾고 dto에 정보 저장
+        System.out.println("------------------------?????????????????????????");
         String[] bookmarks = bookmarkBoardList.split(",");
         List<MypageResponseDto> findBoards = new ArrayList<>();
 
