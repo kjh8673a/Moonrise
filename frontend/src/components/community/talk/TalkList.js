@@ -1,84 +1,47 @@
-import React from "react";
+import axios from "axios";
+import {Transition} from '@headlessui/react'
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 import CommunityHeader from "../CommunityHeader";
+import CommunityPagination from "../CommunityPagination";
 import TalkCard from "./TalkCard";
 
-const DUMMY_DATA = [
-  {
-    discuss_id: 1,
-    title: "해리포터가 돌을 지키지 못했다면?",
-    content:
-      " 해리포터 시리즈의 기점 ‘해리포터와 마법사의 돌‘. 해리포터의 결말을 새드엔딩으로 바꾸어 볼까요?",
-    write_date: "2022.10.18",
-    nikcname: "홍길동",
-    latest: "1분 전",
-  },
-  {
-    discuss_id: 2,
-    title: "해리포터 vs 론",
-    content:
-      " 해리포터 시리즈의 기점 ‘해리포터와 마법사의 돌‘. 해리포터의 결말을 새드엔딩으로 바꾸어 볼까요?",
-    write_date: "2022.10.18",
-    nikcname: "홍길동",
-    latest: "11분 전",
-  },
-  {
-    discuss_id: 3,
-    title: "가장 인상 깊었던 장면은..",
-    content:
-      " 해리포터 시리즈의 기점 ‘해리포터와 마법사의 돌‘. 해리포터의 결말을 새드엔딩으로 바꾸어 볼까요?",
-    write_date: "2022.10.18",
-    nikcname: "홍길동",
-    latest: "15분 전",
-  },
-  {
-    discuss_id: 4,
-    title: "말포이 저만 귀엽나요?",
-    content:
-      " 해리포터 시리즈의 기점 ‘해리포터와 마법사의 돌‘. 해리포터의 결말을 새드엔딩으로 바꾸어 볼까요?",
-    write_date: "2022.10.18",
-    nikcname: "홍길동",
-    latest: "17분 전",
-  },
-  {
-    discuss_id: 5,
-    title: "호그와트 초상화로 살기 vs 부엌 지박령 집요정으로 살기",
-    content:
-      " 해리포터 시리즈의 기점 ‘해리포터와 마법사의 돌‘. 해리포터의 결말을 새드엔딩으로 바꾸어 볼까요?",
-    write_date: "2022.10.18",
-    nikcname: "홍길동",
-    latest: "21분 전",
-  },
-  {
-    discuss_id: 6,
-    title: "헤르미온느 팬 양성소",
-    content:
-      " 해리포터 시리즈의 기점 ‘해리포터와 마법사의 돌‘. 해리포터의 결말을 새드엔딩으로 바꾸어 볼까요?",
-    write_date: "2022.10.18",
-    nikcname: "홍길동",
-    latest: "40분 전",
-  },
-];
-
 function TalkList() {
-  const data = DUMMY_DATA;
-
+  const movieId = useSelector(state => state.movie.movieId)
+  const [talkList, setTalkList] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [page, setPage] = useState(0);
+  const baseURL = process.env.REACT_APP_BASE_URL;
+  
+  useEffect(() => {
+    axios.get(baseURL + "/api/debate/list?movieId="+movieId+"&page="+page)
+    .then(response => {
+      setTalkList(response.data.data.findParties)
+      setTotalPages(response.data.data.totalPages)
+      console.log(response.data);
+    });
+    return () => {
+    }
+  }, [baseURL, movieId, page])
+  
   return (
     <div>
       <CommunityHeader type="담소" />
-      <ul className="grid grid-cols-2 gap-4">
-        {data.map((talk) => (
-          <TalkCard 
-            key={talk.discuss_id}
-            id={talk.discuss_id}
-            title={talk.title}
-            content={talk.content}
-            write_date={talk.write_date}
-            nikcname={talk.nikcname}
-            latest={talk.latest}
-          />
-        ))}
-      </ul>
+      <Transition
+        appear={true} 
+        show={true}
+       enter="transition-all duration-1000"
+       enterFrom="opacity-0 transform translate-x-full"
+       enterTo="opacity-100 transform translate-x-0"
+      >
+        <ul className="grid grid-cols-2 gap-4">
+          {talkList.map((talk, idx) => (
+            <TalkCard talkInfo={talk} key={idx}/>
+          ))}
+        </ul>
+        <CommunityPagination total={totalPages} page={page} setPage={setPage}/>
+      </Transition>
     </div>
   );
 }
