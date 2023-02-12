@@ -105,13 +105,13 @@ public class DebateService {
             return responseDto;
         }
         Optional<Debate> findDebate = debateRepository.findById(debateId);
-        Debate debate;
+        Debate debate = null;
         String key = "debateLivePeopleCnt::"+debateId;
         int debateLivePeople;
         //캐시에 값이 없으면 레포지토리에서 조회, 있으면 캐시 조회.
         ValueOperations valueOperations = redisTemplate.opsForValue();
         if(valueOperations.get(key)==null){
-            debateLivePeople = debateInfoRepository.findDebateLivePeople(debateId);
+            debateLivePeople = debateInfoRepository.findDebateLivePeople(findDebate.get().getDebateInfo().getId());
             valueOperations.set(
                     key,
                     String.valueOf(debateLivePeople),
