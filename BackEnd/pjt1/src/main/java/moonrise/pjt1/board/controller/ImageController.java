@@ -2,6 +2,7 @@ package moonrise.pjt1.board.controller;
 
 import lombok.RequiredArgsConstructor;
 import moonrise.pjt1.board.service.FileService;
+import moonrise.pjt1.commons.response.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +22,8 @@ public class ImageController {
 
     @PostMapping("/upload")
     public ResponseEntity<?> imageUpload(MultipartFile[] multipartFileList){
-        List<String> upload = fileService.upload(multipartFileList);
+        ResponseDto responseDto = fileService.upload(multipartFileList);
 
-        return new ResponseEntity<Object>(upload, HttpStatus.ACCEPTED);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 }

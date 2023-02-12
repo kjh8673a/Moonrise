@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import moonrise.pjt1.commons.response.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,8 +25,9 @@ public class FileService {
     @Autowired
     AmazonS3Client amazonS3Client;
 
-    public List<String> upload(MultipartFile[] multipartFileList){
+    public ResponseDto upload(MultipartFile[] multipartFileList){
         List<String> imagePathList = new ArrayList<>();
+        ResponseDto responseDto = new ResponseDto();
         try {
             for (MultipartFile multipartFile : multipartFileList) {
                 String originalName = multipartFile.getOriginalFilename();
@@ -48,10 +50,17 @@ public class FileService {
                 String imagePath = amazonS3Client.getUrl(S3Bucket, newFileName).toString(); // 접근가능한 URL 가져오기
                 log.info("imagePath : {}", imagePath);
                 imagePathList.add(imagePath);
+
+                responseDto.setData(imagePathList);
+                responseDto.setMessage("이미지 업로드 완료");
+                responseDto.setStatus_code(200);
             }
         }catch (IOException ioException) {
             log.error(ioException.getMessage());
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("이미지 업로드 실패");
         }
-        return imagePathList;
+
+        return responseDto;
     }
 }
