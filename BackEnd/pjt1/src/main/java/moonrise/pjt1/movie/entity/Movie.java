@@ -23,38 +23,33 @@ public class Movie {
     private String originalTitle;
     private String title;
     private String img;
-    private String director;
     private double popularity;
-    private Character ko;
-    private Character en;
 
     @Column(name = "release_date")
     private String releaseDate;
     @OneToMany
     private List<Genre> genres;
-    @OneToOne(mappedBy = "movie")
+    @ManyToOne
     private RatingEntity rating;
 
-    //
     @OneToMany(mappedBy = "movie")
     private List<Board> boards;
     @OneToMany(mappedBy = "movie")
     private List<Party> parties;
 
     @Builder
-
-    public Movie(Long id, String originalTitle, String title, String img, String director,
-                 double popularity, Character ko, Character en, String releaseDate, List<Genre> genres) {
+    public Movie(Long id, String originalTitle, String title, String img, double popularity, String releaseDate,
+                 List<Genre> genres, RatingEntity rating, List<Board> boards, List<Party> parties) {
         this.id = id;
         this.originalTitle = originalTitle;
         this.title = title;
         this.img = img;
-        this.director = director;
         this.popularity = popularity;
-        this.ko = ko;
-        this.en = en;
         this.releaseDate = releaseDate;
         this.genres = genres;
+        this.rating = rating;
+        this.boards = boards;
+        this.parties = parties;
     }
 }
 
