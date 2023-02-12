@@ -32,11 +32,13 @@ public class PartyReadResponseDto {
 
     private List<PartyComment> partyComments = new ArrayList<>();
     private String writer;
+    private String imagePath;
 
     public PartyReadResponseDto(Long partyId, String title, String content, LocalDateTime partyDate, int partyPeople,
                                 String location, PartyStatus partyStatus,Long movie_id, List<PartyComment> partyComments,
                                 LocalDateTime deadLine, int viewCnt, int likeCnt, int commentCnt,String writer,
-                                List<PartyJoin> partyJoinAccept,List<PartyJoin> partyJoinWait,List<PartyJoin> partyJoinSurplus) {
+                                List<PartyJoin> partyJoinAccept,List<PartyJoin> partyJoinWait,
+                                List<PartyJoin> partyJoinSurplus, String imagePath) {
         this.partyId = partyId;
         this.title = title;
         this.content = content;
@@ -54,5 +56,6 @@ public class PartyReadResponseDto {
         this.partyJoinSurplus = partyJoinSurplus;
         this.partyJoinAccept = partyJoinAccept;
         this.partyJoinWait = partyJoinWait;
+        this.imagePath = imagePath;
     }
 }

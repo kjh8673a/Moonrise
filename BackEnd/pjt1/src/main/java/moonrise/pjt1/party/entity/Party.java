@@ -29,6 +29,7 @@ public class Party {
     private int partyPeople;
     private String location;
     private boolean meetOnline;
+    private String imagePath;
 
     @Enumerated(EnumType.STRING)
     private PartyStatus partyStatus;
@@ -71,6 +72,7 @@ public class Party {
         party.setMember(member);
         party.setMovie(movie);
         party.setPartyInfo(partyInfo);
+        party.setImagePath(partyCreateDto.getImagePath());
         return party;
     }
     public void modifyParty(PartyModifyDto partyModifyDto){

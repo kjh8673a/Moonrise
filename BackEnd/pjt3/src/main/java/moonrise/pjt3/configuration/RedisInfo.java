@@ -16,6 +16,4 @@ import java.util.List;
 public class RedisInfo {
     private String host;
     private int port;
-    private RedisInfo master;
-    private List<RedisInfo> slaves;
 }

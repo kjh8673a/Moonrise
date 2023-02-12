@@ -18,8 +18,11 @@ public class PartyListResponseDto {
     private int commentCnt;
     private String writer;
     private LocalDateTime deadline;
+    private String imagePath;
     @Builder
-    public PartyListResponseDto(Long partyId, String title, int partyPeople, String location, LocalDateTime partyDate, int likeCnt, int viewCnt, int commentCnt, String writer, LocalDateTime deadline) {
+    public PartyListResponseDto(Long partyId, String title, int partyPeople, String location,
+                                LocalDateTime partyDate, int likeCnt, int viewCnt, int commentCnt,
+                                String writer, LocalDateTime deadline, String imagePath) {
         this.partyId = partyId;
         this.title = title;
         this.partyPeople = partyPeople;
@@ -30,5 +33,6 @@ public class PartyListResponseDto {
         this.commentCnt = commentCnt;
         this.writer = writer;
         this.deadline = deadline;
+        this.imagePath = imagePath;
     }
 }
