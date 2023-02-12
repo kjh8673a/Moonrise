@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.RedisStaticMasterReplicaConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -22,22 +23,14 @@ import java.time.Duration;
 public class RedisConfig extends CachingConfigurerSupport {
     private final RedisInfo info;
 
-//
-//    @Bean
-//    public RedisConnectionFactory redisConnectionFactory() {
-//        return new LettuceConnectionFactory(host, port);
-//    }
-
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(){
-        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .readFrom(ReadFrom.REPLICA_PREFERRED)	// replica에서 우선적으로 읽지만 replica에서 읽어오지 못할 경우 Master에서 읽어옴
-                .build();
-        // replica 설정
-        RedisStaticMasterReplicaConfiguration slaveConfig = new RedisStaticMasterReplicaConfiguration(info.getMaster().getHost(), info.getMaster().getPort());
-        // 설정에 slave 설정 값 추가
-        info.getSlaves().forEach(slave -> slaveConfig.addNode(slave.getHost(), slave.getPort()));
-        return new LettuceConnectionFactory(slaveConfig, clientConfig);
+        RedisSentinelConfiguration sentinelConfiguration = new RedisSentinelConfiguration()
+                .master("mymaster")
+                .sentinel(info.getHost(),26379)
+                .sentinel(info.getHost(),26380)
+                .sentinel(info.getHost(),26381);
+        return new LettuceConnectionFactory(sentinelConfiguration);
     }
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
@@ -47,6 +40,4 @@ public class RedisConfig extends CachingConfigurerSupport {
         template.setConnectionFactory(redisConnectionFactory());
         return template;
     }
-
-
 }
