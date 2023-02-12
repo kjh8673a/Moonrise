@@ -126,4 +126,32 @@ public class DebateService {
 
         return true;
     }
+
+    public ResponseDto minusLivePeopleCnt(Long debateId) {
+        ResponseDto responseDto = new ResponseDto();
+        Map<String,Object> result = new HashMap<>();
+
+        String key = "debateLivePeopleCnt::"+debateId;
+        //캐시에 값이 없으면 레포지토리에서 조회 있으면 값을 증가시킨다.
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        int debateLivePeople;
+        if(valueOperations.get(key)==null){
+            debateLivePeople = debateInfoRepository.findDebateLivePeople(debateId);
+            valueOperations.set(
+                    key,
+                    String.valueOf(debateLivePeople-1),
+                    20,
+                    TimeUnit.MINUTES);
+        }
+        else if(Integer.parseInt((String) valueOperations.get(key)) > 0){
+            valueOperations.decrement(key);
+            log.info("채팅방 인원 감소 후 값 : " + valueOperations.get(key));
+        }
+
+        //responseDto 작성
+        responseDto.setMessage("채팅방 현재인원 감소 완료");
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
+        return responseDto;
+    }
 }
