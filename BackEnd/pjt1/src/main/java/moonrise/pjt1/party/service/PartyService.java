@@ -105,7 +105,7 @@ public class PartyService {
                     party.getPartyPeople(),party.getLocation(),party.getPartyStatus(),
                     party.getMovie().getId(),partyComments,party.getDeadLine(), viewCnt, likeCnt,
                     commentsCnt,party.getMember().getProfile().getNickname(),
-                    partyJoinAccept,partyJoinWait,partyJoinSurplus);
+                    partyJoinAccept,partyJoinWait,partyJoinSurplus,party.getImagePath());
             result.put("findParty",partyReadResponseDto);
         }
         //***************DB 조회**********************
@@ -127,7 +127,19 @@ public class PartyService {
             int commentsCnt = p.getPartyComments().size();
             int likeCnt = p.getPartyInfo().getLikeCnt();
             String nickname = p.getMember().getProfile().getNickname();
-            PartyListResponseDto partyListResponseDto = new PartyListResponseDto(p.getId(),p.getTitle(),p.getPartyPeople(),p.getLocation(),p.getPartyDate(),likeCnt,viewCnt, commentsCnt,nickname,p.getDeadLine());
+            PartyListResponseDto partyListResponseDto = PartyListResponseDto.builder()
+                    .imagePath(p.getImagePath())
+                    .partyId(p.getId())
+                    .title(p.getTitle())
+                    .partyPeople(p.getPartyPeople())
+                    .location(p.getLocation())
+                    .partyDate(p.getPartyDate())
+                    .likeCnt(likeCnt)
+                    .viewCnt(viewCnt)
+                    .commentCnt(commentsCnt)
+                    .writer(nickname)
+                    .deadline(p.getDeadLine())
+                    .build();
             findParties.add(partyListResponseDto);
         }
 
