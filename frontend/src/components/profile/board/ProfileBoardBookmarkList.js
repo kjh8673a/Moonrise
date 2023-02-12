@@ -20,7 +20,7 @@ function ProfileBoardBookmarkList() {
     axios
       .get("http://3.35.149.202:80/api/board/mypage/bookmark", config)
       .then((response) => {
-        setData(response.data.data);
+        setData(response.data.data.findBoards);
       });
   }, [access_token]);
 
