@@ -1,8 +1,13 @@
 spring:
   redis:
-    host: 3.35.149.202
-    port: 6379
-    timeout : 1
+    master:
+      host: 3.35.149.202
+      port: 6379
+    slaves:
+      - host: 3.35.149.202
+        port: 6479
+      - host: 3.35.149.202
+        port: 6579
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
