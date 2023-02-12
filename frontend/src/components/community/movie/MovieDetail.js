@@ -120,6 +120,7 @@ function MovieDetail() {
       )
       .then((response) => {
         if (response !== "") {
+          setMyRating(response.data);
           setHaveRating(true);
         } else {
           setHaveRating(false);
