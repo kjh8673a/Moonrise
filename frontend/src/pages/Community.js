@@ -6,7 +6,7 @@ import CommunityWrite from "../components/community/CommunityWrite";
 
 function Community() {
   return (
-    <div className="grid h-full px-10 bg-fill bg-community">
+    <div className="grid h-screen px-10 bg-fill bg-community">
       <Routes>
         <Route path="list/*" element={<CommunityList />}></Route>
         <Route path="detail/*" element={<CommunityDetail />}></Route>
