@@ -12,13 +12,14 @@ public class DebateReadResponseDto {
     private String title;
     private String description;
     private String writer;
+    private String imagePath;
     private int maxppl;
     private int nowppl;
     private DebateStatus debateStatus;
     private LocalDateTime createDate;
     @Builder
     public DebateReadResponseDto(Long debateId, String title, String description,
-                                 String writer, int maxppl, int nowppl,
+                                 String writer, String imagePath, int maxppl, int nowppl,
                                  DebateStatus debateStatus,LocalDateTime createDate) {
         this.debateId = debateId;
         this.title = title;
@@ -28,5 +29,6 @@ public class DebateReadResponseDto {
         this.nowppl = nowppl;
         this.debateStatus = debateStatus;
         this.createDate = createDate;
+        this.imagePath = imagePath;
     }
 }
