@@ -74,13 +74,27 @@ public class DebateService {
         }
     }
     public ResponseDto getRecentChat(Long debateId, int findCnt) throws JsonProcessingException {
+        String key;
+        ValueOperations valueOperations = redisTemplate.opsForValue();
         ObjectMapper mapper = new ObjectMapper();
         ResponseDto responseDto = new ResponseDto();
         Map<String,Object> result = new HashMap<>();
+        key = "debateLivePeopleCnt::"+debateId;
+        int debateLivePeople;
+        if(valueOperations.get(key)==null){
+            debateLivePeople = debateInfoRepository.findDebateLivePeople(debateId);
+            valueOperations.set(
+                    key,
+                    String.valueOf(debateLivePeople),
+                    20,
+                    TimeUnit.MINUTES);
+        }
+        else debateLivePeople = Integer.parseInt((String) valueOperations.get(key));
+        result.put("nowppl",debateLivePeople);
         if(findCnt == 0) { // 채팅방 입장할때라 캐시서버에 저장된 채팅 내역만 리턴
-            String key = "debateChat::" + debateId;
+            key = "debateChat::" + debateId;
             String debateChatDtos = redisTemplate.opsForList().range(key, 0, -1).toString();
-            log.info(debateChatDtos + "오오오오파싱 됩니까?");
+            log.info(debateChatDtos);
             List<DebateChatDto> dtos = Arrays.asList(mapper.readValue(debateChatDtos, DebateChatDto[].class));
             result.put("recentChats",dtos);
         }
@@ -88,7 +102,7 @@ public class DebateService {
             Integer maxGroupNum = messageRepository.findMaxGroupId(debateId);
             if(maxGroupNum == null || maxGroupNum < findCnt){
                 responseDto.setMessage("더이상 채팅내역이 없습니다.");
-                responseDto.setData(null);
+                responseDto.setData(result);
                 responseDto.setStatus_code(400);
                 return responseDto;
             }

@@ -22,10 +22,16 @@ public class StompHandler extends ChannelInterceptorAdapter {
             case CONNECT:
                 // 유저가 Websocket으로 connect()를 한 뒤 호출됨
                 log.info("*******채팅방 입장******* sessionId : "+sessionId);
+                log.info(message);
+                log.info(accessor);
+                log.info(accessor.getMessageHeaders());
                 break;
             case DISCONNECT:
                 // 유저가 Websocket으로 disconnect() 를 한 뒤 호출됨 or 세션이 끊어졌을 때 발생함(페이지 이동~ 브라우저 닫기 등)
                 log.info("session연결 끊김 sessionId : "+sessionId);
+                log.info(message);
+                log.info(accessor);
+                log.info(accessor.getMessageHeaders());
                 break;
             default:
                 break;
