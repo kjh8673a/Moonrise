@@ -436,11 +436,22 @@ public class BoardService {
             }
 
         } else { // 캐시 서버에 값이 있으면
+            String nullstring = "";
             bookmarkBoardList = (String) valueOperations.get(bookmarkListKey);
+            System.out.println("캐시 서버에 값이 있으면");
+            System.out.println("bookmarkBoardList = " + bookmarkBoardList);
+            if (bookmarkBoardList.equals(nullstring)){
+                responseDto.setStatus_code(200);
+                responseDto.setData(result);
+                responseDto.setMessage("북마크 목록이 없습니다");
+                return responseDto;
+            }
 
         }
         // String 받고 FOR 문 돌면서 boardid 찾고 dto에 정보 저장
-        System.out.println("------------------------?????????????????????????");
+        System.out.println("------------------------????????????????????????? 여기 오면 안되는데.. ");
+        System.out.println(bookmarkBoardList);
+        System.out.println("------------------------??????????????????????????????");
         String[] bookmarks = bookmarkBoardList.split(",");
         List<MypageResponseDto> findBoards = new ArrayList<>();
 
