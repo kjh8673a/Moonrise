@@ -29,17 +29,25 @@ public class JwtController {
      */
     @PostMapping("/parse")
     public ResponseEntity<?> parseAccessToken(@RequestHeader HttpHeaders headers){
-        // Http Header 에서 Access-Token 받기
-        String access_token = headers.get("access_token").toString();
-        log.info("JwtContaoller - access-Token : {}", access_token);
-
         ResponseDto responseDto = new ResponseDto();
-        HashMap<String, Object> resultMap = new HashMap<>();
+        responseDto.setStatus_code(400);
         try{
-            HashMap<String, Object> userInfo = HttpUtil.parseToken(access_token);
-            Long userId = (Long) userInfo.get("user_id");
-            log.info("parse result : {}", userId);
-            resultMap.put("user_id", userId);
+            // Http Header 에서 Access-Token 받기
+            String access_token = headers.get("access_token").toString();
+            log.info("JwtContaoller - access-Token : {}", access_token);
+
+            HashMap<String, Object> resultMap = new HashMap<>();
+
+            Long user_id = HttpUtil.parseToken(access_token);
+            if(user_id == null){
+                log.error("userId == null error");
+
+                responseDto.setStatus_code(400);
+                responseDto.setMessage("토큰 파싱과정에서 오류");
+                return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+            }
+            log.info("parse result : {}", user_id);
+            resultMap.put("user_id", user_id);
 
             responseDto.setStatus_code(200);
             responseDto.setMessage("토큰 파싱 완료");
@@ -47,10 +55,12 @@ public class JwtController {
             
         }catch (UnauthorizedException e){
             log.error(e.getMessage());
-
-            responseDto.setStatus_code(400);
             responseDto.setMessage(e.getMessage());
 
+        }catch (NullPointerException npe){
+            // Null 처리
+            log.error(npe.getMessage());
+            responseDto.setMessage(npe.getMessage());
         }
         return ResponseEntity.ok().body(responseDto);
     }

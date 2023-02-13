@@ -1,6 +1,7 @@
 package moonrise.pjt2.member.model.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import moonrise.pjt2.member.dto.MemberJoinDto;
 import moonrise.pjt2.member.dto.MemberUpdateDto;
 import moonrise.pjt2.member.dto.ResponseDto;
@@ -13,18 +14,20 @@ import moonrise.pjt2.member.model.repository.ProfileRepository;
 import moonrise.pjt2.util.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
 
-    private final Logger logger = LoggerFactory.getLogger(MemberService.class);
 
 
     public ResponseDto join(MemberJoinDto dto, Long user_id){
@@ -59,43 +62,46 @@ public class MemberService {
     }
     @Transactional
     public ResponseDto memberInfoUpdate(String atk, MemberUpdateDto memberUpdateDto){
-        HashMap<String, Object> resultMap = HttpUtil.parseToken(atk);
         ResponseDto responseDto = new ResponseDto();
-        try{
-            Long userId = Long.parseLong(resultMap.get("user_id").toString());
 
-            Member member = memberRepository.findById(userId).get();
-            //Null 처리
-            MemberInfo memberInfo = member.getMemberInfo();
+        Long user_id = HttpUtil.parseToken(atk);
 
-            //Genres 스트링화
-            List<String> genres = memberUpdateDto.getGenres();
-            StringBuilder sb = new StringBuilder();
-            for (String genre : genres) {
-                sb.append(genre + ",");
-            }
-            memberInfo.setLikeGenre(sb.toString());
+        //Null 처리
+        if(user_id == null){
+            log.error("userId == null error");
 
-            // 프로필 수정
-            Profile profile = member.getProfile();
-            profile.setProfile_image_path(memberUpdateDto.getImagePath());
-            profile.setNickname(memberUpdateDto.getNickname());
-
-            responseDto.setStatus_code(200);
-            responseDto.setData(memberUpdateDto);
-            responseDto.setMessage("회원 수정이 완료되었습니다.");
-        }catch(Exception e){
-            logger.error(e.getMessage());
             responseDto.setStatus_code(400);
-            responseDto.setMessage(e.getMessage());
+            responseDto.setMessage("토큰 파싱과정에서 오류");
+            return responseDto;
         }
+
+        Member member = memberRepository.findById(user_id).get();
+
+        MemberInfo memberInfo = member.getMemberInfo();
+
+        //Genres 스트링화
+        List<String> genres = memberUpdateDto.getGenres();
+        StringBuilder sb = new StringBuilder();
+        for (String genre : genres) {
+            sb.append(genre + ",");
+        }
+        memberInfo.setLikeGenre(sb.toString());
+
+        // 프로필 수정
+        Profile profile = member.getProfile();
+        profile.setProfile_image_path(memberUpdateDto.getImagePath());
+        profile.setNickname(memberUpdateDto.getNickname());
+
+        responseDto.setStatus_code(200);
+        responseDto.setData(memberUpdateDto);
+        responseDto.setMessage("회원 수정이 완료되었습니다.");
 
         return responseDto;
     }
     public boolean check_enroll_member(Long userId){
         //카카오 고유 번호를 받아 디비에 있는지 확인
         Optional<Member> member = memberRepository.findById(userId);
-        logger.info("member : {}", member);
+        log.info("member : {}", member);
 
         if(member.isEmpty()){
 //            throw new NotExistMemberException("회원이 존재하지 않습니다.");
@@ -105,27 +111,28 @@ public class MemberService {
     }
     @Transactional
     public ResponseDto findMember(String atk){
-        HashMap<String, Object> resultMap = HttpUtil.parseToken(atk);
         ResponseDto responseDto = new ResponseDto();
-        try {
-            Long userId = Long.parseLong(resultMap.get("user_id").toString());
+        Long user_id = HttpUtil.parseToken(atk);
 
-            Optional<Member> find = memberRepository.findMemberById(userId);
+        if(user_id == null){
+            log.error("userId == null error");
 
-            if(!find.isPresent()){
-                responseDto.setMessage("회원정보가 없습니다.");
-                responseDto.setStatus_code(400);
-
-                return responseDto;
-            }
-            responseDto.setData(find.get());
-            responseDto.setMessage("회원 정보 로드 완료");
-            responseDto.setStatus_code(200);
-        }catch(Exception e){
-            logger.error(e.getMessage());
-            responseDto.setStatus_code(500);
-            responseDto.setMessage(e.getMessage());
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("토큰 파싱과정에서 오류");
+            return responseDto;
         }
+        Optional<Member> find = memberRepository.findMemberById(user_id);
+
+        if(!find.isPresent()){
+            log.error("findMember : 회원 정보가 없습니다.");
+            responseDto.setMessage("회원정보가 없습니다.");
+            responseDto.setStatus_code(400);
+
+            return responseDto;
+        }
+        responseDto.setData(find.get());
+        responseDto.setMessage("회원 정보 로드 완료");
+        responseDto.setStatus_code(200);
 
         return responseDto;
     }
@@ -145,6 +152,9 @@ public class MemberService {
         dto.setImagePath(profile.getProfile_image_path());
         String likeGenre = memberInfo.getLikeGenre();
 
+        if(likeGenre == null){
+            return dto;
+        }
         StringTokenizer st = new StringTokenizer(likeGenre,",");
         ArrayList<String> genres = new ArrayList<>();
         while(st.hasMoreTokens()){
@@ -163,8 +173,8 @@ public class MemberService {
             responseDto.setMessage("사용중인 닉네임이 없습니다.");
             return responseDto;
         }
-        logger.info("nicknameCheck : {}", findProfile.get().getNickname());
-        logger.info("이미 사용중인 닉네임 입니다.");
+        log.info("nicknameCheck : {}", findProfile.get().getNickname());
+        log.info("이미 사용중인 닉네임 입니다.");
         responseDto.setStatus_code(400);
         responseDto.setMessage("이미 사용중인 닉네임 입니다.");
         return responseDto;

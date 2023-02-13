@@ -112,20 +112,19 @@ public class MemberController {
             log.info("refresh_token : {}", refresh_Token);
 
             //access-token을 파싱 하여 카카오 id가 디비에 있는지 확인
-            HashMap<String, Object> userInfo = httpUtil.parseToken(access_Token);
-            Long userId = (Long) userInfo.get("user_id");
-            //String nickname = userInfo.get("nickname").toString();
-            log.info("parse result : {}", userId);
+            Long user_id = httpUtil.parseToken(access_Token);
+            log.info("parse result : {}", user_id);
 
-            if(userId == null){
-                log.info("userId == null error");
-                return ResponseEntity.status(401).body(null);
+            if(user_id == null){
+                log.error("userId == null error");
+                responseDto.setStatus_code(400);
+                responseDto.setMessage("토큰 파싱과정에서 오류");
+                return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
             }
 
-            if(memberService.check_enroll_member(userId)){  // 회원가입해
+            if(memberService.check_enroll_member(user_id)){  // 회원가입해
                 resultMap.put("access_token",access_Token);
                 resultMap.put("refresh_token",refresh_Token);
-                //resultMap.put("nickname", nickname);
 
                 responseDto.setStatus_code(400);
                 responseDto.setMessage("회원가입 정보 없음!!");
@@ -134,10 +133,9 @@ public class MemberController {
                 return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);  //200
             }
             // 회원가입 되어 있어 회원 정보 반환해.
-            MemberJoinDto dto = memberService.findMemberAll(userId);
+            MemberJoinDto dto = memberService.findMemberAll(user_id);
             dto.setAccess_token(access_Token);
             dto.setRefresh_token(refresh_Token);
-
 
             responseDto.setStatus_code(200);
             responseDto.setMessage("로그인 완료!!");
@@ -145,14 +143,9 @@ public class MemberController {
 
             br.close();
             bw.close();
-        }catch(IOException io){
-            log.error(io.getMessage());
-
-        }catch (UnauthorizedException uae){
-            log.error(uae.getMessage());
-            return ResponseEntity.status(401).body(null);
+        }catch(Exception e){
+            log.error(e.getMessage());
         }
-
         return ResponseEntity.ok().body(responseDto);
     }
 
@@ -212,15 +205,23 @@ public class MemberController {
         log.info("join_access_token : {}", access_token);
 
         // token을 통해 userid 받아오기
-        HashMap<String, Object> userInfo = HttpUtil.parseToken(access_token);
+        Long user_id = HttpUtil.parseToken(access_token);
 
+        ResponseDto responseDto = new ResponseDto();
+        if(user_id == null){
+            log.error("userId == null error");
+
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("토큰 파싱과정에서 오류");
+            return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+        }
         memberJoinDto.setAccess_token(access_token);
         memberJoinDto.setRefresh_token(refresh_token);
 
         // Service에 요청
-        ResponseDto responseDto = memberService.join(memberJoinDto, (Long) userInfo.get("user_id"));
+        responseDto = memberService.join(memberJoinDto, user_id);
 
-        return ResponseEntity.ok().body(responseDto);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
     @GetMapping("/check")
     public ResponseEntity<?> nicknameCheck(@RequestParam String nickname){
