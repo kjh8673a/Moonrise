@@ -29,24 +29,20 @@ public class DebateController {
     public ResponseEntity<?> enterDebateRoom(@RequestParam(value = "debateId") Long debateId,
                                              @RequestParam(value = "findCnt",defaultValue = "0") int findCnt) throws JsonProcessingException {
         log.info(debateId+"번 채팅방 이전 채팅내역 찾기   findCnt : "+ findCnt);
-        if(findCnt == 0){ // 0이면 채팅방 첫 입장임
-            boolean isMax = debateService. updateLivePeopleCnt(debateId);
-            if(!isMax){
-                ResponseDto responseDto = new ResponseDto();
-                responseDto.setMessage("참가인원이 꽉찼습니다.");
-                log.info("참가인원이 꽉찼습니다.");
-                responseDto.setData(null);
-                responseDto.setStatus_code(400);
-                return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
-            }
-        }
         ResponseDto responseDto = debateService.getRecentChat(debateId, findCnt);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
-    @GetMapping("/exit") // 채팅방 입장 시 redis서버 채팅내역 리턴
+    @GetMapping("/exit") // 채팅방 퇴장 시 현재인원 수 값 조정
     public ResponseEntity<?> exitDebateRoom(@RequestParam(value = "debateId") Long debateId) {
         log.info(debateId+"번 채팅방 나가기 요청");
         ResponseDto responseDto = debateService.minusLivePeopleCnt(debateId);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<?> checkEnterRoom(@RequestParam(value = "debateId") Long debateId) {
+        log.info(debateId+"번 채팅방 입장가능 여부 체크");
+        ResponseDto responseDto = debateService.checkEnter(debateId);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 }

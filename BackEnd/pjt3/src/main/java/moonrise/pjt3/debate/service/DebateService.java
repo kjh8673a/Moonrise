@@ -118,29 +118,6 @@ public class DebateService {
         return responseDto;
     }
 
-    public boolean updateLivePeopleCnt(Long debateId) {
-        String key = "debateLivePeopleCnt::"+debateId;
-        //캐시에 값이 없으면 레포지토리에서 조회 있으면 값을 증가시킨다.
-        ValueOperations valueOperations = redisTemplate.opsForValue();
-        Debate debate = debateRepository.findById(debateId).get();
-        int maxPpl = debate.getMaxppl();
-        int debateLivePeople;
-        if(valueOperations.get(key)==null){
-            debateLivePeople = debateInfoRepository.findDebateLivePeople(debateId);
-            valueOperations.set(
-                    key,
-                    String.valueOf(debateLivePeople),
-                    20,
-                    TimeUnit.MINUTES);
-        }
-        else debateLivePeople = Integer.parseInt((String) valueOperations.get(key));
-
-        if(debateLivePeople >= maxPpl) return false;
-        else valueOperations.increment(key);
-
-        return true;
-    }
-
     public ResponseDto minusLivePeopleCnt(Long debateId) {
         ResponseDto responseDto = new ResponseDto();
         Map<String,Object> result = new HashMap<>();
@@ -164,6 +141,36 @@ public class DebateService {
 
         //responseDto 작성
         responseDto.setMessage("채팅방 현재인원 감소 완료");
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
+        return responseDto;
+    }
+
+    public ResponseDto checkEnter(Long debateId) {
+        ResponseDto responseDto = new ResponseDto();
+        Map<String,Object> result = new HashMap<>();
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        Debate debate = debateRepository.findById(debateId).get();
+        int maxppl = debate.getMaxppl();
+        int debateLivePeople;
+        String key = "debateLivePeopleCnt::"+debateId;
+        if(valueOperations.get(key)==null){
+            debateLivePeople = debateInfoRepository.findDebateLivePeople(debateId);
+            valueOperations.set(
+                    key,
+                    String.valueOf(debateLivePeople),
+                    20,
+                    TimeUnit.MINUTES);
+        }
+        else debateLivePeople = Integer.parseInt((String) valueOperations.get(key));
+
+        if(debateLivePeople < maxppl){
+            valueOperations.increment(key);
+            result.put("isEnter",true);
+        }
+        else result.put("isEnter",false);
+        //responseDto 작성
+        responseDto.setMessage("채팅방 입장가능 여부");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
         return responseDto;
