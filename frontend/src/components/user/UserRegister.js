@@ -12,7 +12,24 @@ function UserRegister() {
     const [nickname, setNickname] = useState(useSelector(state=> state.member.nickname));
     const access_token = useSelector(state=> state.member.accessToken);
     const refresh_token = useSelector(state=> state.member.refreshToken);
-    const genreList = ["코미디", "SF", "멜로", "액션", "범죄", "스릴러", "전쟁", "판타지", "스포츠"];
+    const genreList = ["SF",
+    "가족",
+    "공포",
+    "다큐멘터리",
+    "드라마",
+    "로맨스",
+    "모험",
+    "미스터리",
+    "범죄",
+    "서부",
+    "스릴러",
+    "애니메이션",
+    "액션",
+    "역사",
+    "음악",
+    "전쟁",
+    "코미디",
+    "판타지"];
     const movePage = useNavigate(); 
     const dispatch = useDispatch();
     function goMain(){

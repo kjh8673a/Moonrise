@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { FaHeart } from "react-icons/fa";
 
 import BoardComment from "./BoardComment";
 
@@ -190,10 +191,9 @@ function BoardDetail() {
           <div className="flex-1 text-left">
             {!isLike && (
               <button
-                className="bg-[#FA9E13] px-2 py-1 m-1 text-white rounded-xl"
                 onClick={createLike}
               >
-                좋아요
+                <FaHeart/>
               </button>
             )}
             {isLike && (
