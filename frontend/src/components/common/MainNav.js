@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setMovieList } from "../../feature/reducer/MovieReducer";
+import { setCurrentPage, setMovieList, setSearchKeyword, setTotalPage } from "../../feature/reducer/MovieReducer";
 import Logo from "./Logo";
 import ProfileIcon from "./ProfileIcon";
 
@@ -34,10 +34,14 @@ function MainNav() {
         "https://api.themoviedb.org/3/search/movie?api_key=" +
           tmdbToken +
           "&language=ko-KR&page=1&include_adult=false&query=" +
-          keyword
+          keyword +
+          "&page=1"
       )
       .then((response) => {
         dispatch(setMovieList(response.data.results));
+        dispatch(setTotalPage(response.data.total_pages));
+        dispatch(setSearchKeyword(keyword));
+        dispatch(setCurrentPage(1));
       })
       .then(() => {
         if (keyword === "") {
