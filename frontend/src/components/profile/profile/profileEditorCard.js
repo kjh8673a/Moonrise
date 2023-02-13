@@ -6,6 +6,7 @@ import {
   setGernes1,
   setGernes2,
   setGernes3,
+  setImagePath,
   setNickname,
 } from "../../../feature/reducer/MemberReducer";
 
@@ -17,8 +18,11 @@ function ProfileEditorCard(props) {
   const [hideOpt, setHideOpt] = useState(true);
   const [gerneError, setGerneError] = useState(false);
   const [imgPreview, setImgPreview] = useState("");
+  const [uploadImg, setUploadImg] = useState("");
   const imgRef = useRef();
   const dispatch = useDispatch();
+
+  const baseURL = process.env.REACT_APP_BASE_URL;
 
   const gerneList = [
     "SF",
@@ -77,10 +81,18 @@ function ProfileEditorCard(props) {
     }
   };
 
-  const changeImage = () => {
+  const changeImage = async (event) => {
     const file = imgRef.current.files[0];
     const reader = new FileReader();
-    console.log(reader)
+    
+    const formData = new FormData();
+    formData.append('files', event.target.files[0]);
+    const response = await axios.post(baseURL + "/api/image/upload", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    setUploadImg(response.data.data[0]);
     reader.readAsDataURL(file);
     reader.onload = () => {
       setImgPreview(reader.result);
@@ -102,8 +114,7 @@ function ProfileEditorCard(props) {
         "http://3.35.149.202:80/auth/member/",
         {
           nickname: nicknameValue,
-          imagePath:
-            "https://moonrise.s3.ap-northeast-2.amazonaws.com/208c18ba-3457-419e-b27a-a408ceb60e8b_defaultUser.png",
+          imagePath: uploadImg,
           genres: gerneValue,
         },
         config
@@ -114,6 +125,9 @@ function ProfileEditorCard(props) {
           dispatch(setGernes1(response.data.data.genres[0]));
           dispatch(setGernes2(response.data.data.genres[1]));
           dispatch(setGernes3(response.data.data.genres[2]));
+        }
+        if(response.data.data.imagePath) {
+          dispatch(setImagePath(response.data.data.imagePath));
         }
         props.editDone();
         props.closeEditor();
