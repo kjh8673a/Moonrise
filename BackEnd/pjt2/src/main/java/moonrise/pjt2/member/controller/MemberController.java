@@ -4,10 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import moonrise.pjt2.member.dto.MemberJoinDto;
+import moonrise.pjt2.member.dto.MemberUpdateDto;
+import moonrise.pjt2.member.dto.ResponseDto;
 import moonrise.pjt2.member.exception.UnauthorizedException;
-import moonrise.pjt2.member.model.entity.Member;
-import moonrise.pjt2.member.model.entity.MemberInfo;
-import moonrise.pjt2.member.model.entity.Profile;
 import moonrise.pjt2.member.model.service.MemberService;
 
 import moonrise.pjt2.util.HttpUtil;
@@ -194,6 +194,15 @@ public class MemberController {
             return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
         }
     }
+    @PutMapping
+    public ResponseEntity<?> update(@RequestHeader HttpHeaders headers, @RequestBody MemberUpdateDto memberUpdateDto){
+        log.info("memberUpdateDto : {}", memberUpdateDto.toString());
+
+        String access_token = headers.get("access_token").toString();
+        ResponseDto responseDto = memberService.memberInfoUpdate(access_token, memberUpdateDto);
+
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestHeader HttpHeaders headers, @RequestBody MemberJoinDto memberJoinDto){
         log.info("memberJoin Data : {}", memberJoinDto);
@@ -209,16 +218,7 @@ public class MemberController {
         memberJoinDto.setRefresh_token(refresh_token);
 
         // Service에 요청
-        memberService.join(memberJoinDto, (Long) userInfo.get("user_id"));
-
-        ResponseDto responseDto = new ResponseDto();
-        responseDto.setStatus_code(200);
-        responseDto.setData(memberJoinDto);
-        responseDto.setMessage("회원가입 완료~~~");
-
-
-        log.info("responseDto.ATK : {}", memberJoinDto.getAccess_token());
-        log.info("responseDto.RTK : {}", memberJoinDto.getRefresh_token());
+        ResponseDto responseDto = memberService.join(memberJoinDto, (Long) userInfo.get("user_id"));
 
         return ResponseEntity.ok().body(responseDto);
     }

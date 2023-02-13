@@ -2,6 +2,7 @@ package moonrise.pjt2.member.controller;
 
 import com.google.gson.JsonElement;
 import lombok.extern.slf4j.Slf4j;
+import moonrise.pjt2.member.dto.ResponseDto;
 import moonrise.pjt2.member.exception.UnauthorizedException;
 import moonrise.pjt2.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Value;
