@@ -1,18 +1,23 @@
 package moonrise.pjt2.member.model.service;
 
 import lombok.RequiredArgsConstructor;
-import moonrise.pjt2.member.controller.MemberJoinDto;
-import moonrise.pjt2.member.controller.ResponseDto;
+import moonrise.pjt2.member.dto.MemberJoinDto;
+import moonrise.pjt2.member.dto.MemberUpdateDto;
+import moonrise.pjt2.member.dto.ResponseDto;
 import moonrise.pjt2.member.exception.NotExistMemberException;
 import moonrise.pjt2.member.model.entity.Member;
 import moonrise.pjt2.member.model.entity.MemberInfo;
 import moonrise.pjt2.member.model.entity.Profile;
 import moonrise.pjt2.member.model.repository.MemberRepository;
 import moonrise.pjt2.member.model.repository.ProfileRepository;
+import moonrise.pjt2.util.HttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,17 +27,72 @@ public class MemberService {
     private final ProfileRepository profileRepository;
 
     private final Logger logger = LoggerFactory.getLogger(MemberService.class);
-    public void join(MemberJoinDto dto, Long user_id){
+
+
+    public ResponseDto join(MemberJoinDto dto, Long user_id){
         // dto를 통한 엔티티 만들기
         Profile memberProfile = new Profile(dto.getNickname(), dto.getGender());
 
         // Member에 profile 매핑
         Member member = new Member();
         member.addId(user_id);
-        member.addMemberInfo(new MemberInfo());
+        MemberInfo memberInfo = new MemberInfo();
+
+        //Genres 스트링화
+        List<String> genres = dto.getGenres();
+        StringBuilder sb = new StringBuilder();
+        for (String genre : genres) {
+            sb.append(genre + ",");
+        }
+        memberInfo.setLikeGenre(sb.toString());
+
+        member.addMemberInfo(memberInfo);
         member.addProfile(memberProfile);
 
+        dto.setImagePath(memberProfile.getProfile_image_path());
         memberRepository.save(member);
+
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setData(dto);
+        responseDto.setStatus_code(200);
+        responseDto.setMessage("회원 가입 완료");
+
+        return responseDto;
+    }
+    @Transactional
+    public ResponseDto memberInfoUpdate(String atk, MemberUpdateDto memberUpdateDto){
+        HashMap<String, Object> resultMap = HttpUtil.parseToken(atk);
+        ResponseDto responseDto = new ResponseDto();
+        try{
+            Long userId = Long.parseLong(resultMap.get("user_id").toString());
+
+            Member member = memberRepository.findById(userId).get();
+            //Null 처리
+            MemberInfo memberInfo = member.getMemberInfo();
+
+            //Genres 스트링화
+            List<String> genres = memberUpdateDto.getGenres();
+            StringBuilder sb = new StringBuilder();
+            for (String genre : genres) {
+                sb.append(genre + ",");
+            }
+            memberInfo.setLikeGenre(sb.toString());
+
+            // 프로필 수정
+            Profile profile = member.getProfile();
+            profile.setProfile_image_path(memberUpdateDto.getImagePath());
+            profile.setNickname(memberUpdateDto.getNickname());
+
+            responseDto.setStatus_code(200);
+            responseDto.setData(memberUpdateDto);
+            responseDto.setMessage("회원 수정이 완료되었습니다.");
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            responseDto.setStatus_code(400);
+            responseDto.setMessage(e.getMessage());
+        }
+
+        return responseDto;
     }
     public boolean check_enroll_member(Long userId){
         //카카오 고유 번호를 받아 디비에 있는지 확인
@@ -45,12 +105,31 @@ public class MemberService {
         }
         return false;
     }
-    public Member findMember(Long userId){
-        Optional<Member> m = memberRepository.findById(userId);
-        if(!m.isPresent()){
-            throw new NotExistMemberException("회원이 존재하지 않습니다.");
+    @Transactional
+    public ResponseDto findMember(String atk){
+        HashMap<String, Object> resultMap = HttpUtil.parseToken(atk);
+        ResponseDto responseDto = new ResponseDto();
+        try {
+            Long userId = Long.parseLong(resultMap.get("user_id").toString());
+
+            Optional<Member> find = memberRepository.findMemberById(userId);
+
+            if(!find.isPresent()){
+                responseDto.setMessage("회원정보가 없습니다.");
+                responseDto.setStatus_code(400);
+
+                return responseDto;
+            }
+            responseDto.setData(find.get());
+            responseDto.setMessage("회원 정보 로드 완료");
+            responseDto.setStatus_code(200);
+        }catch(Exception e){
+            logger.error(e.getMessage());
+            responseDto.setStatus_code(500);
+            responseDto.setMessage(e.getMessage());
         }
-        return m.get();
+
+        return responseDto;
     }
     public MemberJoinDto findMemberAll(Long userId){
         Optional<Member> m = memberRepository.findMemberById(userId);
