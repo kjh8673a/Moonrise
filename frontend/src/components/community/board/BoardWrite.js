@@ -1,7 +1,6 @@
 import { Editor } from "@toast-ui/react-editor";
 import '@toast-ui/editor/dist/toastui-editor.css';
 
-import axios from "axios";
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
