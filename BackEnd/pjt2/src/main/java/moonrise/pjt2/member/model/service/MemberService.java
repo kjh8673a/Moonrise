@@ -147,7 +147,7 @@ public class MemberService {
 
         StringTokenizer st = new StringTokenizer(likeGenre,",");
         ArrayList<String> genres = new ArrayList<>();
-        while(!st.hasMoreTokens()){
+        while(st.hasMoreTokens()){
             genres.add(st.nextToken());
         }
         dto.setGenres(genres);
