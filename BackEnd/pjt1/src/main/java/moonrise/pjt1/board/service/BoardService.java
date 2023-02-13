@@ -108,7 +108,7 @@ public class BoardService {
         } else {
             isBookmark = bookmarkBoardList.contains(boardId + "");
         }
-        //***************redis 캐시서버**********************
+        //***************조회수 캐시 서버**********************
         String key = "boardViewCnt::" + boardId;
         Long boardInfoId = findBoard.get().getBoardInfo().getId();
         if (valueOperations.get(key) == null) {
@@ -117,14 +117,25 @@ public class BoardService {
             valueOperations.increment(key);
         }
         int viewCnt = Integer.parseInt((String) valueOperations.get(key));
-        //***************redis 캐시서버**********************
+        System.out.println("서버에서 가져온 조회수 viewCnt = " + viewCnt);
+        //***************좋아요 수 캐시서버 **********************
+        String likeCntKey = "boardLikeCnt::" + boardId;
+        int likeCnt = 0;
+        if (valueOperations.get(likeCntKey) == null) {
+            System.out.println("실시간 좋아요 값을 가져오는 중 ");
+            likeCnt = Integer.parseInt((String) valueOperations.get(likeCntKey));
+            System.out.println("likeCnt = " + likeCnt);
+        } else {
+            System.out.println("db에서 좋아요 값을 가져오는 중 ");
+            likeCnt = findBoard.get().getBoardInfo().getLikeCnt();
+            System.out.println("likeCnt = " + likeCnt);
+        }
         //***************DB 조회**********************
         if (!findBoard.isPresent()) throw new IllegalStateException("존재하지 않는 게시글 입니다");
         Board board = findBoard.get();
         String writer = board.getMember().getProfile().getNickname();
         List<BoardComment> commentList = boardCommentRepository.getCommentList(boardId);
         int commentCnt = commentList.size();
-        int likeCnt = board.getBoardInfo().getLikeCnt();
         BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList, viewCnt, commentCnt, likeCnt, isLike, isBookmark);
 
         //responseDto 작성
