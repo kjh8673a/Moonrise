@@ -38,9 +38,8 @@ public class RedisSchedule {
             String data = it.next();
             Long debateId = Long.parseLong(data.split("::")[1]);
             String debateChatDtos = redisTemplate.opsForList().range(data,0,-1).toString();
-            log.info(debateChatDtos+"오오오오파싱 됩니까?");
+            log.info(debateChatDtos);
             List<DebateChatDto> dtos = Arrays.asList(mapper.readValue(debateChatDtos, DebateChatDto[].class));
-            System.out.println(dtos.size() + " : " +dtos);
             Integer groupNum = messageRepository.findMaxGroupId(debateId);
             if(groupNum == null){
                 debateService.saveRdbChat(dtos,1);
@@ -64,6 +63,7 @@ public class RedisSchedule {
             DebateInfo debateInfo = debateInfoRepository.findById(debateId).get();
             debateInfo.setNowppl(debateLivePeopleCnt);
             redisTemplate.delete("debateLivePeopleCnt::"+debateId);
+            log.info(debateId+"번 채팅방 현재인원 : "+ debateLivePeopleCnt);
         }
     }
 }
