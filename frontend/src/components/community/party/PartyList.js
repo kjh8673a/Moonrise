@@ -5,6 +5,7 @@ import CommunityHeader from '../CommunityHeader'
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import CommunityPagination from '../CommunityPagination'
+import { Transition } from '@headlessui/react';
 
 function PartyList() {
   const movieId = useSelector(state => state.movie.movieId)
@@ -16,7 +17,7 @@ function PartyList() {
   const GetList = () => {
     return (
       partyList.map((party) => (
-        <PartyCard title={party.title} partyDate="2023.02.06" partyPeople={party.partyPeople} partyLocation={party.location} partyId={party.partyId} key={party.partyId}/>
+        <PartyCard title={party.title} partyDate={party.partyDate} partyPeople={party.partyPeople} partyLocation={party.location} partyId={party.partyId} key={party.partyId}/>
       ))
     );
   }
@@ -32,10 +33,18 @@ function PartyList() {
   return (
     <div className='party-list'>
       <CommunityHeader type="뒷풀이"/>
+      <Transition
+        appear={true} 
+        show={true}
+       enter="transition-all duration-1000"
+       enterFrom="opacity-0 transform translate-x-10"
+       enterTo="opacity-100 transform translate-x-0"
+      >
       <div className="grid grid-cols-4 gap-2">
         {GetList()}
       </div>
       <CommunityPagination total={partyTotalPages} page={page} setPage={setPage}/>
+      </Transition>
     </div>
   )
 }

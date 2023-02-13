@@ -7,6 +7,7 @@ import { persistStore } from "redux-persist";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
+import '@toast-ui/editor/dist/toastui-editor.css';
 
 const container = document.getElementById("root");
 const root = createRoot(container);

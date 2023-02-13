@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
+import { Viewer } from "@toast-ui/react-editor"
 
 import BoardComment from "./BoardComment";
 
@@ -247,7 +248,7 @@ function BoardDetail() {
         </div>
       </div>
       <div className="p-2 border-b">
-        <p>{board.content}</p>
+        <Viewer initialValue={board.content} />
       </div>
 
       <span>댓글</span>
