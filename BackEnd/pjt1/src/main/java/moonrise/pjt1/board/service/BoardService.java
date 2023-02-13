@@ -122,12 +122,13 @@ public class BoardService {
         String likeCntKey = "boardLikeCnt::" + boardId;
         int likeCnt = 0;
         if (valueOperations.get(likeCntKey) == null) {
-            System.out.println("실시간 좋아요 값을 가져오는 중 ");
-            likeCnt = Integer.parseInt((String) valueOperations.get(likeCntKey));
-            System.out.println("likeCnt = " + likeCnt);
-        } else {
             System.out.println("db에서 좋아요 값을 가져오는 중 ");
             likeCnt = findBoard.get().getBoardInfo().getLikeCnt();
+            System.out.println("likeCnt = " + likeCnt);
+
+        } else {
+            System.out.println("실시간 좋아요 값을 가져오는 중 ");
+            likeCnt = Integer.parseInt((String) valueOperations.get(likeCntKey));
             System.out.println("likeCnt = " + likeCnt);
         }
         //***************DB 조회**********************
