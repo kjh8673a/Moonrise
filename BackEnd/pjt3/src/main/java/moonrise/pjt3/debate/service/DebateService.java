@@ -74,13 +74,15 @@ public class DebateService {
         }
     }
     public ResponseDto getRecentChat(Long debateId, int findCnt) throws JsonProcessingException {
+        String key;
+        ValueOperations valueOperations = redisTemplate.opsForValue();
         ObjectMapper mapper = new ObjectMapper();
         ResponseDto responseDto = new ResponseDto();
         Map<String,Object> result = new HashMap<>();
         if(findCnt == 0) { // 채팅방 입장할때라 캐시서버에 저장된 채팅 내역만 리턴
-            String key = "debateChat::" + debateId;
+            key = "debateChat::" + debateId;
             String debateChatDtos = redisTemplate.opsForList().range(key, 0, -1).toString();
-            log.info(debateChatDtos + "오오오오파싱 됩니까?");
+            log.info(debateChatDtos);
             List<DebateChatDto> dtos = Arrays.asList(mapper.readValue(debateChatDtos, DebateChatDto[].class));
             result.put("recentChats",dtos);
         }
@@ -96,6 +98,18 @@ public class DebateService {
             List<DebateChatDto> dbChats = messageRepository.findDtoBYGroupNum(debateId, maxGroupNum - findCnt + 1);
             result.put("recentChats",dbChats);
         }
+        key = "debateLivePeopleCnt::"+debateId;
+        int debateLivePeople;
+        if(valueOperations.get(key)==null){
+            debateLivePeople = debateInfoRepository.findDebateLivePeople(debateId);
+            valueOperations.set(
+                    key,
+                    String.valueOf(debateLivePeople),
+                    20,
+                    TimeUnit.MINUTES);
+        }
+        else debateLivePeople = Integer.parseInt((String) valueOperations.get(key));
+        result.put("nowppl",debateLivePeople);
         //responseDto 작성
         responseDto.setMessage("이전 채팅내역 리턴");
         responseDto.setData(result);
