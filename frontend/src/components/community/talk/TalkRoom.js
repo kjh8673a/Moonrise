@@ -63,7 +63,9 @@ function TalkRoom(props) {
   return (
     <div className='p-2 mt-4 mb-12 bg-gray-200 rounded-lg h-96 overflow-y-auto'>
         <div className='grid grid-cols-3'>
-
+            <div className='col-span-3'>
+                <button onClick={countInc} className="w-full text-center bg-gray-400 bg-opacity-20 hover:bg-opacity-40">이전 내역</button>
+            </div>
         { chat.map((chatOne) => {
             if (chatOne.writer === user) {
                 return(
@@ -108,7 +110,7 @@ function TalkRoom(props) {
             </button>
           </div>
         </div>
-        <button onClick={countInc}>제출</button>
+        
     </div>
   )
 }
