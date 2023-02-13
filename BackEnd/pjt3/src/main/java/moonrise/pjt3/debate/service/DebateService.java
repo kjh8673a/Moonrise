@@ -79,25 +79,6 @@ public class DebateService {
         ObjectMapper mapper = new ObjectMapper();
         ResponseDto responseDto = new ResponseDto();
         Map<String,Object> result = new HashMap<>();
-        if(findCnt == 0) { // 채팅방 입장할때라 캐시서버에 저장된 채팅 내역만 리턴
-            key = "debateChat::" + debateId;
-            String debateChatDtos = redisTemplate.opsForList().range(key, 0, -1).toString();
-            log.info(debateChatDtos);
-            List<DebateChatDto> dtos = Arrays.asList(mapper.readValue(debateChatDtos, DebateChatDto[].class));
-            result.put("recentChats",dtos);
-        }
-        else{ //채팅방 입장 후 위로 스크롤 올리는 등 mysql저장된 채팅 내역 요청 시 리턴
-            Integer maxGroupNum = messageRepository.findMaxGroupId(debateId);
-            if(maxGroupNum == null || maxGroupNum < findCnt){
-                responseDto.setMessage("더이상 채팅내역이 없습니다.");
-                responseDto.setData(null);
-                responseDto.setStatus_code(400);
-                return responseDto;
-            }
-            //이값이랑 findCnt 이용해서 Groupnum으로 select
-            List<DebateChatDto> dbChats = messageRepository.findDtoBYGroupNum(debateId, maxGroupNum - findCnt + 1);
-            result.put("recentChats",dbChats);
-        }
         key = "debateLivePeopleCnt::"+debateId;
         int debateLivePeople;
         if(valueOperations.get(key)==null){
@@ -110,6 +91,25 @@ public class DebateService {
         }
         else debateLivePeople = Integer.parseInt((String) valueOperations.get(key));
         result.put("nowppl",debateLivePeople);
+        if(findCnt == 0) { // 채팅방 입장할때라 캐시서버에 저장된 채팅 내역만 리턴
+            key = "debateChat::" + debateId;
+            String debateChatDtos = redisTemplate.opsForList().range(key, 0, -1).toString();
+            log.info(debateChatDtos);
+            List<DebateChatDto> dtos = Arrays.asList(mapper.readValue(debateChatDtos, DebateChatDto[].class));
+            result.put("recentChats",dtos);
+        }
+        else{ //채팅방 입장 후 위로 스크롤 올리는 등 mysql저장된 채팅 내역 요청 시 리턴
+            Integer maxGroupNum = messageRepository.findMaxGroupId(debateId);
+            if(maxGroupNum == null || maxGroupNum < findCnt){
+                responseDto.setMessage("더이상 채팅내역이 없습니다.");
+                responseDto.setData(result);
+                responseDto.setStatus_code(400);
+                return responseDto;
+            }
+            //이값이랑 findCnt 이용해서 Groupnum으로 select
+            List<DebateChatDto> dbChats = messageRepository.findDtoBYGroupNum(debateId, maxGroupNum - findCnt + 1);
+            result.put("recentChats",dbChats);
+        }
         //responseDto 작성
         responseDto.setMessage("이전 채팅내역 리턴");
         responseDto.setData(result);
