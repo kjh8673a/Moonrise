@@ -1,4 +1,4 @@
-package moonrise.pjt2.member.controller;
+package moonrise.pjt2.member.dto;
 
 import lombok.Data;
 
