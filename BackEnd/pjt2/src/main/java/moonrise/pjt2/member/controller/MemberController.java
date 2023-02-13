@@ -133,7 +133,7 @@ public class MemberController {
 
                 return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);  //200
             }
-            // 회원가입 되어 있어 그냥 token만 반환해
+            // 회원가입 되어 있어 회원 정보 반환해.
             MemberJoinDto dto = memberService.findMemberAll(userId);
             dto.setAccess_token(access_Token);
             dto.setRefresh_token(refresh_Token);

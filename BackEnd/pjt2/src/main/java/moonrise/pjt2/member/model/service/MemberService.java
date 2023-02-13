@@ -16,9 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -131,6 +129,7 @@ public class MemberService {
 
         return responseDto;
     }
+    @Transactional
     public MemberJoinDto findMemberAll(Long userId){
         Optional<Member> m = memberRepository.findMemberById(userId);
         if(!m.isPresent()){
@@ -138,8 +137,20 @@ public class MemberService {
         }
         Member findMember = m.get();
         MemberJoinDto dto = new MemberJoinDto();
-        dto.setGender(findMember.getProfile().getGender().toString());
-        dto.setNickname(findMember.getProfile().getNickname());
+        MemberInfo memberInfo = findMember.getMemberInfo();
+        Profile profile = findMember.getProfile();
+
+        dto.setGender(profile.getGender().toString());
+        dto.setNickname(profile.getNickname());
+        dto.setImagePath(profile.getProfile_image_path());
+        String likeGenre = memberInfo.getLikeGenre();
+
+        StringTokenizer st = new StringTokenizer(likeGenre,",");
+        ArrayList<String> genres = new ArrayList<>();
+        while(!st.hasMoreTokens()){
+            genres.add(st.nextToken());
+        }
+        dto.setGenres(genres);
 //        dto.setGenres(findMember.getMemberInfo().getLikeGenre().toString());
         return dto;
     }
