@@ -7,7 +7,8 @@ import TalkRoom from "./TalkRoom";
 function TalkCard(props) {
   const [onModal, setOnModal] = useState(false);
   const [enterTalk, setEnterTalk] = useState(false);
-  const [talkDetail, setTalkDetail] = useState({})
+  const [talkDetail, setTalkDetail] = useState({});
+  const [talkDate, setTalkDate] = useState("");
   const [ppl , setPpl] = useState("");
   const access_token = useSelector(state => state.member.accessToken);
   const baseURL = process.env.REACT_APP_BASE_URL;
@@ -22,6 +23,7 @@ function TalkCard(props) {
     .then(response => {
       console.log(response)
       setTalkDetail(response.data.data.readDebate);
+      setTalkDate(response.data.data.readDebate.createDate);
       setPpl(response.data.data.readDebate.nowppl+"/"+response.data.data.readDebate.maxppl)
     }).then(setOnModal(true));
   }
@@ -48,8 +50,8 @@ function TalkCard(props) {
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
+            enterFrom="opacity-0 "
+            enterTo="opacity-100 "
             leave="ease-in duration-200"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
@@ -62,8 +64,8 @@ function TalkCard(props) {
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-60"
-                enterTo="opacity-100 scale-100"
+                enterFrom="opacity-0 transform translate-y-10 scale-60"
+                enterTo="opacity-100 transform translate-y-0 scale-100"
                 leave="ease-in duration-200"
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
@@ -87,8 +89,8 @@ function TalkCard(props) {
 
                   <div className="grid grid-cols-2 mt-2">
                     <div className="col-span-1">
-                      <p className="text-sm mt-2">
-                        {talkDetail.createDate}
+                      <p className="text-sm mt-1">
+                        담소 시작일 : {talkDate.substring(0,4)}년 {talkDate.substring(5,7)}월 {talkDate.substring(8,10)}일
                       </p>
                     </div>
                     <div className="col-span-1 text-right">
@@ -97,13 +99,15 @@ function TalkCard(props) {
                       </p>
                     </div>
                   </div>
+                  <hr className="my-2"></hr>
                   {!enterTalk && (
                     <div>
-                      <p>
+                      <p className="my-10">
                         {talkDetail.description}
                       </p>
+                      <hr className="my-2"></hr>
                       <div className="mx-4 my-2 text-center">
-                        <button onClick={enterHandler} className="px-4 py-2 transition-all bg-orange-400 rounded-lg hover:bg-orange-500">
+                        <button onClick={enterHandler} className="mt-4 px-4 py-2 transition-all bg-orange-400 rounded-lg hover:bg-orange-500">
                           담소 참여하기
                         </button>
                       </div>

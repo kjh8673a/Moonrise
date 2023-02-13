@@ -18,9 +18,6 @@ function BoardCard(props) {
           <span className="text-2xl font-bold text-white">{props.title}</span>
           <span className="text-white">{props.nickname}</span>
         </div>
-        <div className="my-3">
-          <p className="text-white line-clamp-3">{props.content}</p>
-        </div>
         <div className="flex justify-between">
           <span className="text-sm text-white">{props.write_date}</span>
           <span className="text-sm text-white">

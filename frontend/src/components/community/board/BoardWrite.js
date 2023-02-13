@@ -1,19 +1,45 @@
 import { Editor } from "@toast-ui/react-editor";
-import '@toast-ui/editor/dist/toastui-editor.css';
 
-import axios from "axios";
-import React, { useRef } from "react";
+
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 function BoardWrite() {
   const movePage = useNavigate();
   const editorRef = useRef();
+  const baseURL = process.env.REACT_APP_BASE_URL;
+  const movieId = useSelector(state => state.movie.movieId);
+  const access_token = useSelector(state => state.member.accessToken);
+  const config = { 
+    headers: {
+      "access_token": access_token,
+    }
+  };
+  const [requestBody, setRequestBody] = useState({
+    title: "",
+    movieId: movieId,
+    content: "",
+  });
 
   const goBack = () => {
     movePage("/community/list/");
   };
-  function writeBoard(){
+
+  const titleChangeHandler = (event) => {
+    setRequestBody((prevState) => {
+    	return { ...prevState, title: event.target.value }
+    });
+  }
+  async function writeBoard(){
+    setRequestBody((prevState) => {
+    	return { ...prevState, content: editorRef.current?.getInstance().getHTML()}
+    });
     console.log(editorRef.current?.getInstance().getHTML());
+    const res = await axios.post(baseURL + "/api/board/create", requestBody, config)
+    console.log(res);
+    goBack();
   }
 
   return (
@@ -38,7 +64,8 @@ function BoardWrite() {
             <input
               type="text"
               id="title"
-              class="py-3 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-orange-300"
+              onChange={titleChangeHandler}
+              className="py-3 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-orange-300"
               placeholder=""
             />
           </div>
@@ -65,9 +92,20 @@ function BoardWrite() {
   
               // 1. 첨부된 이미지 파일을 서버로 전송후, 이미지 경로 url을 받아온다.
               // const imgUrl = await .... 서버 전송 / 경로 수신 코드 ...
-  
+
+              const formData = new FormData();
+              formData.append('files', blob);
+
+              // api/image/upload , post, data form {files : }
+              const response = await axios.post(baseURL + "/api/image/upload", formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
+              console.log(response.data.data[0]);
+
               // 2. 첨부된 이미지를 화면에 표시(경로는 임의로 넣었다.)
-              callback('http://localhost:5000/img/카레유.png', '카레유');
+              callback(response.data.data[0], "업로드 이미지");
             }
           }}
         ></Editor>
