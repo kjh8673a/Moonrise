@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import ProfileSeeMoreButton from "../ProfileSeeMoreButton";
 import ProfileBoardCard from "./ProfileBoardCard";
 
-function ProfileBoardMyList() {
+function ProfileBoardMyList(props) {
   const [data, setData] = useState([]);
   const [limit, setLimit] = useState(8);
   const [list, setList] = useState([]);
@@ -20,6 +20,7 @@ function ProfileBoardMyList() {
     axios
       .get("http://3.35.149.202:80/api/board/mypage/board", config)
       .then((response) => {
+        console.log(response)
         setData(response.data.data.findBoards);
       });
   }, [access_token]);
@@ -32,6 +33,7 @@ function ProfileBoardMyList() {
 
   const seeMore = () => {
     setLimit(limit + 8);
+    props.showTopButton();
   };
 
   return (

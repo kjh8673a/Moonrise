@@ -18,6 +18,7 @@ function ProfileList() {
   const gerne2 = useState(useSelector((state) => state.member.gernes2));
   const gerne3 = useState(useSelector((state) => state.member.gernes3));
   const imagePath = useState(useSelector((state) => state.member.imagePath));
+  const [show, setShow] = useState(false);
 
   const openEditor = () => {
     setOnEdit(true);
@@ -35,6 +36,10 @@ function ProfileList() {
     window.location.reload();
   };
 
+  const showTopButton = () => {
+    setShow(true);
+  }
+
   return (
     <div>
       <MainNav />
@@ -46,10 +51,10 @@ function ProfileList() {
             <ProfileNav />
             <Routes>
               <Route path="" element={<ProfileLogList />}></Route>
-              <Route path="board/*" element={<ProfileBoardList />}></Route>
-              <Route path="party/*" element={<ProfilePartyList />}></Route>
+              <Route path="board/*" element={<ProfileBoardList showTopButton={showTopButton} />}></Route>
+              <Route path="party/*" element={<ProfilePartyList showTopButton={showTopButton} />}></Route>
             </Routes>
-            <ProfileScrollTopButton scrollToTop={scrollToTop} />
+            {show && <ProfileScrollTopButton scrollToTop={scrollToTop} setShow={setShow}/>}
           </div>
         </div>
       </div>

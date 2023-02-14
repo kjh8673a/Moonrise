@@ -18,6 +18,8 @@ function BoardDetail() {
   const [toastViewer, setToastViewer] = useState();
   const [content, setContent] = useState("");
   const [onEdit, setOnEdit] = useState(false);
+  const [writer, setWriter] = useState("");
+  const nicknameValue = useState(useSelector((state) => state.member.nickname));
   const [commentRequestBody, setCommentRequestBody] = useState({
     boardId: 0,
     content: "",
@@ -48,6 +50,7 @@ function BoardDetail() {
     axios
       .get("http://3.35.149.202:80/api/board/" + id, config)
       .then((response) => {
+        setWriter(response.data.data.findBoard.writer);
         setBoard(response.data.data.findBoard);
         setIsLike(response.data.data.findBoard.isLike);
         setIsBookmark(response.data.data.findBoard.isBookmark);
@@ -212,12 +215,12 @@ function BoardDetail() {
               <div className="flex-1 text-left">
                 {!isLike && (
                   <button onClick={createLike}>
-                    <FaRegHeart size="25" />
+                    <FaRegHeart className="text-[#cb3131]" size="25" />
                   </button>
                 )}
                 {isLike && (
                   <button onClick={deleteLike}>
-                    <FaHeart className="text-[#FA9E13]" size="25" />
+                    <FaHeart className="text-[#cb3131]" size="25" />
                   </button>
                 )}
               </div>
@@ -227,12 +230,12 @@ function BoardDetail() {
               <div className="relative flex-1 text-right">
                 {!isBookmark && (
                   <button onClick={createBookmark}>
-                    <FaRegBookmark size="25" />
+                    <FaRegBookmark className="text-[#f1c243]" size="25" />
                   </button>
                 )}
                 {isBookmark && (
                   <button onClick={deleteBookmark}>
-                    <FaBookmark className="text-[#FA9E13]" size="25" />
+                    <FaBookmark className="text-[#f1c243]" size="25" />
                   </button>
                 )}
               </div>
@@ -244,18 +247,22 @@ function BoardDetail() {
               </span>
               <span className="flex-1 text-center">{writeDate}</span>
               <span className="flex-1 text-right">
-                <button
-                  className="px-2 bg-[#B3B6B7] rounded text-white m-1 font-semibold"
-                  onClick={openEdit}
-                >
-                  수정
-                </button>
-                <button
-                  className="m-1 px-2 bg-[#564E3E] rounded text-white font-semibold"
-                  onClick={deleteBoard}
-                >
-                  삭제
-                </button>
+                {nicknameValue[0] === writer && (
+                  <>
+                    <button
+                      className="px-2 bg-[#646564] rounded text-white m-1 font-semibold"
+                      onClick={openEdit}
+                    >
+                      수정
+                    </button>
+                    <button
+                      className="m-1 px-2 bg-[#51401f] rounded text-white font-semibold"
+                      onClick={deleteBoard}
+                    >
+                      삭제
+                    </button>
+                  </>
+                )}
               </span>
             </div>
           </div>

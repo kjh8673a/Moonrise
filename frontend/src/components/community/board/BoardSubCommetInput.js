@@ -51,7 +51,7 @@ function BoardSubCommetInput(props) {
   };
 
   return (
-    <div className="flex gap-2 p-2 px-5 bg-[#006600] bg-opacity-10 border-b-2 border-black ">
+    <div className="flex gap-2 p-2 px-5 bg-[#006600] bg-opacity-10 rounded-lg mb-1">
       <span>└</span>
       <form className="flex flex-1 gap-2 " onSubmit={addSubComment}>
         <input

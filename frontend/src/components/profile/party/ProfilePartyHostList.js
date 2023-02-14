@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import ProfileSeeMoreButton from '../ProfileSeeMoreButton';
 import ProfilePartyCard from './ProfilePartyCard';
 
-function ProfilePartyHostList() {
+function ProfilePartyHostList(props) {
   const [data, setData] = useState([]);
   const [limit, setLimit] = useState(8);
   const [list, setList] = useState([]);
@@ -20,6 +20,7 @@ function ProfilePartyHostList() {
     axios
       .get("http://3.35.149.202:80/api/party/list/my", config)
       .then((response) => {
+        console.log(response)
         setData(response.data.data.findParties);
       });
   }, [access_token]);
@@ -32,6 +33,7 @@ function ProfilePartyHostList() {
 
   const seeMore = () => {
     setLimit(limit + 8);
+    props.showTopButton();
   };
 
   return (
@@ -39,14 +41,11 @@ function ProfilePartyHostList() {
       <ul className="grid grid-cols-4 gap-4 justify-items-center">
         {list.map((party) => (
           <ProfilePartyCard
-            moim_id={party.moim_id}
+            moim_id={party.partyId}
             title={party.title}
-            movie={party.movie}
-            moim_date={party.moim_date}
-            status={party.status}
-            online={party.online}
+            moim_date={party.partyDate}
             location={party.location}
-            image={party.image}
+            image={party.imagePath}
           />
         ))}
       </ul>

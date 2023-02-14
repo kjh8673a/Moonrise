@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import ProfileBoardCard from "../board/ProfileBoardCard";
 import ProfileSeeMoreButton from "../ProfileSeeMoreButton";
 
-function ProfileBoardBookmarkList() {
+function ProfileBoardBookmarkList(props) {
   const [data, setData] = useState([]);
   const [limit, setLimit] = useState(8);
   const [list, setList] = useState([]);
@@ -36,6 +36,7 @@ function ProfileBoardBookmarkList() {
 
   const seeMore = () => {
     setLimit(limit + 8);
+    props.showTopButton();
   };
 
   return (
