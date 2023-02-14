@@ -61,11 +61,9 @@ function MainSearch() {
 
   return (
     <div className="mainSearch">
-      <div className="grid grid-cols-2 gap-4 my-16">
-        <div className="col-span-1 text-right">
-          <p className="text-dal-orange text-7xl">달:-뜨다</p>
-        </div>
-        <div className="col-span-1 mt-6">
+      <div className="flex justify-center my-16">
+        <p className="mr-2 text-dal-orange text-7xl">달:-뜨다</p>
+        <div className="mt-6 ml-2">
           <p className="text-white">동사 [마음이]</p>
           <p className="text-white"> 가라앉지 않고 들썽거리다.</p>
         </div>
