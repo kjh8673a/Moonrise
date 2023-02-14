@@ -32,11 +32,15 @@ function BoardWrite() {
     	return { ...prevState, title: event.target.value }
     });
   }
-  async function writeBoard(){
+
+  const contentChangeHandler = () => {
     setRequestBody((prevState) => {
-    	return { ...prevState, content: editorRef.current?.getInstance().getHTML()}
+      return { ...prevState, content: editorRef.current?.getInstance().getHTML()}
     });
-    console.log(editorRef.current?.getInstance().getHTML());
+  }
+
+  async function writeBoard(){
+    console.log(requestBody.content);
     const res = await axios.post(baseURL + "/api/board/create", requestBody, config)
     console.log(res);
     goBack();
@@ -46,17 +50,17 @@ function BoardWrite() {
     <div className="mx-64 mt-5 text-white">
       <div className="grid grid-cols-3 py-3">
         <span
-          className="cursor-pointer col-span-1 table-column align-bottom"
+          className="table-column col-span-1 align-bottom cursor-pointer"
           onClick={goBack}
         >
           &lt; 이전으로
         </span>
-        <span className="col-span-1 text-center text-2xl">
+        <span className="col-span-1 text-2xl text-center">
           새로운 게시글 작성
         </span>
       </div>
-      <div className="bg-gray-600 bg-opacity-30 rounded-lg p-2">
-        <div className="px-4 grid grid-cols-12">
+      <div className="p-2 bg-gray-600 rounded-lg bg-opacity-30">
+        <div className="grid grid-cols-12 px-4">
           <div className="col-span-1 mt-3 text-lg">
             제목 :
           </div>
@@ -65,7 +69,7 @@ function BoardWrite() {
               type="text"
               id="title"
               onChange={titleChangeHandler}
-              className="py-3 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-orange-300"
+              className="w-full py-3 text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-orange-300"
               placeholder=""
             />
           </div>
@@ -77,6 +81,7 @@ function BoardWrite() {
           previewStyle="vertical" // 미리보기 스타일 지정
           height="500px" // 에디터 창 높이
           initialEditType="wysiwyg" // 초기 입력모드 설정(디폴트 markdown)
+          onChange={contentChangeHandler}
           toolbarItems={[
             // 툴바 옵션 설정
             ['heading', 'bold', 'italic', 'strike'],
@@ -111,7 +116,7 @@ function BoardWrite() {
         ></Editor>
         </div>
         <div className="text-right">
-          <button onClick={writeBoard} className="rounded-lg mr-4 px-4 py-2 bg-white bg-opacity-10 hover:bg-opacity-30 hover:text-white">
+          <button onClick={writeBoard} className="px-4 py-2 mr-4 bg-white rounded-lg bg-opacity-10 hover:bg-opacity-30 hover:text-white">
             게시글 등록
           </button>
         </div>
