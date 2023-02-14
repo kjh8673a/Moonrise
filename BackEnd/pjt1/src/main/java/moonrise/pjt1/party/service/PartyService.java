@@ -463,6 +463,8 @@ public class PartyService {
                     .partyDate(party.getPartyDate())
                     .joinDate(partyJoin.getJoinDate())
                     .partyJoinStatus(partyJoin.getPartyJoinStatus())
+                    .imagePath(party.getImagePath())
+                    .partyId(party.getId())
                     .build();
             partyJoinListDtos.add(partyJoinListDto);
         }
@@ -472,6 +474,4 @@ public class PartyService {
         responseDto.setStatus_code(200);
         return responseDto;
     }
-
-
 }
