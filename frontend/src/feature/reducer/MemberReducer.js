@@ -82,6 +82,10 @@ export default function MemberReducer(state = initialState, action) {
         accessToken: "",
         refreshToken: "",
         nickname: "",
+        gernes1: "",
+        gernes2: "",
+        gernes3: "",
+        imagePath: "",
         isLogin: false,
       };
     default:

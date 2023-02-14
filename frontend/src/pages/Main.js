@@ -7,14 +7,14 @@ function Main() {
   return (
     <>
       <div className="grid grid-cols-3 ">
-        <div className="relative col-span-1 bg-white h-screen p-8">
+        <div className="relative h-screen col-span-1 p-8 bg-white">
           <Logo color={"315B4C"}/>
         </div>
-        <div className="main col-span-2 pb-0 mb-0 bg-main bg-cover p-8">
+        <div className="col-span-2 p-8 pb-0 mb-0 bg-cover main bg-main">
           <ProfileIcon />
         </div>
       </div>
-      <div className="fixed z-60 top-40 left-64 bg-green-800 h-96 w-2/5">
+      <div className="fixed w-2/5 shadow-xl z-60 top-40 left-64 bg-dal-green h-96">
         <MainSearch />
       </div>
     </>

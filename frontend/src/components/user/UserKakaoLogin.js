@@ -39,6 +39,7 @@ function UserKakaoLogin() {
             }
           )
           .then((res) => {
+            console.log(res);
             if (res.data.status_code === 200) {
               console.log(res)
               dispatch(setAccessToken(res.data.data.access_token));
@@ -58,15 +59,6 @@ function UserKakaoLogin() {
             } else if (res.data.status_code === 400) {
               dispatch(setAccessToken(res.data.data.access_token));
               dispatch(setRefreshToken(res.data.data.refresh_token));
-              dispatch(setNickname(res.data.data));
-              if(res.data.data.genres) {
-                dispatch(setGernes1(res.data.data.genres[0]));
-                dispatch(setGernes2(res.data.data.genres[1]));
-                dispatch(setGernes3(res.data.data.genres[2]));
-              }
-              if(res.data.data.imagePath) {
-                dispatch(setImagePath(res.data.data.imagePath));
-              }
               goRegister();
             }
           });
