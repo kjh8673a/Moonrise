@@ -91,11 +91,11 @@ function UserRegister() {
           });
   }
   return (
-    <div className='grid content-center h-full grid-cols-3 bg-black UserRegister bg-opacity-60'>
-        <div className='col-span-3 text-center'>
+    <div className='grid content-center h-full grid-cols-4 bg-black UserRegister bg-opacity-60'>
+        <div className='col-span-4 text-center'>
             <p className='m-4 text-4xl text-white'>추가 정보 입력</p>
-            <div className='grid grid-cols-3'>
-                <div className="col-span-1 col-start-2 bg-black rounded-lg bg-opacity-60">
+            <div className='grid grid-cols-4'>
+                <div className="col-span-2 col-start-2 bg-black rounded-lg bg-opacity-60">
                     <div className='mx-10 mt-10 mb-5 text-left'>
                         <p className='text-gray-300'>닉네임</p>
                         <input type="text" id="title" onChange={nicknameHandler} className="block w-full px-0 py-4 text-sm text-gray-300 placeholder-white transition-colors duration-300 bg-transparent border-b-2 border-gray-300 placeholder-opacity-40 focus:outline-none focus:border-orange-300" placeholder={useSelector(state=>state.member.nickname)} />
@@ -115,7 +115,7 @@ function UserRegister() {
                     </div>
                     <div className='mx-10 my-5 text-left'>
                         <p className='text-gray-300'>선호 장르</p>
-                        <div className='grid grid-cols-3 gap-3 mt-4'>
+                        <div className='grid grid-cols-4 gap-3 mt-4'>
                             {getButtons()}
                         </div>
                     </div>
