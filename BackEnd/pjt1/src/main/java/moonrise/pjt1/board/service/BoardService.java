@@ -474,7 +474,7 @@ public class BoardService {
             String title = findBoard.get().getTitle();
             String movieTitle = findBoard.get().getMovie().getTitle();
             MypageResponseDto mypageResponseDto = new MypageResponseDto(boardId, dateTime, title, movieTitle);
-            findBoards.add(mypageResponseDto);
+            findBoards.add(0,mypageResponseDto);
         }
         result.put("findBoards", findBoards);
         responseDto.setData(result);
