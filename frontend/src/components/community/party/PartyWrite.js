@@ -2,11 +2,13 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import Datepicker from 'react-tailwindcss-datepicker';
 
 function PartyWrite() {
   const movePage = useNavigate();
   const movieId = useSelector(state => state.movie.movieId);
   const baseURL = process.env.REACT_APP_BASE_URL;
+  const [inputDate, setInputDate] = useState("");
 
   function changeBoard(){
     movePage('/community/list/party');
@@ -18,7 +20,7 @@ function PartyWrite() {
     location: "",
     meetOnline: true,
     movieId: movieId,
-    partyDate: "2023-02-02T06:23:05.082Z",
+    partyDate: "",
     partyPeople: 0,
     title: "",
     imagePath: ""
@@ -31,10 +33,19 @@ function PartyWrite() {
     	return { ...prevState, title: event.target.value }
     });
   }
-  const dateChangeHandler = (event) => {
+  const dateChangeHandler = (newValue) => {
+    setInputDate(newValue);
+    console.log(newValue.startDate.length);
+    let date = newValue.startDate.split("-"); 
+    if (date[1].length === 1) {
+      date[1] = "0"+date[1];
+    }
+    if (date[2].length === 1) {
+      date[2] = "0"+date[2];
+    }
     setRequestBody((prevState) => {
-    	return { ...prevState, partyDate: "2023-02-02T06:23:05.082Z" }
-    });
+      return {...prevState, partyDate: date[0]+"-"+date[1]+"-"+date[2]+"T09:00:00.082Z"}
+    })
   }
   const peopleChangeHandler = (event) => {
     setRequestBody((prevState) => {
@@ -71,12 +82,12 @@ function PartyWrite() {
           "access_token": access_token,
           }
     }
-    const response = await axios.post('http://3.35.149.202:80/api/party/write', requestBody, config);
+    const response = await axios.post(baseURL +"/api/party/write", requestBody, config);
     console.log(response);
     changeBoard();
   }
   return (
-    <div className='mx-64 mt-10 partyWrite'>
+    <div className='h-screen mx-64 mt-10 partyWrite'>
         <div className="grid grid-cols-3">
             <div className="col-span-1">
                 <button className='mt-2 text-white' onClick={changeBoard}>&lt; 이전으로</button>
@@ -95,7 +106,9 @@ function PartyWrite() {
                     </div>
                     <div className='relative m-4'>
                         <p className='text-gray-300'>날짜</p>
-                        <input type="text" id="date" onChange={dateChangeHandler} className="block py-2.5 px-0 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-orange-300 peer" placeholder="" />
+                        <div className='mt-2'>
+                          <Datepicker asSingle={true} value={inputDate} onChange={dateChangeHandler}/>
+                        </div>
                         <label htmlFor="date" className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-orange-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">뒷풀이 제목을 입력해주세요</label>
                     </div>
                     <div className='relative m-4'>
@@ -110,7 +123,7 @@ function PartyWrite() {
                                 {requestBody.imagePath !== "" && (
                                   <img src={requestBody.imagePath} alt="업로드 이미지" className='h-60' />
                                 )}
-                                <input onChange={imageChangeHandler} id="dropzone-file" type="file" className="hidden" />
+                                <input onChange={imageChangeHandler} id="dropzone-file" accept='.jpg, .png' type="file" className="hidden" />
                             </label>
                         </div>      
                     </div>
@@ -124,7 +137,7 @@ function PartyWrite() {
                     </div>
                     <div className='relative m-4'>
                         <p className='text-gray-300'>인원 수</p>
-                        <input type="text" id="title" onChange={peopleChangeHandler} className="block py-2.5 px-0 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-orange-300 peer" placeholder="" />
+                        <input type="text" id="title" onChange={peopleChangeHandler} className="block py-2.5 px-0 mt-2 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-orange-300 peer" placeholder="" />
                         <label htmlFor="title" className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-orange-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">뒷풀이 제목을 입력해주세요</label>
                     </div>
                     <div className='relative m-4'>

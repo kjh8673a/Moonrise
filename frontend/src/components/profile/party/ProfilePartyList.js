@@ -5,13 +5,16 @@ import ProfilePartyNav from './ProfilePartyNav'
 import ProfilePartyParticipateList from './ProfilePartyParticipateList'
 import ProfilePartyHostList from './ProfilePartyHostList'
 
-function ProfilePartyList() {
+function ProfilePartyList(props) {
+  const showTopButton = () => {
+    props.showTopButton();
+  };
   return (
     <div>
       <ProfilePartyNav />
       <Routes>
-        <Route path="part" element={<ProfilePartyParticipateList/>}></Route>
-        <Route path="host" element={<ProfilePartyHostList />}></Route>
+        <Route path="part" element={<ProfilePartyParticipateList showTopButton={showTopButton}/>}></Route>
+        <Route path="host" element={<ProfilePartyHostList showTopButton={showTopButton}/>}></Route>
       </Routes>
     </div>
   )

@@ -16,10 +16,10 @@ function ProfileCard(props) {
           alt=""
         />}
         
-        <span className="text-xl font-bold">{props.nicknameValue}</span>
-        <button onClick={props.openEditor}>수정</button>
+        <span className="mr-3 text-xl font-bold">{props.nicknameValue}</span>
+        <button onClick={props.openEditor} className="text-sm">수정</button>
       </div>
-      <div className="row-span-3 border-b">
+      <div className="row-span-3 p-2 border-b">
        <span>#{props.gerne1} #{props.gerne2} #{props.gerne3}</span>
       </div>
       <div className="flex items-center justify-center row-span-1">

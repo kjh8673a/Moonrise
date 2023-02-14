@@ -2,8 +2,8 @@ import React from "react";
 
 function ProfileSeeMoreButton(props) {
   return (
-    <div className="text-center mt-4">
-      <button className="text-white text-xl" onClick={props.seeMore}>
+    <div className="mt-4 text-center">
+      <button className="text-xl text-white" onClick={props.seeMore}>
         더보기
       </button>
     </div>

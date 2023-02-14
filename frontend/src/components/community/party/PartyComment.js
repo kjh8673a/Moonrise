@@ -30,31 +30,35 @@ function PartyComment(props) {
     	return { ...prevState, showPublic: !event.target.checked }
     });
   }
-  function commentWrite(){
-    axios.post(baseURL+'/api/party/comment/write', requestBody, config)
-      .then(response => {
-        console.log(response);
-      })
-      .then(
-        setRequestBody((prevState) => {
+  async function commentWrite(){
+    await axios.post(baseURL+'/api/party/comment/write', requestBody, config)  
+    setRequestBody((prevState) => {
           return { ...prevState, showPublic: true, content: "" }
-        })
-      );
-    props.setIsCommentChange(!props.isCommentChange)
+    })
+    const res = await axios.get(baseURL+ '/api/party/read/'+props.partyId, config)
+    setPartyComments(res.data.data.findParty.partyComments);
+  }
+  async function commetReply(){
+    const res = await axios.get(baseURL+ '/api/party/read/'+props.partyId, config)
+    setPartyComments(res.data.data.findParty.partyComments);
   }
   useEffect(() => {
-    setPartyComments(props.partyComments)
+    const commentDiv = document.getElementById('commentDiv');
+    commentDiv.scrollTo({ top: commentDiv.scrollHeight });
+  });
+  useEffect(() => {
+    setPartyComments(props.partyComments);
   
-    return () => {
-    }
+    return () => {}
   }, [props.partyComments])
+  
   return (
     <div className="partyComment">
       <p className='text-lg text-white'>문의</p>
       <div className="mt-3 bg-gray-100 rounded-lg">
-        <div className="h-64 max-h-screen overflow-y-auto commentList">
+        <div id="commentDiv" className="h-64 max-h-screen overflow-y-auto commentList">
           {partyComments.map((partyComment) => (
-            <PartyCommentList key={partyComment.id} partyId={props.partyId} partyComment={partyComment} isCommentChange={props.isCommentChange} setIsCommentChange={props.setIsCommentChange}/>
+            <PartyCommentList key={partyComment.id} commentReply={commetReply} partyId={props.partyId} partyComment={partyComment}/>
             ))}
         </div>
         <div className="grid items-center grid-cols-10 gap-2 px-2 py-2 commentWrite">

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import ProfileSeeMoreButton from "../ProfileSeeMoreButton";
 import ProfilePartyCard from "./ProfilePartyCard";
 
-function ProfilePartyParticipateList() {
+function ProfilePartyParticipateList(props) {
   const [data, setData] = useState([]);
   const [limit, setLimit] = useState(8);
   const [list, setList] = useState([]);
@@ -25,13 +25,14 @@ function ProfilePartyParticipateList() {
   }, [access_token]);
 
   useEffect(() => {
-    if(data.length > 0) {
+    if (data.length > 0) {
       setList(data.filter((item, index) => index < limit));
     }
   }, [data, limit]);
 
   const seeMore = () => {
     setLimit(limit + 8);
+    props.showTopButton();
   };
 
   return (
@@ -39,14 +40,11 @@ function ProfilePartyParticipateList() {
       <ul className="grid grid-cols-4 gap-4 justify-items-center">
         {list.map((party) => (
           <ProfilePartyCard
-            moim_id={party.moim_id}
+            moim_id={party.partyId}
             title={party.title}
-            movie={party.movie}
-            moim_date={party.moim_date}
-            status={party.status}
-            online={party.online}
+            moim_date={party.partyDate}
             location={party.location}
-            image={party.image}
+            image={party.imagePath}
           />
         ))}
       </ul>

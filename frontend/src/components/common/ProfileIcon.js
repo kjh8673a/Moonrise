@@ -14,7 +14,7 @@ function ProfileIcon() {
   const movePage = useNavigate();
 
   const goMyPage = () => {
-    movePage("/profile/list");
+    movePage("/profile/list/board/bookmark");
   };
 
   function goLogin() {

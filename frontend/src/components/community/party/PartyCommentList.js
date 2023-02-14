@@ -1,16 +1,15 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 
 function PartyCommentList(props) {
     const [requestBody, setRequestBody] = useState({
         "content": "",
-        "groupId": "",
+        "groupId": props.partyComment.groupId,
         "isNestedComment": 1,
-        "partyId": "",
+        "partyId": props.partyId,
         "showPublic": true
     });
-    const [partyComment, setPartyComment] = useState({})
     const [visible, setVisible] = useState(false);
     const [visibleClass , setVisibleClass] = useState("hidden items-center grid-cols-10 px-2 py-2 border-b-2 commentWrite")
     const access_token = useSelector(state => state.member.accessToken);
@@ -39,44 +38,31 @@ function PartyCommentList(props) {
             setVisibleClass("grid items-center grid-cols-10 px-2 py-2 border-b-2 commentWrite")
         }
     };
-      function commentWrite(){
-        axios.post(baseURL+'/api/party/comment/write', requestBody, config)
-          .then(response => {
-            console.log(response);
-          })
-          .then(
-            setRequestBody((prevState) => {
-              return { ...prevState, showPublic: true, content: "" }
-            })
-          );
-        props.setIsCommentChange(!props.isCommentChange)
-      }
-      useEffect(() => {
-        setPartyComment(props.partyComment)
+      async function commentWrite(){
+        await axios.post(baseURL+'/api/party/comment/write', requestBody, config)
         setRequestBody((prevState) => {
-            return {...prevState, partyId: props.partyId, groupId: props.partyComment.groupId}
+          return { ...prevState, showPublic: true, content: "" }
         })
-        return () => {
-        }
-      }, [props.partyComment, props.partyId])
-    if (partyComment.isNestedComment === 0) {
-        if (partyComment.showPublic){
+        props.commentReply()
+      }
+    if (props.partyComment.isNestedComment === 0) {
+        if (props.partyComment.showPublic){
           return(
             <div className='comment'>
             <div className='p-2 mx-2 border-b-2 comment'>
               <div className='flex justify-between'>
                   <div className="flex gap-1">
-                  <p className='text-sm'>{partyComment.writer}</p>
-                  <p className='pt-1 text-xs'>{partyComment.commentWriteTime}</p>
+                  <p className='text-sm'>{props.partyComment.writer}</p>
+                  <p className='pt-1 text-xs'>{props.partyComment.commentWriteTime}</p>
                   </div>
                   <div className="flex gap-1">
-                  {partyComment.showPublic && (<p className='pt-1 text-xs'>수정하기</p>)}
+                  {props.partyComment.showPublic && (<p className='pt-1 text-xs'>수정하기</p>)}
                   <button onClick={visibleHandler} className='pt-1 text-xs'>답글달기</button>
                   </div>
               </div>
-              <p className='mt-1'>{partyComment.content}</p>          
+              <p className='mt-1'>{props.partyComment.content}</p>          
             </div>
-            <div id={partyComment.id} className={visibleClass}>
+            <div id={props.partyComment.id} className={visibleClass}>
                     <div className='col-span-1'>
                         <p className='pt-1 text-xs text-center'>비공개</p>
                         <input id="checked-checkbox" checked={!requestBody.showPublic} onChange={showPublicHandler} type="checkbox" value="" className="w-4 h-4 mx-3 mt-1 bg-gray-100 border-gray-300 rounded accent-orange-600 focus:ring-orange-600"/>
@@ -104,7 +90,7 @@ function PartyCommentList(props) {
         }
       }
       else {
-        if(partyComment.showPublic) {
+        if(props.partyComment.showPublic) {
           return(
             <div>
                 <div className="flex py-3 mx-2 border-b-2 nestedComment">
@@ -116,18 +102,18 @@ function PartyCommentList(props) {
                     <div className='w-full ml-3'>
                         <div className='flex justify-between'>
                         <div className="flex gap-1">
-                            <p className='text-sm'>{partyComment.writer}</p>
-                            <p className='pt-1 text-xs'>{partyComment.commentWriteTime}</p>
+                            <p className='text-sm'>{props.partyComment.writer}</p>
+                            <p className='pt-1 text-xs'>{props.partyComment.commentWriteTime}</p>
                         </div>
                         <div className="flex gap-1">
-                            {partyComment.showPublic && (<p className='pt-1 text-xs'>수정하기</p>)}
+                            {props.partyComment.showPublic && (<p className='pt-1 text-xs'>수정하기</p>)}
                             <button onClick={visibleHandler} className='pt-1 text-xs'>답글달기</button>
                         </div>
                         </div>
-                        <p className='mt-1'>{partyComment.content}</p>          
+                        <p className='mt-1'>{props.partyComment.content}</p>          
                     </div>
                 </div>
-                <div id={partyComment.id} className={visibleClass}>
+                <div id={props.partyComment.id} className={visibleClass}>
                     <div className='col-span-1'>
                     </div>
                     <div className='col-span-1'>
@@ -158,7 +144,7 @@ function PartyCommentList(props) {
               <div className='flex justify-between'>
                     <div className="flex gap-1">
                         <p className='text-sm'>작성일</p>
-                        <p className='pt-1 text-xs'>{partyComment.commentWriteTime}</p>
+                        <p className='pt-1 text-xs'>{props.partyComment.commentWriteTime}</p>
                     </div>
                 </div>
                 <p className='mt-1 content'>비공개 문의 입니다.</p>          

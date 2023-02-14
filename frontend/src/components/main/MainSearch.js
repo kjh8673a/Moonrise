@@ -15,6 +15,12 @@ function MainSearch() {
 
   const keywordHandler = (event) => {
     setKeyword(event.target.value);
+    if (event.target.value !== "") {
+      setBtnView(true);
+    }
+    else{
+      setBtnView(false);
+    }
   };
 
   const handleOnKeyPress = (e) => {
@@ -23,12 +29,12 @@ function MainSearch() {
     }
   };
 
-  function onFocusHandler (){
-    setBtnView(true);
-  } 
-  function onBlurHandler(){
-    setBtnView(false);
-  }
+  // function onFocusHandler (){
+  //   setBtnView(true);
+  // } 
+  // function onBlurHandler(){
+  //   setBtnView(false);
+  // }
 
 
   const dispatch = useDispatch();
@@ -70,7 +76,7 @@ function MainSearch() {
       </div>
       <div className="my-6 text-center">
         <p className="text-2xl text-white">
-          영화보고 달뜬 마음,{" "}
+          영화보고 달뜬 마음, {" "}
           <span className="text-3xl text-dal-orange">달뜸</span>으로 가져오세요.
         </p>
       </div>
@@ -79,10 +85,8 @@ function MainSearch() {
           type="text"
           onChange={keywordHandler}
           onKeyPress={handleOnKeyPress}
-          onFocus={onFocusHandler}
-          onBlur={onBlurHandler}
           id="party-search"
-          className="block w-full h-10 pl-4 mx-2 text-lg text-white transition-transform duration-500 bg-transparent border-b-2 focus:w-5/6 placeholder:text-gray-300 focus:outline-none focus:border-dal-orange"
+          className="block w-full h-10 pl-4 mx-2 text-lg text-white transition-transform duration-500 bg-transparent border-b-2 placeholder:text-gray-300 focus:outline-none focus:border-dal-orange"
           placeholder="어떤 영화를 보고 오셨나요?"
         />
         {btnView && (

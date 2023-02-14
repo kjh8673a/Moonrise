@@ -1,39 +1,49 @@
-import React, { useState } from 'react'
+import { Tab } from '@headlessui/react';
+import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
 function CommunityNav() {
   const movePage = useNavigate();
-  
-  const [menu, setMenu] = useState("board");
-  const selected = "text-white transition-opacity opacity-100";
-  const notSelected = "text-white transition-opacity opacity-50 hover:opacity-100";
+  const categories = [
+    {title: "게시글", func : changeBoard},
+    {title: "담소", func : changeTalk},
+    {title: "뒷풀이", func : changeParty},
+  ];
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
+  }
 
   function changeBoard(){
     movePage('/community/list/');
-    setMenu("board");
   }
   function changeTalk(){
     movePage('/community/list/talk');
-    setMenu("talk");
   }
   function changeParty(){
     movePage('/community/list/party');
-    setMenu("party");
   }
   
   return (
-    <div className='mb-4'>
-        <ul className="flex pb-2 border-b navbar-nav">
-            <li className="flex-1 text-center">
-                <button className={menu === "board" ? selected : notSelected} onClick={changeBoard}>게시글</button>
-            </li>
-            <li className="flex-1 text-center">
-                <button className={menu === "talk" ? selected : notSelected}  onClick={changeTalk}>담소</button>
-            </li>
-            <li className="flex-1 text-center">
-                <button className={menu === "party" ? selected : notSelected} onClick={changeParty}>뒷풀이</button>
-            </li>
-        </ul>
+    <div className='relative mb-4'>
+      <Tab.Group>
+        <Tab.List className="flex p-1 space-x-1 bg-transparent border-b-2 border-white/20">
+          {categories.map((category, index) => (
+            <Tab
+              key={index}
+              onClick={category.func}
+              className={({ selected }) =>
+                classNames(
+                  'w-full py-2.5 leading-5 rounded-lg text-gray-400',
+                  'focus:outline-none',
+                  selected ? 'text-dal-orange text-lg' : 'hover:bg-white/5 hover:text-white'
+                )
+              }
+            >
+              {category.title}
+            </Tab>
+          ))}
+        </Tab.List>
+      </Tab.Group>
     </div>
   )
 }

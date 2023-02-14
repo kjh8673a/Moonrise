@@ -113,7 +113,7 @@ function TalkCard(props) {
                       </p>
                       <hr className="my-2"></hr>
                       <div className="mx-4 my-2 text-center">
-                        <button onClick={enterHandler} className="px-4 py-2 mt-4 transition-all bg-orange-400 rounded-lg hover:bg-orange-500">
+                        <button onClick={enterHandler} className="px-4 py-2 mt-4 transition-all rounded-lg bg-dal-orange hover:bg-opacity-60">
                           담소 참여하기
                         </button>
                       </div>

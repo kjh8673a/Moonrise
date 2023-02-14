@@ -3,24 +3,51 @@ import BoardCard from "./BoardCard";
 import CommunityHeader from "../CommunityHeader";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import CommunityPagination from "../CommunityPagination";
+import { Transition } from "@headlessui/react";
 
 function BoardList() {
   const [boards, setBoards] = useState([]);
   const [page, setPage] = useState(0);
+  const [boardTotalPages, setBoardTotalPages] = useState(0);
   const movieId = useSelector((state) => state.movie.movieId);
 
   useEffect(() => {
     axios
-      .get("http://3.35.149.202:80/api/board/list/" + movieId + "?page=" + page)
-      .then((response) => {
-        setBoards(response.data.data.findBoards);
-        setPage(0); // 임시
-      });
+      .all([
+        axios.get(
+          "http://3.35.149.202:80/api/board/list/" + movieId + "?page=" + page
+        ),
+        axios.get(
+          "http://3.35.149.202:80/api/board/list/" +
+            movieId +
+            "?page=" +
+            (page + 1)
+        ),
+      ])
+      .then(
+        axios.spread((res1, res2) => {
+          setBoardTotalPages(Math.round(res1.data.data.totalPages / 2));
+          const res_1 = res1.data.data.findBoards;
+          const res_2 = res2.data.data.findBoards;
+          const res = [...res_1, ...res_2];
+          setBoards(res);
+          setPage(page);
+        })
+      );
   }, [movieId, page]);
+  
 
   return (
     <div>
       <CommunityHeader type="게시글" />
+      <Transition
+        appear={true} 
+        show={true}
+       enter="transition-all duration-1000"
+       enterFrom="opacity-0 transform translate-x-10"
+       enterTo="opacity-100 transform translate-x-0"
+      >
       <ul>
         {boards.map((board) => (
           <BoardCard
@@ -38,6 +65,8 @@ function BoardList() {
           />
         ))}
       </ul>
+      <CommunityPagination total={boardTotalPages} page={page} setPage={setPage} type="BOARD"/>
+      </Transition>
     </div>
   );
 }
