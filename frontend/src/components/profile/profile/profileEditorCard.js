@@ -1,14 +1,28 @@
-import React, { useRef, useState } from "react";
+import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Profile from "../../../assets/img/profile.png";
+import {
+  setGernes1,
+  setGernes2,
+  setGernes3,
+  setImagePath,
+  setNickname,
+} from "../../../feature/reducer/MemberReducer";
 
 function ProfileEditorCard(props) {
-  const [nicknameValue, setNicknameValue] = useState("남극도둑갈매기");
-  const [gerneValue, setGerneValue] = useState(["액션", "드라마", "SF"]);
+  const [nicknameValue, setNicknameValue] = useState(
+    useSelector((state) => state.member.nickname)
+  );
+  const [gerneValue, setGerneValue] = useState([]);
   const [hideOpt, setHideOpt] = useState(true);
   const [gerneError, setGerneError] = useState(false);
-  const [imgPreview, setImgPreview] = useState(
-    "http://ojsfile.ohmynews.com/AT_T_IMG/2018/0420/A0002426619_T.jpg"
-  );
+  const [imgPreview, setImgPreview] = useState("");
+  const [uploadImg, setUploadImg] = useState("");
   const imgRef = useRef();
+  const dispatch = useDispatch();
+
+  const baseURL = process.env.REACT_APP_BASE_URL;
 
   const gerneList = [
     "SF",
@@ -28,8 +42,22 @@ function ProfileEditorCard(props) {
     "음악",
     "전쟁",
     "코미디",
-    "판타지"
+    "판타지",
   ];
+
+  useEffect(() => {
+    let copy = [];
+    if (props.gerne1) {
+      copy[0] = props.gerne1[0];
+    }
+    if (props.gerne2) {
+      copy[1] = props.gerne2[0];
+    }
+    if (props.gerne3) {
+      copy[2] = props.gerne3[0];
+    }
+    setGerneValue([...new Set(copy)]);
+  }, [props]);
 
   const nicknameChangeHandler = (event) => {
     let { value } = { ...event.target };
@@ -53,22 +81,86 @@ function ProfileEditorCard(props) {
     }
   };
 
-  const changeImage = () => {
+  const changeImage = async (event) => {
     const file = imgRef.current.files[0];
     const reader = new FileReader();
+    
+    const formData = new FormData();
+    formData.append('files', event.target.files[0]);
+    const response = await axios.post(baseURL + "/api/image/upload", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    setUploadImg(response.data.data[0]);
     reader.readAsDataURL(file);
     reader.onload = () => {
       setImgPreview(reader.result);
     };
   };
 
+  const access_token = useSelector((state) => state.member.accessToken);
+  const config = {
+    headers: {
+      access_token: access_token,
+    },
+  };
+
+  const editProfile = (event) => {
+    event.preventDefault();
+    console.log(gerneValue);
+    axios
+      .put(
+        "http://3.35.149.202:80/auth/member/",
+        {
+          nickname: nicknameValue,
+          imagePath: uploadImg,
+          genres: gerneValue,
+        },
+        config
+      )
+      .then((response) => {
+        dispatch(setNickname(response.data.data.nickname));
+        if (response.data.data.genres) {
+          dispatch(setGernes1(response.data.data.genres[0]));
+          dispatch(setGernes2(response.data.data.genres[1]));
+          dispatch(setGernes3(response.data.data.genres[2]));
+        }
+        if(response.data.data.imagePath) {
+          dispatch(setImagePath(response.data.data.imagePath));
+        }
+        props.editDone();
+        props.closeEditor();
+      });
+  };
+
   return (
     <div className="grid h-full grid-rows-6 p-5">
-      <div className="row-span-5 border-b grid grid-cols-4">
-        <div className="mx-auto col-span-1">
-          {hideOpt && (
+      <div className="grid grid-cols-4 row-span-5 border-b">
+        <div className="col-span-1 mx-auto">
+          {hideOpt && props.imagePath && !imgPreview && (
             <img
-              className="rounded-full h-32 w-32 border-1"
+              className="w-32 h-32 rounded-full border-1"
+              src={props.imagePath}
+              alt=""
+              onMouseEnter={() => {
+                setHideOpt(false);
+              }}
+            />
+          )}
+          {hideOpt && !props.imagePath && !imgPreview && (
+            <img
+              className="w-32 h-32 rounded-full border-1"
+              src={Profile}
+              alt=""
+              onMouseEnter={() => {
+                setHideOpt(false);
+              }}
+            />
+          )}
+          {hideOpt && imgPreview && (
+            <img
+              className="w-32 h-32 rounded-full border-1"
               src={imgPreview}
               alt=""
               onMouseEnter={() => {
@@ -79,12 +171,12 @@ function ProfileEditorCard(props) {
 
           {!hideOpt && (
             <div
-              className="rounded-full h-32 w-32 border-1 bg-black flex items-center justify-center cursor-pointer"
+              className="flex items-center justify-center w-32 h-32 bg-black rounded-full cursor-pointer border-1"
               onMouseLeave={() => {
                 setHideOpt(true);
               }}
             >
-              <label className="text-white font-bold" htmlFor="file">
+              <label className="font-bold text-white" htmlFor="file">
                 사진 변경
               </label>
               <input
@@ -98,15 +190,15 @@ function ProfileEditorCard(props) {
             </div>
           )}
         </div>
-        <div className="col-span-3 grid grid-rows-6 relative">
-          <div className="absolute right-0 top-0">
+        <div className="relative grid col-span-3 grid-rows-6">
+          <div className="absolute top-0 right-0">
             <button className="font-semibold" onClick={props.closeEditor}>
               X
             </button>
           </div>
           <div className="row-span-5 px-5">
             <div className="mb-1">
-              <p className="font-bold text-xl">닉네임</p>
+              <p className="text-xl font-bold">닉네임</p>
               <p className="text-xs text-gray-400">
                 사이트에서 사용할 닉네임을 입력해주세요
               </p>
@@ -122,14 +214,18 @@ function ProfileEditorCard(props) {
             </div>
             <div>
               <div>
-                <span className="font-bold text-xl ">선호 장르</span>
+                <span className="text-xl font-bold ">선호 장르</span>
                 {gerneValue.map((gerne) => (
-                  <span className="bg-[#B3B6B7] ml-3 pl-3 pr-1 rounded-xl text-sm">
-                    {gerne}
-                    <button onClick={() => gerneDeletehandeler({ gerne })}>
-                      X
-                    </button>
-                  </span>
+                  <>
+                    {gerne && (
+                      <span className="bg-[#B3B6B7] ml-3 pl-3 pr-1 rounded-xl text-sm">
+                        {gerne}
+                        <button onClick={() => gerneDeletehandeler({ gerne })}>
+                          X
+                        </button>
+                      </span>
+                    )}
+                  </>
                 ))}
               </div>
               {!gerneError && (
@@ -145,30 +241,32 @@ function ProfileEditorCard(props) {
               <div className="grid grid-cols-4 gap-1 mt-1">
                 {gerneList.map((gerne) => (
                   <>
-                    {gerneValue.includes({gerne}.gerne) && (
+                    {gerneValue.includes({ gerne }.gerne) && (
                       <button
-                        className="border-2 py-1 rounded-md bg-gray-500 text-white"
-                        onClick={() => gerneDeletehandeler({gerne})}
+                        className="py-1 text-white bg-gray-500 border-2 rounded-md"
+                        onClick={() => gerneDeletehandeler({ gerne })}
                       >
                         {gerne}
                       </button>
                     )}
-                    {!gerneValue.includes({gerne}.gerne) && (
+                    {!gerneValue.includes({ gerne }.gerne) && (
                       <button
-                        className="border-2 py-1 rounded-md"
-                        onClick={() => gerneChangeHandeler({gerne})}
+                        className="py-1 border-2 rounded-md"
+                        onClick={() => gerneChangeHandeler({ gerne })}
                       >
                         {gerne}
                       </button>
                     )}
                   </>
                 ))}
-
               </div>
             </div>
           </div>
-          <div className="row-span-1 text-center flex items-center justify-center">
-            <button className="bg-[#FA9E13] p-2 text-white font-semibold rounded-md">
+          <div className="flex items-center justify-center row-span-1 text-center">
+            <button
+              className="bg-[#FA9E13] p-2 text-white font-semibold rounded-md"
+              onClick={editProfile}
+            >
               회원 정보 수정
             </button>
           </div>

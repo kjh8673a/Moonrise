@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { FaHeart } from "react-icons/fa";
+import { Viewer } from "@toast-ui/react-editor"
 
 import BoardComment from "./BoardComment";
 
@@ -11,6 +13,7 @@ function BoardDetail() {
   const [writeDate, setWriteDate] = useState("");
   const [isLike, setIsLike] = useState(false);
   const [isBookmark, setIsBookmark] = useState(false);
+  const [toastViewer, setToastViewer] = useState(); 
   const [commentRequestBody, setCommentRequestBody] = useState({
     boardId: 0,
     content: "",
@@ -19,7 +22,6 @@ function BoardDetail() {
     memberId: "",
   });
   const movePage = useNavigate();
-
   const movieTitle = useSelector((state) => state.movie.movieTitle);
 
   const params = new URLSearchParams(window.location.search);
@@ -46,6 +48,7 @@ function BoardDetail() {
         setIsLike(response.data.data.findBoard.isLike);
         setIsBookmark(response.data.data.findBoard.isBookmark);
         setWriteDate(response.data.data.findBoard.dateTime.replace("T", " "));
+        setToastViewer(<Viewer initialValue={response.data.data.findBoard.content} /> );
       });
   }, [id, access_token]);
 
@@ -190,10 +193,9 @@ function BoardDetail() {
           <div className="flex-1 text-left">
             {!isLike && (
               <button
-                className="bg-[#FA9E13] px-2 py-1 m-1 text-white rounded-xl"
                 onClick={createLike}
               >
-                좋아요
+                <FaHeart/>
               </button>
             )}
             {isLike && (
@@ -247,7 +249,7 @@ function BoardDetail() {
         </div>
       </div>
       <div className="p-2 border-b">
-        <p>{board.content}</p>
+        {toastViewer}
       </div>
 
       <span>댓글</span>

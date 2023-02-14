@@ -8,10 +8,16 @@ import ProfileBoardList from "./board/ProfileBoardList";
 import ProfilePartyList from "./party/ProfilePartyList";
 import ProfileEditorCard from "./profile/profileEditorCard";
 import ProfileScrollTopButton from "./ProfileScrollTopButton";
+import { useSelector } from "react-redux";
 
 function ProfileList() {
   const [onEdit, setOnEdit] = useState(false);
   const scrollRef = useRef();
+  const nicknameValue = useState(useSelector((state) => state.member.nickname));
+  const gerne1 = useState(useSelector((state) => state.member.gernes1));
+  const gerne2 = useState(useSelector((state) => state.member.gernes2));
+  const gerne3 = useState(useSelector((state) => state.member.gernes3));
+  const imagePath = useState(useSelector((state) => state.member.imagePath));
 
   const openEditor = () => {
     setOnEdit(true);
@@ -23,6 +29,10 @@ function ProfileList() {
 
   const scrollToTop = () => {
     scrollRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const editDone = () => {
+    window.location.reload();
   };
 
   return (
@@ -45,15 +55,33 @@ function ProfileList() {
       </div>
       {!onEdit && (
         <div className="fixed w-1/5 bg-white rounded-md top-40 left-40 h-3/4">
-          <ProfileCard openEditor={openEditor} />
+          <ProfileCard
+            openEditor={openEditor}
+            nicknameValue={nicknameValue}
+            gerne1={gerne1}
+            gerne2={gerne2}
+            gerne3={gerne3}
+            imagePath={imagePath[0]}
+          />
         </div>
       )}
       {onEdit && (
         <>
-        <div className="fixed top-0 left-0 z-20 w-full h-full bg-black opacity-70" onClick={closeEditor}></div>
-        <div className="fixed z-50 w-1/2 bg-white rounded-md top-40 left-40 h-3/4">
-          <ProfileEditorCard closeEditor={closeEditor} />
-        </div>
+          <div
+            className="fixed top-0 left-0 z-20 w-full h-full bg-black opacity-70"
+            onClick={closeEditor}
+          ></div>
+          <div className="fixed z-50 w-1/2 bg-white rounded-md top-40 left-40 h-3/4">
+            <ProfileEditorCard
+              editDone={editDone}
+              closeEditor={closeEditor}
+              nicknameValue={nicknameValue}
+              gerne1={gerne1}
+              gerne2={gerne2}
+              gerne3={gerne3}
+              imagePath={imagePath[0]}
+            />
+          </div>
         </>
       )}
     </div>

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 function PartyWrite() {
   const movePage = useNavigate();
   const movieId = useSelector(state => state.movie.movieId);
+  const baseURL = process.env.REACT_APP_BASE_URL;
 
   function changeBoard(){
     movePage('/community/list/party');
@@ -19,11 +20,12 @@ function PartyWrite() {
     movieId: movieId,
     partyDate: "2023-02-02T06:23:05.082Z",
     partyPeople: 0,
-    title: ""
+    title: "",
+    imagePath: ""
   });
 
   const access_token = useSelector(state => state.member.accessToken);
-  
+
   const titleChangeHandler = (event) => {
     setRequestBody((prevState) => {
     	return { ...prevState, title: event.target.value }
@@ -49,17 +51,29 @@ function PartyWrite() {
     	return { ...prevState, location: event.target.value }
     });
   }
+  const imageChangeHandler = async (event) => {
+    console.log(event.target.files[0])
+    const formData = new FormData();
+    formData.append('files', event.target.files[0]);
+    const response = await axios.post(baseURL + "/api/image/upload", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    console.log(response.data.data[0]);
+    setRequestBody((prevState) => {
+    	return { ...prevState, imagePath: response.data.data[0] }
+    });
+  }
   const submitParty = async () => {
     const config = { 
         headers: {
           "access_token": access_token,
           }
     }
-    axios.post('http://3.35.149.202:80/api/party/write', requestBody, config)
-        .then(response => {
-            console.log(response);
-            changeBoard()
-        });
+    const response = await axios.post('http://3.35.149.202:80/api/party/write', requestBody, config);
+    console.log(response);
+    changeBoard();
   }
   return (
     <div className='mx-64 mt-10 partyWrite'>
@@ -77,23 +91,26 @@ function PartyWrite() {
                     <div className='relative m-4'>
                         <p className='text-gray-300'>제목</p>
                         <input type="text" id="title" onChange={titleChangeHandler} className="block py-2.5 px-0 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-orange-300 peer" placeholder="" />
-                        <label for="title" className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-orange-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">뒷풀이 제목을 입력해주세요</label>
+                        <label htmlFor="title" className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-orange-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">뒷풀이 제목을 입력해주세요</label>
                     </div>
                     <div className='relative m-4'>
                         <p className='text-gray-300'>날짜</p>
                         <input type="text" id="date" onChange={dateChangeHandler} className="block py-2.5 px-0 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-orange-300 peer" placeholder="" />
-                        <label for="date" className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-orange-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">뒷풀이 제목을 입력해주세요</label>
+                        <label htmlFor="date" className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-orange-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">뒷풀이 제목을 입력해주세요</label>
                     </div>
                     <div className='relative m-4'>
                         <p className='text-gray-300'>대표 이미지</p>
                         <div className="flex items-center justify-center w-full mt-4">
-                            <label for="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-white border-dashed rounded-lg cursor-pointer hover:bg-gray-600 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-white border-dashed rounded-lg cursor-pointer hover:bg-gray-600 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                {requestBody.imagePath === "" && (<div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                                     <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">Click to upload</p>
                                     <p className="text-xs text-white"> 파일 형식은 PNG, JPG 만 가능합니다</p>
-                                </div>
-                                <input id="dropzone-file" type="file" className="hidden" />
+                                </div>)}
+                                {requestBody.imagePath !== "" && (
+                                  <img src={requestBody.imagePath} alt="업로드 이미지" className='h-60' />
+                                )}
+                                <input onChange={imageChangeHandler} id="dropzone-file" type="file" className="hidden" />
                             </label>
                         </div>      
                     </div>
@@ -103,12 +120,12 @@ function PartyWrite() {
                     <div className='relative m-4'>
                         <p className='text-gray-300'>장소</p>
                         <input type="text" id="title" onChange={locationChangeHandler} className="block py-2.5 px-0 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-orange-300 peer" placeholder="" />
-                        <label for="title" className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-orange-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">뒷풀이 제목을 입력해주세요</label>
+                        <label htmlFor="title" className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-orange-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">뒷풀이 제목을 입력해주세요</label>
                     </div>
                     <div className='relative m-4'>
                         <p className='text-gray-300'>인원 수</p>
                         <input type="text" id="title" onChange={peopleChangeHandler} className="block py-2.5 px-0 w-full text-sm text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  focus:outline-none focus:ring-0 focus:border-orange-300 peer" placeholder="" />
-                        <label for="title" className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-orange-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">뒷풀이 제목을 입력해주세요</label>
+                        <label htmlFor="title" className="absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-orange-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">뒷풀이 제목을 입력해주세요</label>
                     </div>
                     <div className='relative m-4'>
                         <p className='text-gray-300'>주의 사항</p>
