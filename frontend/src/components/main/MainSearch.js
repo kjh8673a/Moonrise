@@ -7,6 +7,7 @@ import { setCurrentPage, setMovieList, setSearchKeyword, setTotalPage } from "..
 function MainSearch() {
   const movePage = useNavigate();
   const [keyword, setKeyword] = useState("");
+  const [btnView, setBtnView] = useState(false);
 
   function goMovieList() {
     movePage("/search/");
@@ -21,6 +22,14 @@ function MainSearch() {
       searchMovies(); // Enter 입력이 되면 클릭 이벤트 실행
     }
   };
+
+  function onFocusHandler (){
+    setBtnView(true);
+  } 
+  function onBlurHandler(){
+    setBtnView(false);
+  }
+
 
   const dispatch = useDispatch();
 
@@ -54,7 +63,7 @@ function MainSearch() {
     <div className="mainSearch">
       <div className="grid grid-cols-2 gap-4 my-16">
         <div className="col-span-1 text-right">
-          <p className="text-orange-600 text-7xl">달:-뜨다</p>
+          <p className="text-dal-orange text-7xl">달:-뜨다</p>
         </div>
         <div className="col-span-1 mt-6">
           <p className="text-white">동사 [마음이]</p>
@@ -64,24 +73,25 @@ function MainSearch() {
       <div className="my-6 text-center">
         <p className="text-2xl text-white">
           영화보고 달뜬 마음,{" "}
-          <span className="text-3xl text-orange-600">달뜸</span>으로 가져오세요.
+          <span className="text-3xl text-dal-orange">달뜸</span>으로 가져오세요.
         </p>
       </div>
-      <div className="flex h-16 mx-16">
+      <div className="flex h-10 mx-20 mt-10">
         <input
           type="text"
           onChange={keywordHandler}
           onKeyPress={handleOnKeyPress}
+          onFocus={onFocusHandler}
+          onBlur={onBlurHandler}
           id="party-search"
-          className="block w-5/6 h-16 pl-4 text-lg border border-gray-400 rounded-lg focus:ring-white focus:border-white"
+          className="block w-full h-10 pl-4 mx-2 text-lg text-white transition-transform duration-500 bg-transparent border-b-2 focus:w-5/6 placeholder:text-gray-300 focus:outline-none focus:border-dal-orange"
           placeholder="어떤 영화를 보고 오셨나요?"
         />
+        {btnView && (
         <button
           onClick={searchMovies}
-          className="w-1/6 text-center text-white hover:bg-green-600"
-        >
-          검색
-        </button>
+          className="w-1/6 text-center text-white transition-colors duration-200 hover:bg-dal-orange hover:bg-opacity-70 hover:text-black"
+        >검색</button>)}
       </div>
     </div>
   );
