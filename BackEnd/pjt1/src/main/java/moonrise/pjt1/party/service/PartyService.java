@@ -105,7 +105,7 @@ public class PartyService {
                     party.getPartyPeople(),party.getLocation(),party.getPartyStatus(),
                     party.getMovie().getId(),partyComments,party.getDeadLine(), viewCnt, likeCnt,
                     commentsCnt,party.getMember().getProfile().getNickname(),
-                    partyJoinAccept,partyJoinWait,partyJoinSurplus,party.getImagePath());
+                    partyJoinAccept,partyJoinWait,partyJoinSurplus,party.getImagePath(),party.getMember().getProfile().getProfile_image_path());
             result.put("findParty",partyReadResponseDto);
         }
         //***************DB 조회**********************
