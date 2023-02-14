@@ -20,8 +20,7 @@ function MovieCard(props) {
   const goCommunity = async ()  => {
     dispatch(setMovieId(props.movie.id))
     dispatch(setMovieDetail({poster: imgURL, title: props.movie.title}))
-    console.log(movieData)
-    axios.post(baseURL + '/api/movie',movieData).then(res => {console.log(res)})
+    axios.post(baseURL + '/api/movie',movieData).then(res => {})
     movePage('/community/list/');
   }
   return (

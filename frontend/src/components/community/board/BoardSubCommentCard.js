@@ -81,7 +81,7 @@ function BoardSubCommentCard(props) {
 
   return (
     <>
-      <div className="flex gap-2 p-2 px-5 bg-gray-400 border-b border-black">
+      <div className="flex gap-2 p-2 px-5 mb-1 ml-auto bg-[#006600] bg-opacity-10 rounded-lg acity-100">
         {props.boardCommentStatus === "DELETED" && (
           <>
             <span>└</span>
@@ -115,7 +115,7 @@ function BoardSubCommentCard(props) {
                   삭제
                 </button>
                 <button
-                  className="ml-2 px-2 bg-[#FA9E13] rounded text-white"
+                  className="ml-2 px-2 bg-[#fdca00] rounded text-white font-medium"
                   onClick={(e) => openSubCommentInput(props.comment_id, e)}
                 >
                   답글
