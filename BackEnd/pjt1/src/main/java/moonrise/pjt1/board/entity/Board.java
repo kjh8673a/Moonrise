@@ -24,6 +24,7 @@ public class Board {
     private Long id;
 
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String content;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

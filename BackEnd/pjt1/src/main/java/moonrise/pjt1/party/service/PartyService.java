@@ -167,6 +167,7 @@ public class PartyService {
         List<PartyListResponseDto> findParties = new ArrayList<>();
         for (Party party : myPartyList) {
             PartyListResponseDto partyListResponseDto = PartyListResponseDto.builder()
+                    .imagePath(party.getImagePath())
                     .partyPeople(party.getPartyPeople())
                     .partyId(party.getId())
                     .partyDate(party.getPartyDate())
