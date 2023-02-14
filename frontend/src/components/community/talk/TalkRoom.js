@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import Profile from '../../../assets/img/profile.png'
 import SockJS from 'sockjs-client';
 import  { CompatClient, Stomp } from '@stomp/stompjs'
 import axios from 'axios';
@@ -14,7 +13,7 @@ function TalkRoom(props) {
     const baseURL = process.env.REACT_APP_BASE_URL;
     const [chat, setChat] = useState([]);
     const [msg, setMsg] = useState("");
-    const chatRoom = document.getElementById('chatRoom');
+    const [isSend, setIsSend] = useState(true);
     
     
     useEffect(() => {
@@ -28,19 +27,25 @@ function TalkRoom(props) {
                 if (findCnt === 0) {
                     response.data.data.recentChats.map((chatOne) => (
                         setChat((prev) => [...prev, chatOne])
-                    ))
-                }
+                        ))
+                    }
                 else {
                     response.data.data.recentChats.map((chatOne) => (
                         setChat((prev) => [chatOne, ...prev])
-                    ))  
+                        ))  
                 }
             }   
-            });
+        });
         return() => {}
-    }, [baseURL, findCnt, roomId])
-
+    }, [baseURL, findCnt, roomId]);
     useEffect(() => {
+        if (isSend) {
+            const chatRoom = document.getElementById('chatRoom');
+            chatRoom.scrollTo({ top: chatRoom.scrollHeight, behavior: "smooth" });
+        }
+    });
+    useEffect(() => {
+
         client.current = Stomp.over(() => {
             const sock = new SockJS(baseURL + "/chat/socket")
             return sock;
@@ -48,23 +53,19 @@ function TalkRoom(props) {
         client.current.connect({},
             () => {              
                 client.current.subscribe(
-                "/sub/chat/room/"+roomId,
-                (message) => {
+                    "/sub/chat/room/"+roomId,
+                    (message) => {
                     setChat((prev) => ([...prev, JSON.parse(message.body)]));
-                },{}
-        )});
+        },{})});
         return () => {
             axios.get(baseURL + "/chat/debate/exit?debateId=" + roomId);
             client.current.disconnect();
         }  
     }, [baseURL, roomId]);
 
-    function scrollChat(){
-        chatRoom.scrollTo({ top: chatRoom.scrollHeight, behavior: "smooth" });
-    };
-
     function countInc(){
         setFindCnt(findCnt+1);
+        setIsSend(false);
     }
     function msgHandler(event){
         setMsg(event.target.value);
@@ -73,14 +74,12 @@ function TalkRoom(props) {
         if (e.key === "Enter") {
             if (msg !== "") {
                 send(); // Enter 입력이 되면 클릭 이벤트 실행
-                scrollChat()
             }
         }
       };
     function submitClick(){
         if (msg !== "") {
             send()
-            scrollChat()
         }
     }
     function send(){
@@ -91,8 +90,8 @@ function TalkRoom(props) {
             writer: user,
           };
           client.current.send("/pub/chat/message", {} , JSON.stringify(sendMsg))
-          
-        };
+          setIsSend(true);
+    };
     
   return (
     <div id="chatRoom" className='p-2 mt-4 mb-12 overflow-y-auto bg-gray-200 rounded-lg h-96'>
@@ -104,7 +103,7 @@ function TalkRoom(props) {
             if (chatOne.writer === user) {
                 return(
                     <div className='col-span-3 col-start-3 m-2 justify-items-end'>
-                        <div className='p-2 mt-2 bg-orange-200 rounded-lg'>
+                        <div className='p-2 mt-2 bg-yellow-200 rounded-lg'>
                             <p>
                                 {chatOne.content}
                             </p>
@@ -118,7 +117,7 @@ function TalkRoom(props) {
                     <div className='col-span-4 m-2'>
                         <div className='grid grid-cols-5'>
                             <div className='col-span-1'>
-                                <img className='w-10 rounded-full' src={Profile} alt="" />
+                                <img className='w-10 rounded-full' src={chatOne.imagePath} alt="" />
                             </div>
                             <div className='col-span-4'>
                                 <p className=''>{chatOne.writer}</p>

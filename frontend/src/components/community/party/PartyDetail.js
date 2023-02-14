@@ -20,6 +20,7 @@ function PartyDetail() {
   const partyId = useParams().partyId;
   const movePage = useNavigate();
   const [date, setDate] = useState("");
+  
   function goBefore(){
     movePage('/community/list/party');
   }
@@ -44,7 +45,6 @@ function PartyDetail() {
     return () => {
     }
     }, [access_token, partyId, isWriter, isCommentChange])
-  
   return (
     <div className='h-screen'>
 

@@ -65,9 +65,9 @@ function MainNav() {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             ></path>
           </svg>
@@ -77,7 +77,7 @@ function MainNav() {
           id="party-search"
           onChange={keywordHandler}
           onKeyPress={handleOnKeyPress}
-          className="block w-full h-10 pl-10 text-sm text-white bg-transparent border border-gray-400 rounded-full focus:ring-white focus:border-white dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          className="block w-full h-10 pl-10 text-sm text-white bg-transparent border border-gray-400 rounded-full focus:ring-white focus:border-white"
           placeholder="다른 영화도 검색해보세요!"
         />
       </div>
