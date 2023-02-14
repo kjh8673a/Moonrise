@@ -20,11 +20,7 @@ import java.util.Map;
 public class DebateController {
 
     private final DebateService debateService;
-    @PostMapping("/testtesttest")
-    public void message(@RequestBody DebateChatDto debateChatDto){
-        System.out.println(debateChatDto);
-        debateService.saveCacheChat(debateChatDto);
-    }
+
     @GetMapping("/pastChats") // 채팅방 입장 시 redis서버 채팅내역 리턴
     public ResponseEntity<?> enterDebateRoom(@RequestParam(value = "debateId") Long debateId,
                                              @RequestParam(value = "findCnt",defaultValue = "0") int findCnt) throws JsonProcessingException {
