@@ -4,6 +4,7 @@ import CommunityHeader from "../CommunityHeader";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import CommunityPagination from "../CommunityPagination";
+import { Transition } from "@headlessui/react";
 
 function BoardList() {
   const [boards, setBoards] = useState([]);
@@ -40,6 +41,13 @@ function BoardList() {
   return (
     <div>
       <CommunityHeader type="게시글" />
+      <Transition
+        appear={true} 
+        show={true}
+       enter="transition-all duration-1000"
+       enterFrom="opacity-0 transform translate-x-10"
+       enterTo="opacity-100 transform translate-x-0"
+      >
       <ul>
         {boards.map((board) => (
           <BoardCard
@@ -58,6 +66,7 @@ function BoardList() {
         ))}
       </ul>
       <CommunityPagination total={boardTotalPages} page={page} setPage={setPage} type="BOARD"/>
+      </Transition>
     </div>
   );
 }
