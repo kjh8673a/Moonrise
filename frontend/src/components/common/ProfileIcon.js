@@ -150,11 +150,11 @@ function ProfileIcon() {
               tabindex="-1"
             >
               <div className="py-1 divide-y" role="none">
-                <div className="flex p-3">
-                  <div onClick={goLogin}>
+                <div className="flex py-3">
+                  <button onClick={goLogin} className="w-full py-2 text-left hover:bg-gray-100">
                     <p className="mx-4 text-lg">로그인</p>
                     <p className="mx-4 text-xs">어서오세요 달뜸입니다.</p>
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>
