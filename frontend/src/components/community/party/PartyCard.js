@@ -11,8 +11,13 @@ function PartyCard(props) {
     movePage('/community/detail/party/'+props.partyId);
   }
   return (
-    <div className="mx-1 overflow-hidden rounded shadow-lg PartyCard" onClick={goDetail}>
-      <img src={CardImg} className="object-cover w-full h-36" alt="뒷풀이 카드 이미지"/>
+    <div className="mx-1 overflow-hidden transition-all duration-300 rounded shadow-lg hover:scale-105 PartyCard" onClick={goDetail}>
+      {props.partyImage === null && (
+        <img src={CardImg} className="object-cover w-full h-36" alt="뒷풀이 카드 이미지"/>
+      )}
+      {props.partyImage !== null && (
+        <img src={props.partyImage} className="object-cover w-full h-36" alt="뒷풀이 카드 이미지"/>
+      )}
         <div className="px-2 py-2 bg-orange-500">
           <div className="mb-2 font-bold text-l">{props.title}</div>
           <div className="flex">

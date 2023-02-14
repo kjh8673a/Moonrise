@@ -17,7 +17,7 @@ function PartyList() {
   const GetList = () => {
     return (
       partyList.map((party) => (
-        <PartyCard title={party.title} partyDate={party.partyDate} partyPeople={party.partyPeople} partyLocation={party.location} partyId={party.partyId} key={party.partyId}/>
+        <PartyCard title={party.title} partyDate={party.partyDate} partyImage={party.imagePath} partyPeople={party.partyPeople} partyLocation={party.location} partyId={party.partyId} key={party.partyId}/>
       ))
     );
   }

@@ -13,6 +13,7 @@ function BoardDetail() {
   const [writeDate, setWriteDate] = useState("");
   const [isLike, setIsLike] = useState(false);
   const [isBookmark, setIsBookmark] = useState(false);
+  const [toastViewer, setToastViewer] = useState(); 
   const [commentRequestBody, setCommentRequestBody] = useState({
     boardId: 0,
     content: "",
@@ -21,7 +22,6 @@ function BoardDetail() {
     memberId: "",
   });
   const movePage = useNavigate();
-
   const movieTitle = useSelector((state) => state.movie.movieTitle);
 
   const params = new URLSearchParams(window.location.search);
@@ -48,6 +48,7 @@ function BoardDetail() {
         setIsLike(response.data.data.findBoard.isLike);
         setIsBookmark(response.data.data.findBoard.isBookmark);
         setWriteDate(response.data.data.findBoard.dateTime.replace("T", " "));
+        setToastViewer(<Viewer initialValue={response.data.data.findBoard.content} /> );
       });
   }, [id, access_token]);
 
@@ -248,7 +249,7 @@ function BoardDetail() {
         </div>
       </div>
       <div className="p-2 border-b">
-        <Viewer initialValue={board.content} />
+        {toastViewer}
       </div>
 
       <span>댓글</span>
