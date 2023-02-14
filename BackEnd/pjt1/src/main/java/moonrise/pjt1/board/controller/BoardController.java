@@ -63,7 +63,7 @@ public class BoardController {
     }
 
     // 게시글 수정 (0순위)
-    @PostMapping("/modify")
+    @PutMapping("/modify")
     public ResponseEntity<?> boardUpdate(@RequestHeader HttpHeaders headers,
                                          @RequestBody BoardUpdateDto boardUpdateDto){
         // Http Header 에서 Access-Token 받기
