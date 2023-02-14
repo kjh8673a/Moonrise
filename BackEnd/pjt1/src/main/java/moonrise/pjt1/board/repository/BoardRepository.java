@@ -15,6 +15,6 @@ public interface BoardRepository extends JpaRepository<Board,Long> {
     @Query("select b from Board b where b.movie.id =:movieId and b.boardInfo.boardStatus ='NORMAL'")
     Page<Board> findByMovieId(@Param("movieId") Long movieId, Pageable pageable);
 
-    @Query("select b from Board b where b.member.id =:userId")
+    @Query("select b from Board b where b.member.id =:userId order by b.id desc")
     List<Board> findByUserId(@Param("userId") Long userId);
 }
