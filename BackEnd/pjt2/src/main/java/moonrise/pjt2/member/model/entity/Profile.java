@@ -34,6 +34,6 @@ public class Profile {
         }
 
         //기본 이미지
-        this.profile_image_path = "https://moonrise.s3.ap-northeast-2.amazonaws.com/208c18ba-3457-419e-b27a-a408ceb60e8b_defaultUser.png";
+        this.profile_image_path = "https://moonrise.s3.ap-northeast-2.amazonaws.com/153fcd13-0dab-4757-9f56-6149e253a873_no_image.png";
     }
 }
