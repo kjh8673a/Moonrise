@@ -41,12 +41,12 @@ public class DebateService {
         String key = "debateChat::"+debateChatDto.getDebateId();
         ListOperations<String, Object> chatOperations = redisTemplate.opsForList();
         String value = "";
-        Profile profile = profileRepository.findImagePath(debateChatDto.getWriter());
+        String imagePath = profileRepository.findImagePath(debateChatDto.getWriter());
         DebateChatResponseDto debateChatResponseDto = DebateChatResponseDto.builder()
-                .writer(profile.getNickname())
+                .writer(debateChatDto.getWriter())
                 .content(debateChatDto.getContent())
                 .debateId(debateChatDto.getDebateId())
-                .imagePath(profile.getProfile_image_path())
+                .imagePath(imagePath)
                 .build();
         try { //
             ObjectMapper mapper = new ObjectMapper();
