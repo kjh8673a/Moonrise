@@ -98,7 +98,6 @@ function ProfileEditorCard(props) {
       setImgPreview(reader.result);
     };
   };
-
   const access_token = useSelector((state) => state.member.accessToken);
   const config = {
     headers: {
@@ -111,7 +110,7 @@ function ProfileEditorCard(props) {
     console.log(gerneValue);
     axios
       .put(
-        "http://3.35.149.202:80/auth/member/",
+        baseURL + "/auth/member/",
         {
           nickname: nicknameValue,
           imagePath: uploadImg,

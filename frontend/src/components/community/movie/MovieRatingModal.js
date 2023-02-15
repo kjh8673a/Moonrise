@@ -11,6 +11,7 @@ function MovieRatingModal(props) {
   const [visual, setVisual] = useState();
   const [sound, setSound] = useState();
 
+  const baseURL = process.env.REACT_APP_BASE_URL;
   const access_token = useSelector((state) => state.member.accessToken);
   const config = {
     headers: {
@@ -34,7 +35,7 @@ function MovieRatingModal(props) {
     event.preventDefault();
     axios
       .post(
-        "http://3.35.149.202:80/api/rating/create/" + props.movieId,
+        baseURL + "/api/rating/create/" + props.movieId,
         {
           movieId: props.movieId,
           story: story,
@@ -55,7 +56,7 @@ function MovieRatingModal(props) {
     event.preventDefault();
     axios
       .put(
-        "http://3.35.149.202:80/api/rating/update/" + props.ratingId,
+        baseURL + "/api/rating/update/" + props.ratingId,
         {
           ratingId: props.ratingId,
           movieId: props.movieId,

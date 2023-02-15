@@ -33,7 +33,6 @@ function PartyDetail() {
     }
     axios.get(baseURL+ '/api/party/read/'+partyId, config)
         .then(response => {
-          console.log(response.data)
           setPartyDetail(response.data.data.findParty);
           setPartyComments(response.data.data.findParty.partyComments);
           setIsWriter(response.data.data.isWriter);
@@ -58,12 +57,12 @@ function PartyDetail() {
             <p className='mt-1 text-right text-dal-orange movieName'>{useSelector(state => state.movie.movieTitle)}</p>\
           </div>
           <PartyDetailCard partyDetail={partyDetail} date={date}/>
-          <PartyCandidate partyJoins={partyJoinAccept} type={"승인"} setIsCommentChange={setIsCommentChange} isCommentChange={isCommentChange}/>
+          <PartyCandidate partyId={partyId} partyJoins={partyJoinAccept} type={"승인"} setIsCommentChange={setIsCommentChange} isCommentChange={isCommentChange}/>
         </div>
         <div className="col-span-1">
           <PartyComment setIsCommentChange={setIsCommentChange} isCommentChange={isCommentChange} partyComments={partyComments} partyId={partyId}/>
           {!isWriter && (<PartyEnroll partyId={partyId} joinStatus={joinStatus} setIsCommentChange={setIsCommentChange} isCommentChange={isCommentChange}/>)}
-          {isWriter && (<PartyCandidate partyJoins={partyJoinWait} type={"승인대기"} setIsCommentChange={setIsCommentChange} isCommentChange={isCommentChange}/>)}
+          {isWriter && (<PartyCandidate partyId={partyId} partyJoins={partyJoinWait} type={"승인대기"} setIsCommentChange={setIsCommentChange} isCommentChange={isCommentChange}/>)}
         </div>
       </div>
     </div>

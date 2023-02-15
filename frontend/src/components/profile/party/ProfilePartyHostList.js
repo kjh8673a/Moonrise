@@ -12,13 +12,14 @@ function ProfilePartyHostList(props) {
   const access_token = useSelector((state) => state.member.accessToken);
 
   useEffect(() => {
+    const baseURL = process.env.REACT_APP_BASE_URL;
     const config = {
       headers: {
         access_token: access_token,
       },
     };
     axios
-      .get("http://3.35.149.202:80/api/party/list/my", config)
+      .get(baseURL + "/api/party/list/my", config)
       .then((response) => {
         console.log(response)
         setData(response.data.data.findParties);

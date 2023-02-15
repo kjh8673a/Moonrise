@@ -13,13 +13,14 @@ function BoardList() {
   const movieId = useSelector((state) => state.movie.movieId);
 
   useEffect(() => {
+    const baseURL = process.env.REACT_APP_BASE_URL;
     axios
       .all([
         axios.get(
-          "http://3.35.149.202:80/api/board/list/" + movieId + "?page=" + page
+          baseURL +"/api/board/list/" + movieId + "?page=" + page
         ),
         axios.get(
-          "http://3.35.149.202:80/api/board/list/" +
+          baseURL + "/api/board/list/" +
             movieId +
             "?page=" +
             (page + 1)
@@ -31,6 +32,7 @@ function BoardList() {
           const res_1 = res1.data.data.findBoards;
           const res_2 = res2.data.data.findBoards;
           const res = [...res_1, ...res_2];
+          console.log(res);
           setBoards(res);
           setPage(page);
         })

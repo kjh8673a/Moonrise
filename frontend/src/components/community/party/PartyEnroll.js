@@ -22,6 +22,7 @@ function PartyEnroll(props) {
     if (response.status === 200) {
       alert("신청이 완료되었습니다!");
     }
+    props.setIsCommentChange(!props.isCommentChange);
   }
   const messageHandler = (event) => {
     setRequestBody((prevState) => {

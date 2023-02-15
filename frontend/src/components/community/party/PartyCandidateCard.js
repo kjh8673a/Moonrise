@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom';
 
 function PartyCandidateCard(props) {
   const [partyJoin, setPartyJoin] = useState(props.partyJoin);
@@ -12,10 +13,17 @@ function PartyCandidateCard(props) {
       "access_token": access_token,
     }
   };
-  const joinStatusChange = (event) => {
-    axios.get(baseURL + "/api/party/join/status?status="+event.target.id +"&joinId="+ partyJoin.id, config)
-    .then(props.setIsCommentChange(!props.isCommentChange)).then(setOnModal(false));
-  };
+  const movePage = useNavigate();
+  function redirect(){
+    movePage('/community/detail/party/'+props.partyId);
+  }
+  async function joinStatusChange(event) {
+    const response = await axios.get(baseURL + "/api/party/join/status?status="+event.target.id +"&joinId="+ partyJoin.id, config);
+    console.log(response);
+    redirect()
+    props.setEmit();
+    setOnModal(false);
+  }
   function modalHandler() {
     setOnModal(true);
   }
@@ -30,7 +38,7 @@ function PartyCandidateCard(props) {
   if (props.type === "승인대기") {
     return (
       <div className='col-span-2'>
-        <div onClick={modalHandler} className='py-3 rounded-lg bg-dal-green'>
+        <div onClick={modalHandler} className='py-3 rounded-lg bg-dal-green hover:bg-opacity-70'>
           <img className='w-16 h-16 mx-auto rounded-full' src={partyJoin.imagePath} alt="참가 신청 목록 프로필 이미지" />
           <p className='mt-4 text-center text-white'>{partyJoin.applier}</p>
         </div>

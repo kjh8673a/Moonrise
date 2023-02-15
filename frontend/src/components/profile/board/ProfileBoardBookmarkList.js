@@ -12,13 +12,14 @@ function ProfileBoardBookmarkList(props) {
   const access_token = useSelector((state) => state.member.accessToken);
 
   useEffect(() => {
+    const baseURL = process.env.REACT_APP_BASE_URL;
     const config = {
       headers: {
         access_token: access_token,
       },
     };
     axios
-      .get("http://3.35.149.202:80/api/board/mypage/bookmark", config)
+      .get(baseURL + "/api/board/mypage/bookmark", config)
       .then((response) => { 
         if(!response.data.data.findBoards) {
           setData([]);
