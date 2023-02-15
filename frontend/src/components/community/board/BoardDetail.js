@@ -32,9 +32,9 @@ function BoardDetail() {
 
   const params = new URLSearchParams(window.location.search);
   const id = parseInt(params.get("id"));
-
+  const baseURL = process.env.REACT_APP_BASE_URL;
   const access_token = useSelector((state) => state.member.accessToken);
-
+  
   const config = {
     headers: {
       access_token: access_token,
@@ -42,13 +42,14 @@ function BoardDetail() {
   };
 
   useEffect(() => {
+    const baseURL = process.env.REACT_APP_BASE_URL;
     const config = {
       headers: {
         access_token: access_token,
       },
     };
     axios
-      .get("http://3.35.149.202:80/api/board/" + id, config)
+      .get(baseURL + "/api/board/" + id, config)
       .then((response) => {
         setWriter(response.data.data.findBoard.writer);
         setBoard(response.data.data.findBoard);
@@ -73,7 +74,7 @@ function BoardDetail() {
     }
     axios
       .post(
-        "http://3.35.149.202:80/api/board/comments/create",
+        baseURL+ "/api/board/comments/create",
         commentRequestBody,
         config
       )
@@ -107,7 +108,7 @@ function BoardDetail() {
   const createLike = () => {
     axios
       .post(
-        "http://3.35.149.202:80/api/board/like",
+        baseURL+ "/api/board/like",
         {
           boardId: id,
           status: 1,
@@ -122,7 +123,7 @@ function BoardDetail() {
   const deleteLike = () => {
     axios
       .post(
-        "http://3.35.149.202:80/api/board/like",
+        baseURL + "/api/board/like",
         {
           boardId: id,
           status: 0,
@@ -137,7 +138,7 @@ function BoardDetail() {
   const createBookmark = () => {
     axios
       .post(
-        "http://3.35.149.202:80/api/board/bookmark",
+        baseURL + "/api/board/bookmark",
         {
           boardId: id,
           status: 1,
@@ -152,7 +153,7 @@ function BoardDetail() {
   const deleteBookmark = () => {
     axios
       .post(
-        "http://3.35.149.202:80/api/board/bookmark",
+        baseURL + "/api/board/bookmark",
         {
           boardId: id,
           status: 0,
@@ -169,7 +170,7 @@ function BoardDetail() {
     params.append("boardId", id);
     params.append("statusCode", 3);
     axios
-      .post("http://3.35.149.202:80/api/board/status", params, config)
+      .post(baseURL + "/api/board/status", params, config)
       .then((response) => {
         movePage("/community/list/");
       });
@@ -177,7 +178,7 @@ function BoardDetail() {
 
   const reloadBoard = () => {
     axios
-      .get("http://3.35.149.202:80/api/board/" + id, config)
+      .get(baseURL + "/api/board/" + id, config)
       .then((response) => {
         setBoard(response.data.data.findBoard);
         setIsLike(response.data.data.findBoard.isLike);

@@ -7,7 +7,8 @@ function BoardSubCommetInput(props) {
 
   const params = new URLSearchParams(window.location.search);
   const id = parseInt(params.get("id"));
-  
+
+  const baseURL = process.env.REACT_APP_BASE_URL;
   const access_token = useSelector((state) => state.member.accessToken);
   const config = {
     headers: {
@@ -30,7 +31,7 @@ function BoardSubCommetInput(props) {
     }
     axios
       .post(
-        "http://3.35.149.202:80/api//board/comments/create",
+        baseURL + "/api//board/comments/create",
         commentRequestBody,
         config
       )

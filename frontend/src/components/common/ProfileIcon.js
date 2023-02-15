@@ -20,7 +20,7 @@ function ProfileIcon() {
   function goLogin() {
     movePage("/user/");
   }
-
+  const baseURL = process.env.REACT_APP_BASE_URL;
   const access_token = useSelector((state) => state.member.accessToken);
   const config = {
     headers: {
@@ -30,7 +30,8 @@ function ProfileIcon() {
 
   function logout() {
     axios
-      .get("http://3.35.149.202:80/auth/member/logout", config);
+      .get(baseURL+"/auth/member/logout", config)
+      .then((res) => console.log(res));
     logoutUser();
     dispatch(logoutUser());
     setIsLogin(false);

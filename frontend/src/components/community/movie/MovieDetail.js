@@ -25,6 +25,7 @@ function MovieDetail() {
   const isNotHovered = "w-full";
 
   const access_token = useSelector((state) => state.member.accessToken);
+  const baseURL = process.env.REACT_APP_BASE_URL;
   const config = {
     headers: {
       access_token: access_token,
@@ -51,13 +52,14 @@ function MovieDetail() {
   }, [data.movieId, tmdbToken]);
 
   useEffect(() => {
+    const baseURL = process.env.REACT_APP_BASE_URL;
     const config = {
       headers: {
         access_token: access_token,
       },
     };
     axios
-      .get("http://3.35.149.202:80/api/rating/find/" + data.movieId, config)
+      .get(baseURL + "/api/rating/find/" + data.movieId, config)
       .then((response) => {
         if (response.data[0] !== 0) {
           let ratings = [];
@@ -73,7 +75,7 @@ function MovieDetail() {
       });
     axios
       .get(
-        "http://3.35.149.202:80/api/rating/personal?movieId=" + data.movieId,
+        baseURL + "/api/rating/personal?movieId=" + data.movieId,
         config
       )
       .then((response) => {
@@ -113,7 +115,7 @@ function MovieDetail() {
 
   const roadRating = () => {
     axios
-      .get("http://3.35.149.202:80/api/rating/find/" + data.movieId, config)
+      .get(baseURL + "/api/rating/find/" + data.movieId, config)
       .then((response) => {
         if (response.data[0] !== 0) {
           let ratings = [];
@@ -129,7 +131,7 @@ function MovieDetail() {
       });
     axios
       .get(
-        "http://3.35.149.202:80/api/rating/personal?movieId=" + data.movieId,
+        baseURL + "/api/rating/personal?movieId=" + data.movieId,
         config
       )
       .then((response) => {

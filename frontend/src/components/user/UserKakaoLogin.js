@@ -18,6 +18,8 @@ function UserKakaoLogin() {
   const KAKAO_CODE = PARAMS.get("code");
   const dispatch = useDispatch();
   const movePage = useNavigate();
+  const baseURL = process.env.REACT_APP_BASE_URL;
+
   function goMain() {
     movePage("/");
   }
@@ -30,7 +32,7 @@ function UserKakaoLogin() {
       try {
         axios
           .post(
-            "http://3.35.149.202:80/auth/member/kakao",
+            baseURL + "/auth/member/kakao",
             {},
             {
               headers: {

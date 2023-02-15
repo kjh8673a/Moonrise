@@ -14,7 +14,7 @@ function BoardCommentCard(props) {
     memberId: "",
     commentId: props.comment_id,
   });
-
+  const baseURL = process.env.REACT_APP_BASE_URL;
   const access_token = useSelector((state) => state.member.accessToken);
   const config = {
     headers: {
@@ -41,7 +41,7 @@ function BoardCommentCard(props) {
   const deleteComment = (event) => {
     event.preventDefault();
     axios
-      .post("http://3.35.149.202:80/api/board/comments/status", params, config)
+      .post(baseURL+ "/api/board/comments/status", params, config)
       .then((response) => {
         props.deleteCommentConfirm();
       });
@@ -69,7 +69,7 @@ function BoardCommentCard(props) {
     }
     axios
       .post(
-        "http://3.35.149.202:80/api//board/comments/modify",
+        baseURL + "/api//board/comments/modify",
         commentRequestBody,
         config
       )

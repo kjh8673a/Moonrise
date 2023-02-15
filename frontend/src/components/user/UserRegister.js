@@ -20,6 +20,7 @@ function UserRegister() {
     "범죄", "서부", "스릴러", "애니메이션",
     "액션", "역사", "음악", "전쟁",
     "코미디", "판타지"];
+    const baseURL = process.env.REACT_APP_BASE_URL;
     const movePage = useNavigate(); 
     const dispatch = useDispatch();
     function goMain(){
@@ -93,7 +94,7 @@ function UserRegister() {
         genres: likeGenre,
         gender : gender,
       }
-      axios.post('http://3.35.149.202:80/auth/member/join', requestBody, config)
+      axios.post(baseURL + '/auth/member/join', requestBody, config)
       .then(response => {
         if (response.status === 200) {
             dispatch(setNickname(response.data.data.nickname))
