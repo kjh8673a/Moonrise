@@ -29,7 +29,7 @@ public class RedisSchedule {
     private final RedisTemplate redisTemplate;
     private final DebateService debateService;
     @Transactional
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0 0/1 * * * ?")
     public void deleteChatCacheFromRedis() throws IOException {
         Set<String> redisKeys = redisTemplate.keys("debateChat*");
         Iterator<String> it = redisKeys.iterator();
@@ -52,7 +52,7 @@ public class RedisSchedule {
         }
     }
     @Transactional
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0/3 * * * ?")
     public void deleteLivePeopleCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("debateLivePeopleCnt*");
         Iterator<String> it = redisKeys.iterator();

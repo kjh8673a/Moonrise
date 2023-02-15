@@ -33,7 +33,7 @@ public class RedisSchedule {
     private final RedisTemplate redisTemplate;
 
     @Transactional
-    @Scheduled(cron = "0 0/5 * * * ?")
+    @Scheduled(cron = "0 0/3 * * * ?")
     public void deleteViewCntCacheFromRedis() {
         log.info("조회수 DB 백업");
         Set<String> redisKeys = redisTemplate.keys("partyViewCnt*");
