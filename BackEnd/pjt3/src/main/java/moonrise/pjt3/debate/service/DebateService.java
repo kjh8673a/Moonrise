@@ -5,17 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import moonrise.pjt3.commons.response.ResponseDto;
-import moonrise.pjt3.debate.dto.DebateChatDto;
-import moonrise.pjt3.debate.dto.DebateCreateDto;
-import moonrise.pjt3.debate.dto.DebateListResponseDto;
-import moonrise.pjt3.debate.dto.DebateReadResponseDto;
+import moonrise.pjt3.debate.dto.*;
 import moonrise.pjt3.debate.entity.Debate;
 import moonrise.pjt3.debate.entity.DebateInfo;
 import moonrise.pjt3.debate.entity.Message;
 import moonrise.pjt3.debate.repository.DebateInfoRepository;
 import moonrise.pjt3.debate.repository.DebateRepository;
 import moonrise.pjt3.debate.repository.MessageRepository;
+import moonrise.pjt3.debate.repository.ProfileRepository;
 import moonrise.pjt3.member.entity.Member;
+import moonrise.pjt3.member.entity.Profile;
 import moonrise.pjt3.member.repository.MemberRepository;
 import moonrise.pjt3.movie.entity.Movie;
 import moonrise.pjt3.movie.repository.MovieRepository;
@@ -31,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Log4j2
 public class DebateService {
+    private final ProfileRepository profileRepository;
     private final DebateInfoRepository debateInfoRepository;
     private final RedisTemplate redisTemplate;
     private final MovieRepository movieRepository;
@@ -41,9 +41,16 @@ public class DebateService {
         String key = "debateChat::"+debateChatDto.getDebateId();
         ListOperations<String, Object> chatOperations = redisTemplate.opsForList();
         String value = "";
+        Profile profile = profileRepository.findImagePathByNickName(debateChatDto.getWriter());
+        DebateChatResponseDto debateChatResponseDto = DebateChatResponseDto.builder()
+                .writer(profile.getNickname())
+                .content(debateChatDto.getContent())
+                .debateId(debateChatDto.getDebateId())
+                .imagePath(profile.getProfile_image_path())
+                .build();
         try { //
             ObjectMapper mapper = new ObjectMapper();
-            value = mapper.writeValueAsString(debateChatDto);
+            value = mapper.writeValueAsString(debateChatResponseDto);
             log.info(value);
         } catch(Exception e){
             log.error(e);
@@ -58,16 +65,17 @@ public class DebateService {
         }
     }
 
-    public void saveRdbChat(List<DebateChatDto> debateChatDtos, int groupNum){
+    public void saveRdbChat(List<DebateChatResponseDto> debateChatDtos, int groupNum){
         //주기적으로 캐시서버에 저장된 채팅내역 mysql 백업
         log.info(groupNum+"메시지 저장");
-        for (DebateChatDto debateChatDto : debateChatDtos) {
+        for (DebateChatResponseDto debateChatDto : debateChatDtos) {
             Debate debate = debateRepository.findById(debateChatDto.getDebateId()).get();
             Message message = Message.builder()
                     .content(debateChatDto.getContent())
                     .debate(debate)
                     .groupNum(groupNum)
                     .writer(debateChatDto.getWriter())
+                    .imagePath(debateChatDto.getImagePath())
                     .build();
             messageRepository.save(message);
             log.info(message);
@@ -95,7 +103,7 @@ public class DebateService {
             key = "debateChat::" + debateId;
             String debateChatDtos = redisTemplate.opsForList().range(key, 0, -1).toString();
             log.info(debateChatDtos);
-            List<DebateChatDto> dtos = Arrays.asList(mapper.readValue(debateChatDtos, DebateChatDto[].class));
+            List<DebateChatResponseDto> dtos = Arrays.asList(mapper.readValue(debateChatDtos, DebateChatResponseDto[].class));
             result.put("recentChats",dtos);
         }
         else{ //채팅방 입장 후 위로 스크롤 올리는 등 mysql저장된 채팅 내역 요청 시 리턴
@@ -107,7 +115,7 @@ public class DebateService {
                 return responseDto;
             }
             //이값이랑 findCnt 이용해서 Groupnum으로 select
-            List<DebateChatDto> dbChats = messageRepository.findDtoBYGroupNum(debateId, maxGroupNum - findCnt + 1);
+            List<DebateChatResponseDto> dbChats = messageRepository.findDtoBYGroupNum(debateId, maxGroupNum - findCnt + 1);
             result.put("recentChats",dbChats);
         }
         //responseDto 작성

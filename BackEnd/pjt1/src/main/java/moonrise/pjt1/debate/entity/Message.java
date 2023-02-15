@@ -16,6 +16,7 @@ public class Message {
 
     private String writer;
     private String content;
+    private String imagePath;
     private int groupNum;
 
     @ManyToOne(fetch = FetchType.LAZY)

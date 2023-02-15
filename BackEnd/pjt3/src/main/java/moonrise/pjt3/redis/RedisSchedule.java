@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import moonrise.pjt3.debate.dto.DebateChatDto;
+import moonrise.pjt3.debate.dto.DebateChatResponseDto;
 import moonrise.pjt3.debate.entity.DebateInfo;
 import moonrise.pjt3.debate.repository.DebateInfoRepository;
 import moonrise.pjt3.debate.repository.MessageRepository;
@@ -39,7 +40,7 @@ public class RedisSchedule {
             Long debateId = Long.parseLong(data.split("::")[1]);
             String debateChatDtos = redisTemplate.opsForList().range(data,0,-1).toString();
             log.info(debateChatDtos);
-            List<DebateChatDto> dtos = Arrays.asList(mapper.readValue(debateChatDtos, DebateChatDto[].class));
+            List<DebateChatResponseDto> dtos = Arrays.asList(mapper.readValue(debateChatDtos, DebateChatResponseDto[].class));
             Integer groupNum = messageRepository.findMaxGroupId(debateId);
             if(groupNum == null){
                 debateService.saveRdbChat(dtos,1);
