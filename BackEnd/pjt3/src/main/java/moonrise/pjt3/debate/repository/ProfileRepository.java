@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ProfileRepository extends JpaRepository<Profile,Long> {
     @Query(value = "select p from Profile p where p.nickname like :nickName")
-    Profile findImagePathByNickName(@Param("nickName") String nickName);
+    Profile findImagePath(@Param("nickName") String nickName);
 }

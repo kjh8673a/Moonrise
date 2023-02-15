@@ -41,7 +41,7 @@ public class DebateService {
         String key = "debateChat::"+debateChatDto.getDebateId();
         ListOperations<String, Object> chatOperations = redisTemplate.opsForList();
         String value = "";
-        Profile profile = profileRepository.findImagePathByNickName(debateChatDto.getWriter());
+        Profile profile = profileRepository.findImagePath(debateChatDto.getWriter());
         DebateChatResponseDto debateChatResponseDto = DebateChatResponseDto.builder()
                 .writer(profile.getNickname())
                 .content(debateChatDto.getContent())
