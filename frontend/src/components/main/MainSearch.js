@@ -51,14 +51,14 @@ function MainSearch() {
           "&page=1"
       )
       .then((response) => {
-        dispatch(setMovieList(response.data.results));
+        dispatch(setMovieList(response.data.results.filter((movie) => movie.poster_path !== null)));
         dispatch(setTotalPage(response.data.total_pages));
         dispatch(setSearchKeyword(keyword));
         dispatch(setCurrentPage(1));
       })
       .then(() => {
         if (keyword === "") {
-          console.log("검색어 입력 필요");
+          alert("검색어를 입력해주세요.");
         } else {
           goMovieList();
         }
@@ -88,6 +88,7 @@ function MainSearch() {
           id="party-search"
           className="block w-full h-10 pl-4 mx-2 text-lg text-white transition-transform duration-500 bg-transparent border-b-2 placeholder:text-gray-300 focus:outline-none focus:border-dal-orange"
           placeholder="어떤 영화를 보고 오셨나요?"
+          autocomplete="off"
         />
         {btnView && (
         <button

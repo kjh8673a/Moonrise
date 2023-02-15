@@ -108,7 +108,6 @@ function ProfileEditorCard(props) {
 
   const editProfile = (event) => {
     event.preventDefault();
-    console.log(gerneValue);
     axios
       .put(
         "http://3.35.149.202:80/auth/member/",

@@ -32,7 +32,9 @@ function Main() {
       .then((response) => {
         const copy = [
           ...movieList,
-          ...response.data.results
+          ...response.data.results.filter(
+            (movie) => movie.poster_path !== null
+          ),
         ];
         dispatch(setMovieList(copy));
         dispatch(setCurrentPage(currentPage + 1));
@@ -44,9 +46,12 @@ function Main() {
   };
 
   return (
-    <div ref={scrollRef} className="grid h-full px-10 pb-10 searchMain bg-community bg-fill">
+    <div
+      ref={scrollRef}
+      className="grid h-full px-10 pb-10 searchMain bg-community bg-fill"
+    >
       <MainNav />
-      <div className="grid grid-cols-5 gap-16" >
+      <div className="grid grid-cols-5 gap-16">
         {movieList.map((movie) => (
           <MovieCard movie={movie} key={movie.id} />
         ))}

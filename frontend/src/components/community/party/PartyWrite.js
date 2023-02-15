@@ -35,7 +35,6 @@ function PartyWrite() {
   }
   const dateChangeHandler = (newValue) => {
     setInputDate(newValue);
-    console.log(newValue.startDate.length);
     let date = newValue.startDate.split("-"); 
     if (date[1].length === 1) {
       date[1] = "0"+date[1];
@@ -63,7 +62,6 @@ function PartyWrite() {
     });
   }
   const imageChangeHandler = async (event) => {
-    console.log(event.target.files[0])
     const formData = new FormData();
     formData.append('files', event.target.files[0]);
     const response = await axios.post(baseURL + "/api/image/upload", formData, {
@@ -71,7 +69,6 @@ function PartyWrite() {
         'Content-Type': 'multipart/form-data'
       }
     });
-    console.log(response.data.data[0]);
     setRequestBody((prevState) => {
     	return { ...prevState, imagePath: response.data.data[0] }
     });
@@ -82,8 +79,7 @@ function PartyWrite() {
           "access_token": access_token,
           }
     }
-    const response = await axios.post(baseURL +"/api/party/write", requestBody, config);
-    console.log(response);
+    await axios.post(baseURL +"/api/party/write", requestBody, config);
     changeBoard();
   }
   return (

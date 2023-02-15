@@ -20,7 +20,6 @@ function ProfilePartyHostList(props) {
     axios
       .get("http://3.35.149.202:80/api/party/list/my", config)
       .then((response) => {
-        console.log(response)
         setData(response.data.data.findParties);
       });
   }, [access_token]);

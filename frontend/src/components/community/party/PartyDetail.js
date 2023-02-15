@@ -33,7 +33,6 @@ function PartyDetail() {
     }
     axios.get(baseURL+ '/api/party/read/'+partyId, config)
         .then(response => {
-          console.log(response.data)
           setPartyDetail(response.data.data.findParty);
           setPartyComments(response.data.data.findParty.partyComments);
           setIsWriter(response.data.data.isWriter);

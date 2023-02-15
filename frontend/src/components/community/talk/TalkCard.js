@@ -21,7 +21,6 @@ function TalkCard(props) {
   function modalHandler() {
     axios.get(baseURL + "/api/debate/read/"+props.talkInfo.debateId, config)
     .then(response => {
-      console.log(response)
       setTalkDetail(response.data.data.readDebate);
       setTalkDate(response.data.data.readDebate.createDate);
       setPpl(response.data.data.readDebate.nowppl+"/"+response.data.data.readDebate.maxppl)

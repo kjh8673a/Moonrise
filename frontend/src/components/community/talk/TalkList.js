@@ -20,7 +20,6 @@ function TalkList() {
     .then(response => {
       setTalkList(response.data.data.findParties)
       setTotalPages(response.data.data.totalPages)
-      console.log(response.data);
     });
     return () => {
     }

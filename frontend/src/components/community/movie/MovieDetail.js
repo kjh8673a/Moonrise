@@ -256,11 +256,11 @@ function MovieDetail() {
                   setRatingDetailModalOpen={setRatingDetailModalOpen}
                   movieId={data.movieId}
                   movieTitle={data.movieTitle}
-                  story={rating[0]}
-                  acting={rating[1]}
+                  story={rating[4]}
+                  acting={rating[3]}
                   direction={rating[2]}
-                  visual={rating[3]}
-                  sound={rating[4]}
+                  visual={rating[1]}
+                  sound={rating[0]}
                 />
               </>
             )}

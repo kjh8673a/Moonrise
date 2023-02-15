@@ -28,7 +28,6 @@ function BoardSubCommetInput(props) {
     if(commentValue === "") {
       return;
     }
-    console.log(commentRequestBody)
     axios
       .post(
         "http://3.35.149.202:80/api//board/comments/create",

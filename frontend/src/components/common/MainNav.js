@@ -38,14 +38,14 @@ function MainNav() {
           "&page=1"
       )
       .then((response) => {
-        dispatch(setMovieList(response.data.results));
+        dispatch(setMovieList(response.data.results.filter((movie) => movie.poster_path !== null)));
         dispatch(setTotalPage(response.data.total_pages));
         dispatch(setSearchKeyword(keyword));
         dispatch(setCurrentPage(1));
       })
       .then(() => {
         if (keyword === "") {
-          console.log("검색어 입력 필요");
+          alert("검색어 입력 필요");
         } else {
           goMovieList();
         }
@@ -79,6 +79,7 @@ function MainNav() {
           onKeyPress={handleOnKeyPress}
           className="block w-full h-10 pl-10 text-sm text-white bg-transparent border border-gray-400 rounded-full focus:ring-white focus:border-white"
           placeholder="다른 영화도 검색해보세요!"
+          autocomplete="off"
         />
       </div>
       <ProfileIcon />
