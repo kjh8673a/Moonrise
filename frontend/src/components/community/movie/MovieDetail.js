@@ -77,7 +77,9 @@ function MovieDetail() {
         config
       )
       .then((response) => {
+        console.log(response)
         if (response.data !== "") {
+          setMyRating(response.data)
           setHaveRating(true);
         } else {
           setHaveRating(false);

@@ -271,7 +271,7 @@ function BoardDetail() {
               {toastViewer}
             </div>
 
-            <div className="p-2 mb-1 bg-[#B3B6B7] bg-opacity-90 rounded-lg">
+            <div className="p-2 mb-1 bg-[#B3B6B7] bg-opacity-90 rounded-lg ">
               <form className="flex gap-2" onSubmit={addComment}>
                 <input
                   type="text"

@@ -1,5 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Gowun+Batang&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Gowun+Batang&display=swap");
 
-.App{
-    font-family: 'Gowun Batang', serif;
+.App {
+  font-family: "Gowun Batang", serif;
+}
+
+.toastui-editor-contents p {
+  font-size: 17px;
+  font-family: "Gowun Batang", serif;
 }

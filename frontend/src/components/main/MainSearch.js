@@ -51,6 +51,7 @@ function MainSearch() {
           "&page=1"
       )
       .then((response) => {
+        console.log(response.data.results.filter((movie) => movie.poster_path !== null))
         dispatch(setMovieList(response.data.results.filter((movie) => movie.poster_path !== null)));
         dispatch(setTotalPage(response.data.total_pages));
         dispatch(setSearchKeyword(keyword));

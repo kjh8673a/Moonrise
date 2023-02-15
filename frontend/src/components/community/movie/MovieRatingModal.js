@@ -53,6 +53,7 @@ function MovieRatingModal(props) {
 
   const editRating = (event) => {
     event.preventDefault();
+    console.log(props.ratingId)
     axios
       .put(
         "http://3.35.149.202:80/api/rating/update/" + props.ratingId,

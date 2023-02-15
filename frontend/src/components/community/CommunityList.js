@@ -10,7 +10,7 @@ import MainNav from '../common/MainNav'
 
 function CommunityList() {
   return (
-    <div className='communityList'>
+    <div className='communityList h-full'>
         <MainNav/>
         <div className='grid grid-cols-3 gap-4'>
           <div className='col-span-1'>
