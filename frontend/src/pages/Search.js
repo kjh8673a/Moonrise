@@ -34,7 +34,6 @@ function Main() {
           ...movieList,
           ...response.data.results
         ];
-        console.log(copy);
         dispatch(setMovieList(copy));
         dispatch(setCurrentPage(currentPage + 1));
       });

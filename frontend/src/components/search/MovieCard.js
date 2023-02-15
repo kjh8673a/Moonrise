@@ -15,7 +15,7 @@ function MovieCard(props) {
       originalTitle: props.movie.original_title,
       popularity: props.movie.popularity,
       release_date: props.movie.release_date,
-      title: props.movie.title
+      title: props.movie.title,
   }
   const goCommunity = async ()  => {
     dispatch(setMovieId(props.movie.id))
@@ -24,7 +24,7 @@ function MovieCard(props) {
     movePage('/community/list/');
   }
   return (
-    <div className='relative col-span-1 movieCard' onClick={goCommunity}>
+    <div className='relative col-span-1 movieCard cursor-pointer' onClick={goCommunity}>
         <img className="object-cover w-full h-full" src={imgURL} alt="포스터 이미지가 없습니다."></img>
         <div className="absolute top-0 left-0 flex flex-col items-center justify-center w-full h-full duration-300 bg-black opacity-0 hover:opacity-90">
           <h1 className="text-2xl text-white">{props.movie.title}</h1>
