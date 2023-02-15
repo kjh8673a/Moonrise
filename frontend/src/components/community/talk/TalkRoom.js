@@ -19,7 +19,6 @@ function TalkRoom(props) {
     useEffect(() => {
         axios.get(baseURL + "/chat/debate/pastChats?debateId="+ roomId + "&findCnt="+findCnt)
         .then(response => {
-            console.log(response)
             if (response.data.status_code === 400) {
                 alert("이전 채팅 내역이 없습니다.")
             }

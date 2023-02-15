@@ -20,7 +20,6 @@ function ProfileBoardMyList(props) {
     axios
       .get("http://3.35.149.202:80/api/board/mypage/board", config)
       .then((response) => {
-        console.log(response)
         setData(response.data.data.findBoards);
       });
   }, [access_token]);

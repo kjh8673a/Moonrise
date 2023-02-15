@@ -17,7 +17,7 @@ function BoardEdit(props) {
     },
   };
   const [requestBody, setRequestBody] = useState({
-    title: "",
+    title: props.title,
     boardId: props.boardId,
     content: "",
   });
@@ -49,13 +49,11 @@ function BoardEdit(props) {
   };
 
   async function writeBoard() {
-    console.log(requestBody.content);
-    const res = await axios.put(
+    await axios.put(
       baseURL + "/api/board/modify",
       requestBody,
       config
     );
-    console.log(res);
     goBack();
   }
 
@@ -102,7 +100,7 @@ function BoardEdit(props) {
             ]}
             hooks={{
               addImageBlobHook: async (blob, callback) => {
-                console.log(blob); // File {name: '카레유.png', ... }
+                // File {name: '카레유.png', ... }
 
                 // 1. 첨부된 이미지 파일을 서버로 전송후, 이미지 경로 url을 받아온다.
                 // const imgUrl = await .... 서버 전송 / 경로 수신 코드 ...
@@ -120,7 +118,6 @@ function BoardEdit(props) {
                     },
                   }
                 );
-                console.log(response.data.data[0]);
 
                 // 2. 첨부된 이미지를 화면에 표시(경로는 임의로 넣었다.)
                 callback(response.data.data[0], "업로드 이미지");

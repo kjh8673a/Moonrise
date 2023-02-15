@@ -1,11 +1,17 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function BoardCard(props) {
   const movePage = useNavigate();
+  const isLogin = useSelector(state=> state.member.isLogin);
 
   function goDetail() {
-    movePage(`/community/detail/board?id=${props.id}`);
+    if(isLogin) {
+      movePage(`/community/detail/board?id=${props.id}`);
+    }else {
+      movePage("/user/");
+    }
   }
 
   return (

@@ -79,13 +79,13 @@ export default function MemberReducer(state = initialState, action) {
       };
     case LOGOUT_USER:
       return {
-        accessToken: "",
-        refreshToken: "",
-        nickname: "",
-        gernes1: "null",
-        gernes2: "null",
-        gernes3: "null",
-        imagePath: "",
+        accessToken: null,
+        refreshToken: null,
+        nickname: null,
+        gernes1: null,
+        gernes2: null,
+        gernes3: null,
+        imagePath: null,
         isLogin: false,
       };
     default:

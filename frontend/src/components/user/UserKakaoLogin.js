@@ -39,13 +39,10 @@ function UserKakaoLogin() {
             }
           )
           .then((res) => {
-            console.log(res);
             if (res.data.status_code === 200) {
-              console.log(res)
               dispatch(setAccessToken(res.data.data.access_token));
               dispatch(setRefreshToken(res.data.data.refresh_token));
               dispatch(setNickname(res.data.data.nickname));
-              console.log(res.data.data.nickname)
               if(res.data.data.genres) {
                 dispatch(setGernes1(res.data.data.genres[0]));
                 dispatch(setGernes2(res.data.data.genres[1]));

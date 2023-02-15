@@ -30,8 +30,7 @@ function ProfileIcon() {
 
   function logout() {
     axios
-      .get("http://3.35.149.202:80/auth/member/logout", config)
-      .then((res) => console.log(res));
+      .get("http://3.35.149.202:80/auth/member/logout", config);
     logoutUser();
     dispatch(logoutUser());
     setIsLogin(false);
@@ -149,7 +148,10 @@ function ProfileIcon() {
             >
               <div className="py-1 divide-y" role="none">
                 <div className="flex py-3">
-                  <button onClick={goLogin} className="w-full py-2 text-left hover:bg-gray-100">
+                  <button
+                    onClick={goLogin}
+                    className="w-full py-2 text-left hover:bg-gray-100"
+                  >
                     <p className="mx-4 text-lg">로그인</p>
                     <p className="mx-4 text-xs">어서오세요 달뜸입니다.</p>
                   </button>
