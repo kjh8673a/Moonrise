@@ -52,6 +52,9 @@ public class PartyService {
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
+        Optional<Party> findParty = partyRepository.findById(partyId);
+        Party party = findParty.get();
+        Long partyInfoId = party.getPartyInfo().getId();
         //***************redis 캐시서버**********************
         String key = "partyViewCnt::"+partyId;
         //캐시에 값이 없으면 레포지토리에서 조회 있으면 값을 증가시킨다.
@@ -59,7 +62,7 @@ public class PartyService {
         if(valueOperations.get(key)==null){
             valueOperations.set(
                     key,
-                    String.valueOf(partyInfoRepository.findPartyViewCnt(partyId)+1),
+                    String.valueOf(partyInfoRepository.findPartyViewCnt(partyInfoId)+1),
                     20,
                     TimeUnit.MINUTES);
         }
@@ -70,8 +73,6 @@ public class PartyService {
         log.info("value:{}",viewCnt);
         //***************redis 캐시서버**********************
         //***************DB 조회**********************
-        Optional<Party> findParty = partyRepository.findById(partyId);
-        Party party = findParty.get();
         List<PartyComment> partyComments = partyCommentRepository.getCommentList(partyId);
         List<PartyJoin> partyJoins = party.getPartyJoins();
         List<PartyReadJoinDto> partyJoinAccept = new ArrayList<>();
