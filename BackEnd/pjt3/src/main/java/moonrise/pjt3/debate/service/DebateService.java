@@ -37,7 +37,7 @@ public class DebateService {
     private final MemberRepository memberRepository;
     private final DebateRepository debateRepository;
     private final MessageRepository messageRepository;
-    public void saveCacheChat(DebateChatDto debateChatDto){ //채팅 들어오면 캐시에 저장
+    public DebateChatResponseDto saveCacheChat(DebateChatDto debateChatDto){ //채팅 들어오면 캐시에 저장
         String key = "debateChat::"+debateChatDto.getDebateId();
         ListOperations<String, Object> chatOperations = redisTemplate.opsForList();
         String value = "";
@@ -63,6 +63,7 @@ public class DebateService {
         else{
             chatOperations.rightPush(key,value);
         }
+        return debateChatResponseDto;
     }
 
     public void saveRdbChat(List<DebateChatResponseDto> debateChatDtos, int groupNum){
