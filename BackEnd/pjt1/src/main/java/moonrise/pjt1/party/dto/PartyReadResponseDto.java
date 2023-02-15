@@ -26,9 +26,9 @@ public class PartyReadResponseDto {
     private int likeCnt;
     private int commentCnt;
     private Long movie_id;
-    private List<PartyJoin> partyJoinAccept = new ArrayList<>();
-    private List<PartyJoin> partyJoinWait = new ArrayList<>();
-    private List<PartyJoin> partyJoinSurplus = new ArrayList<>();
+    private List<PartyReadJoinDto> partyJoinAccept = new ArrayList<>();
+    private List<PartyReadJoinDto> partyJoinWait = new ArrayList<>();
+    private List<PartyReadJoinDto> partyJoinSurplus = new ArrayList<>();
 
     private List<PartyComment> partyComments = new ArrayList<>();
     private String writer;
@@ -37,8 +37,8 @@ public class PartyReadResponseDto {
     public PartyReadResponseDto(Long partyId, String title, String content, LocalDateTime partyDate, int partyPeople,
                                 String location, PartyStatus partyStatus,Long movie_id, List<PartyComment> partyComments,
                                 LocalDateTime deadLine, int viewCnt, int likeCnt, int commentCnt,String writer,
-                                List<PartyJoin> partyJoinAccept,List<PartyJoin> partyJoinWait,
-                                List<PartyJoin> partyJoinSurplus, String imagePath,String profileImage) {
+                                List<PartyReadJoinDto> partyJoinAccept,List<PartyReadJoinDto> partyJoinWait,
+                                List<PartyReadJoinDto> partyJoinSurplus, String imagePath,String profileImage) {
         this.partyId = partyId;
         this.title = title;
         this.content = content;
