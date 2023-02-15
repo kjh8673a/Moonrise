@@ -47,13 +47,15 @@ function PartyDetail() {
     }, [access_token, partyId, isWriter, isCommentChange])
   return (
     <div className='h-screen'>
-
-      <div className='grid grid-cols-2 gap-4 py-10 PartyDetail mx-60'>
+      <div className='relative flex pt-4 mx-60'>
+        <button className='absolute bottom-0 left-0 pb-2 text-white' onClick={goBefore}> &lt; 이전으로 </button>
+        <p className='flex-1 pb-2 text-2xl text-center text-white border-b-2 border-white border-opacity-50'>뒷풀이 정보</p>
+      </div>
+      <div className='grid grid-cols-2 gap-4 PartyDetail mx-60'>
         <div className="col-span-1">
-          <button className='text-white' onClick={goBefore}> &lt; 이전으로 </button>
           <div className='flex mt-2'>
-            <p className="flex-1 text-2xl text-white partyTitle">{partyDetail.title}</p>
-            <p className='mt-2.5 text-right text-dal-orange movieName'>{useSelector(state => state.movie.movieTitle)}</p>\
+            <p className="flex-1 text-lg text-white partyTitle">{partyDetail.title}</p>
+            <p className='mt-1 text-right text-dal-orange movieName'>{useSelector(state => state.movie.movieTitle)}</p>\
           </div>
           <PartyDetailCard partyDetail={partyDetail} date={date}/>
           <PartyCandidate partyJoins={partyJoinAccept} type={"승인"} setIsCommentChange={setIsCommentChange} isCommentChange={isCommentChange}/>

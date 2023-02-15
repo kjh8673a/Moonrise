@@ -50,8 +50,8 @@ function ProfileIcon() {
   const gerne3 = useState(useSelector((state) => state.member.gernes3));
   const imagePath = useState(useSelector((state) => state.member.imagePath));
   useEffect(() => {
-    console.log("로그인 상태 변경");
   }, [isLogin]);
+
   if (isLogin) {
     return (
       <div className="relative flex justify-end col-span-1">
@@ -100,23 +100,21 @@ function ProfileIcon() {
                   <div>
                     <p className="mx-4 text-lg">{nicknameValue}</p>
                     <p className="mx-4 text-xs">
-                      {gerne1 && (
-                        <span>
-                          #{gerne1} #{gerne2} #{gerne3}
-                        </span>
-                      )}
+                      {gerne1[0] && gerne1[0] !== "null" && (<span className="mr-1">#{gerne1}</span>)}
+                      {gerne2[0] && gerne2[0] !== "null" && (<span className="mr-1">#{gerne2}</span>)}
+                      {gerne3[0] && gerne3[0] !== "null" && (<span>#{gerne3}</span>)}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={goMyPage}
-                  className="block w-full px-4 py-2 text-sm text-left text-gray-700"
+                  className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
                 >
                   마이페이지
                 </button>
                 <button
                   onClick={logout}
-                  className="block w-full px-4 py-2 text-sm text-left text-gray-700"
+                  className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
                 >
                   로그아웃
                 </button>

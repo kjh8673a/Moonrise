@@ -26,6 +26,7 @@ function PartyList() {
       .then(res => {
         setPartyList(res.data.data.findParties);
         setPartyTotalPages(res.data.data.totalPages);
+        console.log(res.data.data.findParties)
     });  
     return () => {
     }

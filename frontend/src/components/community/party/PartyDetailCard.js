@@ -1,10 +1,17 @@
 import React from 'react'
+import NoImg from '../../../assets/img/noImg.PNG'
 
 function PartyDetailCard(props) {
     
     return (
-    <div className='mt-5 partyDetailCard'>
-        <img src={props.partyDetail.imagePath} className="object-cover w-full h-60" alt="뒷풀이 이미지"/>
+    <div className='mt-2 partyDetailCard'>
+        {props.partyDetail.imagePath && (
+            <img src={props.partyDetail.imagePath} className="object-cover w-full h-60" alt="뒷풀이 이미지"/>
+        )}
+        {!props.partyDetail.imagePath && (
+            <img src={NoImg} className="object-fill w-full h-60" alt="뒷풀이 이미지"/>
+        )}
+
         <div className="flex justify-between h-10 bg-white">
             <div className='flex mx-auto'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="h-8 mt-1 mr-3">
@@ -26,15 +33,15 @@ function PartyDetailCard(props) {
                 <p className="mt-2 font-bold">{props.partyDetail.partyPeople}명</p>
             </div>
         </div>
-        <div className="grid h-32 grid-cols-4">
-            <div className='col-span-1 p-3 text-center bg-dal-green'>
-                <p className='text-sm text-white'>주최자</p>
-                <img src={props.partyDetail.profileImage} className="object-cover w-16 h-16 mx-auto rounded-full"  alt="프로필 이미지"/>
-                <p className='mt-2 text-sm text-white'>{props.partyDetail.writer}</p>
+        <div className="grid grid-cols-4 overflow-hidden h-28">
+            <div className='col-span-1 p-2 bg-dal-green'>
+                <p className='text-sm font-bold text-white'>주최자</p>
+                <img src={props.partyDetail.profileImage} className="object-cover w-12 h-12 mx-auto mt-2 rounded-full"  alt="프로필 이미지"/>
+                <p className='mt-2 text-xs text-center text-white'>{props.partyDetail.writer}</p>
             </div>
-            <div className='col-span-3 p-3 bg-dal-orange'>
-                <span className='font-bold'>주의사항</span>
-                <p className="">{props.partyDetail.content}</p>
+            <div className='col-span-3 p-2 bg-dal-orange'>
+                <span className='text-sm font-bold'>주의사항</span>
+                <p className="text-sm">{props.partyDetail.content}</p>
             </div>
         </div>
     </div>

@@ -54,8 +54,8 @@ function PartyComment(props) {
   
   return (
     <div className="partyComment">
-      <p className='text-lg text-white'>문의</p>
-      <div className="mt-3 bg-gray-100 rounded-lg">
+      <p className='my-2 text-lg text-white'>문의</p>
+      <div className="bg-gray-100 rounded-lg">
         <div id="commentDiv" className="h-64 max-h-screen overflow-y-auto commentList">
           {partyComments.map((partyComment) => (
             <PartyCommentList key={partyComment.id} commentReply={commetReply} partyId={props.partyId} partyComment={partyComment}/>
@@ -64,13 +64,13 @@ function PartyComment(props) {
         <div className="grid items-center grid-cols-10 gap-2 px-2 py-2 commentWrite">
           <div className='col-span-1'>
             <p className='pt-1 text-xs text-center'>비공개</p>
-            <input id="checked-checkbox" checked={!requestBody.showPublic} onChange={showPublicHandler} type="checkbox" value="" className="w-4 h-4 mx-3 mt-1 bg-gray-100 border-gray-300 rounded accent-orange-600 focus:ring-orange-600"/>
+            <input id="checked-checkbox" checked={!requestBody.showPublic} onChange={showPublicHandler} type="checkbox" value="" className="w-4 h-4 mx-3 mt-1 bg-gray-100 border-gray-300 rounded accent-dal-orange focus:ring-dal-orange"/>
           </div>
           <div className="col-span-8">
             <textarea id="chat" rows="1" onChange={contentHandler} className="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" value={requestBody.content} placeholder="문의사항을 남겨주세요"></textarea>
           </div>
           <div className="col-span-1">
-            <button type="submit" onClick={commentWrite} className="inline-flex justify-center ml-2 text-orange-600 rounded-full cursor-pointer hover:bg-orange-100 dark:text-orange-500 dark:hover:bg-gray-600" >
+            <button type="submit" onClick={commentWrite} className="inline-flex justify-center ml-2 rounded-full cursor-pointer text-dal-orange hover:bg-orange-100" >
               <svg aria-hidden="true" className="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
             </button>
           </div>

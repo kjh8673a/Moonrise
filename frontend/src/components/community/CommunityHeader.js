@@ -24,7 +24,7 @@ function CommunityHeader(props) {
   }
   return (
     <div className="flex justify-between h-10 mt-3 mb-2">
-        <div className="flex">
+        <div className="w-full text-right">
             <button className="px-4 py-2 text-gray-500 bg-transparent border border-white rounded hover:bg-gray-500 hover:text-white hover:border-transparent" onClick={moveWrite}>새로운 {props.type}</button>
         </div>
     </div>
