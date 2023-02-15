@@ -74,15 +74,23 @@ public class PartyService {
         Party party = findParty.get();
         List<PartyComment> partyComments = partyCommentRepository.getCommentList(partyId);
         List<PartyJoin> partyJoins = party.getPartyJoins();
-        List<PartyJoin> partyJoinAccept = new ArrayList<>();
-        List<PartyJoin> partyJoinWait = new ArrayList<>();
-        List<PartyJoin> partyJoinSurplus = new ArrayList<>();
+        List<PartyReadJoinDto> partyJoinAccept = new ArrayList<>();
+        List<PartyReadJoinDto> partyJoinWait = new ArrayList<>();
+        List<PartyReadJoinDto> partyJoinSurplus = new ArrayList<>();
 
         boolean flag = false;
         for (PartyJoin partyJoin : partyJoins) {
-            if(partyJoin.getPartyJoinStatus().toString().equals("승인대기")) partyJoinWait.add(partyJoin);
-            else if(partyJoin.getPartyJoinStatus().toString().equals("승인")) partyJoinAccept.add(partyJoin);
-            else partyJoinSurplus.add(partyJoin);
+            PartyReadJoinDto partyReadJoinDto = PartyReadJoinDto.builder()
+                    .id(partyJoin.getId())
+                    .applier(partyJoin.getApplier())
+                    .joinDate(partyJoin.getJoinDate())
+                    .partyJoinStatus(partyJoin.getPartyJoinStatus())
+                    .message(partyJoin.getMessage())
+                    .imagePath(partyJoin.getMember().getProfile().getProfile_image_path())
+                    .build();
+            if(partyJoin.getPartyJoinStatus().toString().equals("승인대기")) partyJoinWait.add(partyReadJoinDto);
+            else if(partyJoin.getPartyJoinStatus().toString().equals("승인")) partyJoinAccept.add(partyReadJoinDto);
+            else partyJoinSurplus.add(partyReadJoinDto);
 
             if(partyJoin.getMember().getId().equals(user_id)){
                 result.put("joinStatus",partyJoin.getPartyJoinStatus());
