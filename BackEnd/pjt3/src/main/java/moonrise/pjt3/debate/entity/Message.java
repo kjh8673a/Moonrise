@@ -29,14 +29,15 @@ public class Message {
         this.debate = debate;
         this.imagePath = imagePath;
     }
+
     @Override
     public String toString() {
         return "Message{" +
                 "id=" + id +
                 ", writer='" + writer + '\'' +
                 ", content='" + content + '\'' +
-                ", group=" + groupNum +
-                ", debate=" + debate +
+                ", imagePath='" + imagePath + '\'' +
+                ", groupNum=" + groupNum +
                 '}';
     }
 }
