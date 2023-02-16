@@ -162,8 +162,17 @@ FrontEnd
 -  [달뜸](http://3.35.149.202/)
 
 ### Docs
+-  [서비스 기획서](https://www.notion.so/10060a5fedfe44a7aae0b016f46850c1?pvs=4)
+-  [디자인컨셉 기획서](https://www.notion.so/1670e30fe7cd482b90279b42ec003507?pvs=4)
+-  [기능 명세서](https://www.notion.so/d77662c21b244091ba3b8f554236bb8a?pvs=4)
+-  [API 명세서](https://www.notion.so/API-68b0b8dfecb34b4aaafe785eada86e2f)
+-  [ERD](https://www.notion.so/ERD-d41b654f3eb84e69b833e9ea7cd71028?pvs=4)
+-  [와이어프레임](https://www.figma.com/file/l1XPbprkPe3BKyQv0gtYWf/%EB%8B%AC%EB%9C%B8?node-id=26%3A2&t=uU8UC8beHTwlBAd8-0)
+-  [아키텍처 설계](https://www.notion.so/2980c1f77c4a4c3fb090ae672fd15a0d?pvs=4)
+-  [컨벤션](https://www.notion.so/Git-Jira-d4ae9c584b684afda03c0edd251e231b?pvs=4)
+-  [컴포넌트 설계](https://www.notion.so/7d861cf3bd46432fb82c74a3638e773b?pvs=4)
 
--  [API 명세서 - Notion](https://www.notion.so/API-68b0b8dfecb34b4aaafe785eada86e2f)
+
 
 <br>
 
@@ -194,6 +203,7 @@ FrontEnd
 - 수정
 - 상세보기
 <img src="./docs/gif/Board.gif">
+<br>
 - 댓글 및 대댓글 작성, 수정, 삭제 기능
 - 게시글 좋아요 및 북마크
 <img src="./docs/gif/BoardComment.gif">
