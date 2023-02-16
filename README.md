@@ -172,11 +172,16 @@ FrontEnd
 
 ### 회원가입
 - 첫 로그인 시 회원정보(닉네임, 선호 장르)을 선택
+<img src="./docs/gif/SignUp.gif">
 
 ### 로그인
 - 카카오 소셜 로그인
-- 회원정보 수정
+- 마이페이지
+    - 북마크 및 작성한 게시글 / 참여신청 및 주최한 소모임
+    - 회원 정보 수정 (닉네임, 선호장르, 프로필 이미지)
 <img src="./docs/gif/Login.gif">
+<img src="./docs/gif/MovieMypage.gif">
+
 
 ### 영화 검색
 - 달뜸의 시작페이지
