@@ -31,9 +31,9 @@
 <img src="../docs/gif/Board.gif">
 <img src="../docs/gif/BoardComment.gif">
 
-### 5️⃣ 토론방
+### 5️⃣ 담소
 - 생성
-    - 제목, 인원수, 토론주제 값을 지정하여 생성할 수 있다.
+    - 제목, 인원수, 담소주제 값을 지정하여 생성할 수 있다.
 - 상세보기
     - 현재 채팅방 참여 인원 수와 참여 기능이 있는 상세보기 페이지
 <img src="../docs/gif/ChatCreate.gif">
