@@ -192,6 +192,7 @@ FrontEnd
 - 생성
 - 수정
 - 상세보기
+<img src="./docs/gif/Board.gif">
 - 댓글
     - 댓글 및 대댓글 작성, 수정, 삭제 기능
 - 게시글 좋아요 및 북마크
@@ -200,7 +201,9 @@ FrontEnd
 ### 토론방
 - 생성
 - 상세보기
-- 채팅방
+<img src="./docs/gif/ChatCreate.gif">
+
+- 채팅
     - 영화에 대해 다른 사용자들과 채팅을 주고 받을 수 있다.
 <img src="./docs/gif/Chat.gif">
 
