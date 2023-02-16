@@ -61,6 +61,7 @@ SSAFY 8기 2학기 공통프로젝트 - 달뜸
 ---
 ## ✔ 주요 기술
 ---
+
 **FrontEnd**
 - React
 
@@ -193,8 +194,7 @@ FrontEnd
 - 수정
 - 상세보기
 <img src="./docs/gif/Board.gif">
-- 댓글
-    - 댓글 및 대댓글 작성, 수정, 삭제 기능
+- 댓글 및 대댓글 작성, 수정, 삭제 기능
 - 게시글 좋아요 및 북마크
 <img src="./docs/gif/BoardComment.gif">
 
