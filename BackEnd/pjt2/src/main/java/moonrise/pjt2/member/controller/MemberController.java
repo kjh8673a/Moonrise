@@ -81,6 +81,7 @@ public class MemberController {
             bw.write(sb.toString());
             bw.flush();
 
+            log.info(sb.toString());
             //결과 코드가 200이라면 성공
             int responseCode = connection.getResponseCode();
             log.info("get_token_res_code : {}", responseCode);
