@@ -15,26 +15,29 @@ public class Message {
 
     private String writer;
     private String content;
+    private String imagePath;
     private int groupNum;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "debate_id")
     private Debate debate;
     @Builder
-    public Message(String writer, String content, int groupNum, Debate debate) {
+    public Message(String writer, String content, int groupNum, Debate debate,String imagePath) {
         this.writer = writer;
         this.content = content;
         this.groupNum = groupNum;
         this.debate = debate;
+        this.imagePath = imagePath;
     }
+
     @Override
     public String toString() {
         return "Message{" +
                 "id=" + id +
                 ", writer='" + writer + '\'' +
                 ", content='" + content + '\'' +
-                ", group=" + groupNum +
-                ", debate=" + debate +
+                ", imagePath='" + imagePath + '\'' +
+                ", groupNum=" + groupNum +
                 '}';
     }
 }

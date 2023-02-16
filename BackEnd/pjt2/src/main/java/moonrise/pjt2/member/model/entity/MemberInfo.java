@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter @Setter
 public class MemberInfo {
     @Id @GeneratedValue
-    @Column(name = "member_info_id")
+    @Column(name = "memberInfo_id")
     private Long memberInfo_id;
 
     private int bannedCnt;
@@ -20,4 +20,14 @@ public class MemberInfo {
     private String bookmarkBoard;
     private String likeParty;
     private String bookmarkParty;
+
+    public MemberInfo() {
+        this.bannedCnt = 0;
+        this.likeMovie = "";
+        this.likeGenre = "";
+        this.likeBoard = "";
+        this.bookmarkBoard = "";
+        this.likeParty = "";
+        this.bookmarkParty = "";
+    }
 }

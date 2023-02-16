@@ -69,7 +69,7 @@ public class DebateService {
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -99,26 +99,26 @@ public class DebateService {
         ResponseDto responseDto = new ResponseDto();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
         Optional<Debate> findDebate = debateRepository.findById(debateId);
-        Debate debate;
+        Debate debate = null;
         String key = "debateLivePeopleCnt::"+debateId;
         int debateLivePeople;
         //캐시에 값이 없으면 레포지토리에서 조회, 있으면 캐시 조회.
         ValueOperations valueOperations = redisTemplate.opsForValue();
         if(valueOperations.get(key)==null){
-            debateLivePeople = debateInfoRepository.findDebateLivePeople(debateId);
+            debateLivePeople = debateInfoRepository.findDebateLivePeople(findDebate.get().getDebateInfo().getId());
             valueOperations.set(
                     key,
                     String.valueOf(debateLivePeople),
                     20,
                     TimeUnit.MINUTES);
         }
-        else debateLivePeople = (int) valueOperations.get(key);
+        else debateLivePeople = Integer.parseInt((String) valueOperations.get(key));
         if(findDebate.isPresent()){
             debate = findDebate.get();
             DebateReadResponseDto debateReadResponseDto = DebateReadResponseDto.builder()
@@ -129,9 +129,10 @@ public class DebateService {
                     .debateStatus(debate.getDebateStatus())
                     .maxppl(debate.getMaxppl())
                     .nowppl(debateLivePeople)
+                    .createDate(debate.getCreateDate())
                     .build();
             result.put("readDebate",debateReadResponseDto);
-            if(debate.getMember().getId() == user_id) result.put("isWriter",true);
+            if(debate.getMember().getId().equals(user_id)) result.put("isWriter",true);
             else result.put("isWriter",false);
         }
         //responseDto 작성

@@ -24,7 +24,7 @@ public class DebateController {
     @GetMapping("/list")
     public ResponseEntity<?> list(@RequestParam(value = "movieId") Long movieId,
                                                     @RequestParam(value = "page", defaultValue = "0") int page){
-        PageRequest pageable = PageRequest.of(page, 6, Sort.by("id").descending());
+        PageRequest pageable = PageRequest.of(page, 8, Sort.by("id").descending());
         ResponseDto responseDto = debateService.listDebate(movieId, pageable);
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }

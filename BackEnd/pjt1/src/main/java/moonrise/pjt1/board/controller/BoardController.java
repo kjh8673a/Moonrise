@@ -5,8 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import moonrise.pjt1.board.dto.BoardCreateDto;
-import moonrise.pjt1.board.dto.BoardUpdateDto;
+import moonrise.pjt1.board.dto.*;
 import moonrise.pjt1.board.service.BoardService;
 import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.util.GetResponse;
@@ -64,7 +63,7 @@ public class BoardController {
     }
 
     // 게시글 수정 (0순위)
-    @PostMapping("/modify")
+    @PutMapping("/modify")
     public ResponseEntity<?> boardUpdate(@RequestHeader HttpHeaders headers,
                                          @RequestBody BoardUpdateDto boardUpdateDto){
         // Http Header 에서 Access-Token 받기
@@ -88,9 +87,36 @@ public class BoardController {
     }
 
 
-    // 게시글 인기목록 (1순위)
     // 게시글 좋아요 (1순위)
+    @PostMapping("/like")
+    public ResponseEntity<?> boardLike(@RequestHeader HttpHeaders headers, @RequestBody BoardLikeDto boardLikeDto){
+        String access_token = headers.get("access_token").toString();
+        ResponseDto responseDto = boardService.likeBoard(access_token, boardLikeDto);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
+    // 게시글 인기목록 (1순위)
     // 게시글 북마크 (1순위)
+    @PostMapping("/bookmark")
+    public ResponseEntity<?> boardBookmark(@RequestHeader HttpHeaders headers, @RequestBody BoardBookmarkDto boardBookmarkDto){
+        String access_token = headers.get("access_token").toString();
+        ResponseDto responseDto = boardService.bookmarkBoard(access_token, boardBookmarkDto);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
+    // 마이페이지 내 북마크 글 목록받기
+    @GetMapping("/mypage/bookmark")
+    public ResponseEntity<?> mypageBookmark(@RequestHeader HttpHeaders headers) {
+        String access_token = headers.get("access_token").toString();
+        ResponseDto responseDto = boardService.bookmarkMypage(access_token);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
+
+    // 마이페이지 내가 작성한 글 목록받기
+    @GetMapping("/mypage/board")
+    public ResponseEntity<?> mypageBoard(@RequestHeader HttpHeaders headers) {
+        String access_token = headers.get("access_token").toString();
+        ResponseDto responseDto = boardService.boardMypage(access_token);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
 
     @GetMapping("/test")
     public void test(String token){

@@ -52,6 +52,9 @@ public class PartyService {
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
+        Optional<Party> findParty = partyRepository.findById(partyId);
+        Party party = findParty.get();
+        Long partyInfoId = party.getPartyInfo().getId();
         //***************redis 캐시서버**********************
         String key = "partyViewCnt::"+partyId;
         //캐시에 값이 없으면 레포지토리에서 조회 있으면 값을 증가시킨다.
@@ -59,7 +62,7 @@ public class PartyService {
         if(valueOperations.get(key)==null){
             valueOperations.set(
                     key,
-                    String.valueOf(partyInfoRepository.findPartyViewCnt(partyId)+1),
+                    String.valueOf(partyInfoRepository.findPartyViewCnt(partyInfoId)+1),
                     20,
                     TimeUnit.MINUTES);
         }
@@ -70,23 +73,51 @@ public class PartyService {
         log.info("value:{}",viewCnt);
         //***************redis 캐시서버**********************
         //***************DB 조회**********************
-        Optional<Party> findParty = partyRepository.findById(partyId);
-        Party party = findParty.get();
         List<PartyComment> partyComments = partyCommentRepository.getCommentList(partyId);
         List<PartyJoin> partyJoins = party.getPartyJoins();
+        List<PartyReadJoinDto> partyJoinAccept = new ArrayList<>();
+        List<PartyReadJoinDto> partyJoinWait = new ArrayList<>();
+        List<PartyReadJoinDto> partyJoinSurplus = new ArrayList<>();
+
+        boolean flag = false;
+        for (PartyJoin partyJoin : partyJoins) {
+            PartyReadJoinDto partyReadJoinDto = PartyReadJoinDto.builder()
+                    .id(partyJoin.getId())
+                    .applier(partyJoin.getApplier())
+                    .joinDate(partyJoin.getJoinDate())
+                    .partyJoinStatus(partyJoin.getPartyJoinStatus())
+                    .message(partyJoin.getMessage())
+                    .imagePath(partyJoin.getMember().getProfile().getProfile_image_path())
+                    .build();
+            if(partyJoin.getPartyJoinStatus().toString().equals("승인대기")) partyJoinWait.add(partyReadJoinDto);
+            else if(partyJoin.getPartyJoinStatus().toString().equals("승인")) partyJoinAccept.add(partyReadJoinDto);
+            else partyJoinSurplus.add(partyReadJoinDto);
+
+            if(partyJoin.getMember().getId().equals(user_id)){
+                result.put("joinStatus",partyJoin.getPartyJoinStatus());
+                flag = true;
+            }
+        }
+        if(!flag){
+            result.put("joinStatus","신청안함");
+        }
+        if(user_id.equals(party.getMember().getId())){
+            result.put("isWriter",true);
+        }
+        else {
+            result.put("isWriter",false);
+        }
         int commentsCnt = partyComments.size();
         int likeCnt = party.getPartyInfo().getLikeCnt();
         if(findParty.isPresent()){
-
             PartyReadResponseDto partyReadResponseDto = new PartyReadResponseDto(party.getId(),party.getTitle(),party.getContent(),party.getPartyDate(),
                     party.getPartyPeople(),party.getLocation(),party.getPartyStatus(),
-                    party.getMovie().getId(),partyJoins,partyComments,party.getDeadLine(), viewCnt, likeCnt, commentsCnt);
+                    party.getMovie().getId(),partyComments,party.getDeadLine(), viewCnt, likeCnt,
+                    commentsCnt,party.getMember().getProfile().getNickname(),
+                    partyJoinAccept,partyJoinWait,partyJoinSurplus,party.getImagePath(),
+                    party.getMember().getProfile().getProfile_image_path());
             result.put("findParty",partyReadResponseDto);
         }
-        if(user_id == party.getMember().getId()){
-            result.put("isWriter",true);
-        }
-        else result.put("isWriter",false);
         //***************DB 조회**********************
         //responseDto 작성
         responseDto.setMessage("소모임 상세보기 리턴");
@@ -106,7 +137,19 @@ public class PartyService {
             int commentsCnt = p.getPartyComments().size();
             int likeCnt = p.getPartyInfo().getLikeCnt();
             String nickname = p.getMember().getProfile().getNickname();
-            PartyListResponseDto partyListResponseDto = new PartyListResponseDto(p.getId(),p.getTitle(),p.getPartyPeople(),p.getLocation(),p.getPartyDate(),likeCnt,viewCnt, commentsCnt,nickname,p.getDeadLine());
+            PartyListResponseDto partyListResponseDto = PartyListResponseDto.builder()
+                    .imagePath(p.getImagePath())
+                    .partyId(p.getId())
+                    .title(p.getTitle())
+                    .partyPeople(p.getPartyPeople())
+                    .location(p.getLocation())
+                    .partyDate(p.getPartyDate())
+                    .likeCnt(likeCnt)
+                    .viewCnt(viewCnt)
+                    .commentCnt(commentsCnt)
+                    .writer(nickname)
+                    .deadline(p.getDeadLine())
+                    .build();
             findParties.add(partyListResponseDto);
         }
 
@@ -120,6 +163,40 @@ public class PartyService {
 
         return responseDto;
     }
+    public ResponseDto listMyParty(String access_token) {
+        ResponseDto responseDto = new ResponseDto();
+        Map<String, Object> result = new HashMap<>();
+        // token parsing 요청
+        Long user_id = HttpUtil.requestParingToken(access_token);
+        if(user_id.equals(0L)){
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("회원 정보가 없습니다.");
+            return responseDto;
+        }
+        List<Party> myPartyList = partyRepository.findMyPartyList(user_id);
+        List<PartyListResponseDto> findParties = new ArrayList<>();
+        for (Party party : myPartyList) {
+            PartyListResponseDto partyListResponseDto = PartyListResponseDto.builder()
+                    .imagePath(party.getImagePath())
+                    .partyPeople(party.getPartyPeople())
+                    .partyId(party.getId())
+                    .partyDate(party.getPartyDate())
+                    .writer(party.getMember().getProfile().getNickname())
+                    .title(party.getTitle())
+                    .location(party.getLocation())
+                    .likeCnt(party.getPartyInfo().getLikeCnt())
+                    .viewCnt(party.getPartyInfo().getViewCnt())
+                    .commentCnt(party.getPartyComments().size())
+                    .deadline(party.getDeadLine())
+                    .build();
+            findParties.add(partyListResponseDto);
+        }
+        result.put("findParties",findParties);
+        responseDto.setMessage("내가 만든 소모임 리스트");
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
+        return responseDto;
+    }
     public ResponseDto createParty(String access_token, PartyCreateDto partyCreateDto) {
         Map<String, Object> result = new HashMap<>();
         ResponseDto responseDto = new ResponseDto();
@@ -127,7 +204,7 @@ public class PartyService {
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -140,7 +217,7 @@ public class PartyService {
         partyRepository.save(party);
 
         //responseDto 작성
-        result.put("party_id",party.getId());
+        result.put("partyId",party.getId());
         responseDto.setMessage("소모임 작성 완료");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
@@ -153,13 +230,13 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
         Party party = partyRepository.findById(partyModifyDto.getPartyId()).get();
-        if(user_id == party.getMember().getId()) {
+        if(user_id.equals(party.getMember().getId())) {
             party.modifyParty(partyModifyDto);
         }
         else{
@@ -168,7 +245,7 @@ public class PartyService {
             return responseDto;
         }
         //responseDto 작성
-        result.put("party_id",party.getId());
+        result.put("partyId",party.getId());
         responseDto.setMessage("소모임 수정 성공");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
@@ -180,7 +257,7 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -192,7 +269,7 @@ public class PartyService {
         partyCommentRepository.save(partyComment);
         Long commentId = partyComment.getId();
         // 원댓글이면 groupId 를 본인 pk 로 저장
-        if (partyComment.getGroupId() == 0L){
+        if (partyComment.getGroupId().equals(0L)){
             partyComment.setGroupId(commentId);
         }
         //responseDto 작성
@@ -208,7 +285,7 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -231,13 +308,13 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         Long user_id = HttpUtil.requestParingToken(access_token);
 
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
         Party party = partyRepository.findById(partyId).get();
-        if(user_id == party.getMember().getId()) {
+        if(user_id.equals(party.getMember().getId())) {
             if (status == 1) {
                 party.setPartyStatus(PartyStatus.모집완료);
             } else if (status == 2) {
@@ -264,13 +341,13 @@ public class PartyService {
         ResponseDto responseDto = new ResponseDto();
         Map<String, Object> result = new HashMap<>();
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
         PartyJoin partyJoin = partyJoinRepository.findById(joinId).get();
-        if(user_id == partyJoin.getParty().getMember().getId()) {
+        if(user_id.equals(partyJoin.getParty().getMember().getId())) {
             if (status == 1) {
                 partyJoin.setPartyJoinStatus(PartyJoinStatus.승인);
             } else if (status == 2) {
@@ -297,7 +374,7 @@ public class PartyService {
         Map<String, Object> result = new HashMap<>();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
@@ -311,7 +388,10 @@ public class PartyService {
             return responseDto;
         }
         PartyComment partyComment = findComment.get();
-        if(user_id == partyComment.getMember().getId()){
+        Long id = partyComment.getMember().getId();
+        log.info("현재 사용자 user_id : "+user_id);
+        log.info("해당 댓글 작성자 id : "+id);
+        if(user_id.equals(id)){
             partyComment.setContent(partyCommentUpdateDto.getContent());
             partyComment.setShowPublic(partyCommentUpdateDto.isShowPublic());
             partyComment.setCommentWriteTime(LocalDateTime.now());
@@ -330,44 +410,76 @@ public class PartyService {
     }
     @Transactional
     public ResponseDto statusComment(String access_token, Long commentId, int statusCode) {
-
         ResponseDto responseDto = new ResponseDto();
         Map<String, Object> result = new HashMap<>();
         // token parsing 요청
         Long user_id = HttpUtil.requestParingToken(access_token);
-        if(user_id == 0L){
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
             responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
-        Optional<PartyComment> findComment = partyCommentRepository.findById(commentId);
-        if(!findComment.isPresent()){
+        List<PartyComment> changeCommentList = partyCommentRepository.getChangeCommentList(commentId);
+        if(changeCommentList.size() == 0){
             responseDto.setStatus_code(400);
             responseDto.setMessage("수정할 댓글을 찾을 수 없습니다.");
             return responseDto;
         }
-        PartyComment partyComment = findComment.get();
-        if(user_id == partyComment.getMember().getId()) {
-            switch (statusCode) {
-                case 1:
-                    partyComment.normalize();
-                    break;
-                case 2:
-                    partyComment.banned();
-                    break;
-                case 3:
-                    partyComment.deleted();
-                    break;
+        else{
+            for (PartyComment partyComment : changeCommentList) {
+                if(user_id.equals(partyComment.getMember().getId())) {
+                    switch (statusCode) {
+                        case 1:
+                            partyComment.normalize();
+                            break;
+                        case 2:
+                            partyComment.banned();
+                            break;
+                        case 3:
+                            partyComment.deleted();
+                            break;
+                    }
+                }
             }
         }
-        else{
+
+        //responseDto 작성
+        result.put("partyCommentStatus", statusCode);
+        responseDto.setMessage("댓글 상태 변경 성공");
+        responseDto.setData(result);
+        responseDto.setStatus_code(200);
+        return responseDto;
+    }
+
+    public ResponseDto listPartyJoin(String access_token) {
+        ResponseDto responseDto = new ResponseDto();
+        Map<String, Object> result = new HashMap<>();
+        // token parsing 요청
+        Long user_id = HttpUtil.requestParingToken(access_token);
+        if(user_id.equals(0L)){
             responseDto.setStatus_code(400);
-            responseDto.setMessage("해당 댓글 작성자가 아닙니다.");
+            responseDto.setMessage("회원 정보가 없습니다.");
             return responseDto;
         }
-        //responseDto 작성
-        result.put("partyCommentStatus", partyComment.getPartyCommentStatus());
-        responseDto.setMessage("댓글 상태 변경 성공");
+        List<PartyJoin> myJoinList = partyJoinRepository.findMyJoinList(user_id);
+        List<PartyJoinListDto> partyJoinListDtos = new ArrayList<>();
+        PartyJoinListDto partyJoinListDto;
+        Party party;
+        for (PartyJoin partyJoin : myJoinList) {
+            party = partyJoin.getParty();
+            partyJoinListDto = new PartyJoinListDto().builder()
+                    .title(party.getTitle())
+                    .location(party.getLocation())
+                    .partyDate(party.getPartyDate())
+                    .joinDate(partyJoin.getJoinDate())
+                    .partyJoinStatus(partyJoin.getPartyJoinStatus())
+                    .imagePath(party.getImagePath())
+                    .partyId(party.getId())
+                    .build();
+            partyJoinListDtos.add(partyJoinListDto);
+        }
+        result.put("myPartyJoinList", partyJoinListDtos);
+        responseDto.setMessage("참가 신청 리스트");
         responseDto.setData(result);
         responseDto.setStatus_code(200);
         return responseDto;

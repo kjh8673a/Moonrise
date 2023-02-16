@@ -4,8 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import moonrise.pjt2.member.dto.MemberJoinDto;
+import moonrise.pjt2.member.dto.MemberUpdateDto;
+import moonrise.pjt2.member.dto.ResponseDto;
 import moonrise.pjt2.member.exception.UnauthorizedException;
-import moonrise.pjt2.member.model.entity.Member;
 import moonrise.pjt2.member.model.service.MemberService;
 
 import moonrise.pjt2.util.HttpUtil;
@@ -46,18 +48,20 @@ public class MemberController {
     @PostMapping("/kakao")
     @Transactional
     public ResponseEntity<?> getKaKaoToken(@RequestHeader HttpHeaders headers){
-        // Http Header 에서 인가 코드 받기
-        String authorization_code = headers.get("authorization_code").toString();
-
-        log.info("auth_code : {}", authorization_code);
-
-        String access_Token = "";
-        String refresh_Token = "";
-
-        HashMap<String, Object> resultMap = new HashMap<>();
         ResponseDto responseDto = new ResponseDto();
-        String requestURL = get_token_url;
         try{
+            // Http Header 에서 인가 코드 받기
+            String authorization_code = headers.get("authorization_code").toString();
+
+            log.info("auth_code : {}", authorization_code);
+
+            String access_Token = "";
+            String refresh_Token = "";
+
+            HashMap<String, Object> resultMap = new HashMap<>();
+
+            String requestURL = get_token_url;
+
             URL url = new URL(requestURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -81,8 +85,11 @@ public class MemberController {
             int responseCode = connection.getResponseCode();
             log.info("get_token_res_code : {}", responseCode);
 
-            if(responseCode == 401){
+            if(responseCode == 400){
                 //Error
+                responseDto.setMessage("인가 코드로 토큰 받는 과정에서 오류");
+                responseDto.setStatus_code(400);
+                return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
             }
 
             //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
@@ -105,57 +112,45 @@ public class MemberController {
             log.info("refresh_token : {}", refresh_Token);
 
             //access-token을 파싱 하여 카카오 id가 디비에 있는지 확인
-            HashMap<String, Object> userInfo = httpUtil.parseToken(access_Token);
-            Long userId = (Long) userInfo.get("user_id");
-            //String nickname = userInfo.get("nickname").toString();
-            log.info("parse result : {}", userId);
+            Long user_id = httpUtil.parseToken(access_Token);
+            log.info("parse result : {}", user_id);
 
-            if(userId == null){
-                log.info("userId == null error");
-                return ResponseEntity.status(401).body(null);
+            if(user_id == null){
+                log.error("userId == null error");
+                responseDto.setStatus_code(400);
+                responseDto.setMessage("토큰 파싱과정에서 오류");
+                return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
             }
 
-            if(memberService.check_enroll_member(userId)){  // 회원가입해
+            if(memberService.check_enroll_member(user_id)){  // 회원가입해
                 resultMap.put("access_token",access_Token);
                 resultMap.put("refresh_token",refresh_Token);
-                //resultMap.put("nickname", nickname);
 
                 responseDto.setStatus_code(400);
                 responseDto.setMessage("회원가입 정보 없음!!");
                 responseDto.setData(resultMap);
 
                 return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);  //200
-
-            }else{  // 회원가입 되어 있어 그냥 token만 반환해
-                Member member = memberService.findMember(userId);
-
-                //resultMap.put("nickname", member.getProfile().getNickname());
-                resultMap.put("access_token", access_Token);
-                resultMap.put("refresh_token", refresh_Token);
-
-                responseDto.setStatus_code(200);
-                responseDto.setMessage("로그인 완료!!");
-                responseDto.setData(resultMap);
             }
+            // 회원가입 되어 있어 회원 정보 반환해.
+            MemberJoinDto dto = memberService.findMemberAll(user_id);
+            dto.setAccess_token(access_Token);
+            dto.setRefresh_token(refresh_Token);
+
+            responseDto.setStatus_code(200);
+            responseDto.setMessage("로그인 완료!!");
+            responseDto.setData(dto);
 
             br.close();
             bw.close();
-        }catch(IOException io){
-            log.error(io.getMessage());
-
-        }catch (UnauthorizedException uae){
-            log.error(uae.getMessage());
-            return ResponseEntity.status(401).body(null);
+        }catch(Exception e){
+            log.error(e.getMessage());
         }
-
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @Value("${kakao.url.logout}")
+    @Value("${kakao_logout_url}")
     private String kakao_logout_url;
-
-    @Value("${logout_redirect_uri}")
-    private String logout_redirect_uri;
 
     /**
      * 카카오 계정과 함께 로그아웃
@@ -164,55 +159,74 @@ public class MemberController {
      * 카카오계정 로그아웃 처리 후 Logout Redirect URI로 302 리다이렉트(Redirect)
      */
     @GetMapping("/logout")
-    public void logout(){
-        StringBuilder sb = new StringBuilder();
-        sb.append(kakao_logout_url);
-        sb.append("?");
-        sb.append("client_id=" + client_id);
-        sb.append("&logout_redirect_uri=" + logout_redirect_uri);
-
-        String requestUrl = sb.toString();
+    public ResponseEntity<?> logout(@RequestHeader HttpHeaders headers){
+        ResponseDto responseDto = new ResponseDto();
         try{
-            URL url = new URL(requestUrl);
+            String access_token = headers.get("access_token").toString();
+
+            URL url = new URL(kakao_logout_url);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            conn.setRequestProperty("Authorization","Bearer " + access_token);
 
             // 응답 코드
             int responseCode = conn.getResponseCode();
             log.info("logout_res_code : {}", responseCode);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            responseDto.setStatus_code(200);
+            responseDto.setMessage("로그아웃 완료");
 
-            String line = "";
-            String result = "";
-
-            while((line = br.readLine()) != null) {
-                result += line;
-            }
-            log.info("logout_res_body : {}", result);
+            return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
         }catch (Exception e) {
             e.printStackTrace();
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("로그아웃 실패.. 그냥 로그아웃 해..");
+
+            return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
         }
     }
+    @PutMapping
+    public ResponseEntity<?> update(@RequestHeader HttpHeaders headers, @RequestBody MemberUpdateDto memberUpdateDto){
+        log.info("memberUpdateDto : {}", memberUpdateDto.toString());
+
+        String access_token = headers.get("access_token").toString();
+        ResponseDto responseDto = memberService.memberInfoUpdate(access_token, memberUpdateDto);
+
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
     @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestHeader HttpHeaders headers, @RequestBody MemberJoinRequestDto memberJoinRequestDto){
-        log.info("memberJoin Data : {}", memberJoinRequestDto);
+    public ResponseEntity<?> join(@RequestHeader HttpHeaders headers, @RequestBody MemberJoinDto memberJoinDto){
+        log.info("memberJoin Data : {}", memberJoinDto);
 
         String access_token = headers.get("access_token").toString();
         String refresh_token = headers.get("refresh_token").toString();
         log.info("join_access_token : {}", access_token);
 
         // token을 통해 userid 받아오기
-        HashMap<String, Object> userInfo = HttpUtil.parseToken(access_token);
+        Long user_id = HttpUtil.parseToken(access_token);
+
+        ResponseDto responseDto = new ResponseDto();
+        if(user_id == null){
+            log.error("userId == null error");
+
+            responseDto.setStatus_code(400);
+            responseDto.setMessage("토큰 파싱과정에서 오류");
+            return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+        }
+        memberJoinDto.setAccess_token(access_token);
+        memberJoinDto.setRefresh_token(refresh_token);
 
         // Service에 요청
-        memberService.join(memberJoinRequestDto, (Long) userInfo.get("user_id"));
-        HashMap<String, Object> result = new HashMap<>();
+        responseDto = memberService.join(memberJoinDto, user_id);
 
-        result.put("access_token", access_token);
-        result.put("refresh_token", refresh_token);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    }
+    @GetMapping("/check")
+    public ResponseEntity<?> nicknameCheck(@RequestParam String nickname){
+        ResponseDto responseDto = memberService.nicknameCheck(nickname);
 
-        return ResponseEntity.ok().body(null);
+        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 }

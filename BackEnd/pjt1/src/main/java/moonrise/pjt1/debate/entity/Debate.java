@@ -26,6 +26,8 @@ public class Debate {
     @Column(nullable = false)
     private String description;
 
+    private String imagePath;
+
     @Column(nullable = true)
     private LocalDateTime createDate;
 
@@ -56,6 +58,8 @@ public class Debate {
         this.description = debateCreateDto.getDescription();
         this.createDate = LocalDateTime.now();
         this.maxppl = debateCreateDto.getMaxppl();
+        this.imagePath = debateCreateDto.getImagePath();
+
         this.debateStatus = DebateStatus.생성;
         this.movie = movie;
         this.member = member;

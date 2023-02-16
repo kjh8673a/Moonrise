@@ -16,15 +16,15 @@ import java.util.HashMap;
 @Component
 public class HttpUtil {
     private static String parse_token_url;
+
     @Value("${kakao.url.token}")
     public void setUrl(String url){
         parse_token_url = url;
     }
-    public static HashMap<String, Object> parseToken(String token){
-        String requestUrl = parse_token_url;
-        log.info("url : {}" , parse_token_url);
+
+    public static Long parseToken(String token){
         try{
-            URL url = new URL(requestUrl);  // URL 객체
+            URL url = new URL(parse_token_url);  // URL 객체
 
             // KAKAO 서버에 HTTP 요청
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -43,20 +43,11 @@ public class HttpUtil {
 
                 Long id = Long.parseLong(element.getAsJsonObject().get("id").getAsString());
                 log.info("user_id : {}", id);
-                //String nickname = element.getAsJsonObject().get("profile_nickname").getAsString();
 
-                HashMap<String, Object> userInfo = new HashMap<>();
-                userInfo.put("user_id",id);
-                //userInfo.put("nickname", nickname);
-
-                return userInfo;
+                return id;
             }
-            else if(responseCode == 401){   //access-Token 만료 시
-                throw new UnauthorizedException("토큰 만료..");
-            }
-
-        } catch (IOException ioException) {
-
+        } catch (Exception e) {
+            return null;
         }
         return null;
     }

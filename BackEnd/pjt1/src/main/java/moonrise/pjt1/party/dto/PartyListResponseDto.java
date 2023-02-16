@@ -1,10 +1,12 @@
 package moonrise.pjt1.party.dto;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
+@Data @NoArgsConstructor
 public class PartyListResponseDto {
     private Long partyId;
     private String title;
@@ -16,8 +18,11 @@ public class PartyListResponseDto {
     private int commentCnt;
     private String writer;
     private LocalDateTime deadline;
-
-    public PartyListResponseDto(Long partyId, String title, int partyPeople, String location, LocalDateTime partyDate, int likeCnt, int viewCnt, int commentCnt, String writer, LocalDateTime deadline) {
+    private String imagePath;
+    @Builder
+    public PartyListResponseDto(Long partyId, String title, int partyPeople, String location,
+                                LocalDateTime partyDate, int likeCnt, int viewCnt, int commentCnt,
+                                String writer, LocalDateTime deadline, String imagePath) {
         this.partyId = partyId;
         this.title = title;
         this.partyPeople = partyPeople;
@@ -28,5 +33,6 @@ public class PartyListResponseDto {
         this.commentCnt = commentCnt;
         this.writer = writer;
         this.deadline = deadline;
+        this.imagePath = imagePath;
     }
 }

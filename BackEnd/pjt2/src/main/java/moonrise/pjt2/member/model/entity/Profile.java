@@ -3,11 +3,12 @@ package moonrise.pjt2.member.model.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Profile {
     @Id @GeneratedValue
@@ -22,9 +23,6 @@ public class Profile {
 
     private String profile_image_path;
 
-    public void setProfile_image_path(String profile_image_path) {
-        this.profile_image_path = profile_image_path;
-    }
 
     public Profile(String nickname, String gender) {
 
@@ -34,5 +32,8 @@ public class Profile {
         }else{
             this.gender = Gender.여;
         }
+
+        //기본 이미지
+        this.profile_image_path = "https://moonrise.s3.ap-northeast-2.amazonaws.com/153fcd13-0dab-4757-9f56-6149e253a873_no_image.png";
     }
 }

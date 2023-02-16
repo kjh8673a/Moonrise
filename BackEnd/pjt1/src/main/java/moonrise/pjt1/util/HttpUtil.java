@@ -3,18 +3,27 @@ package moonrise.pjt1.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Slf4j
+@Component
 public class HttpUtil {
-    public static Long requestParingToken(String token){
-        String requestUrl = "http://pjt2-container:9002/auth/jwt/parse";
-        //String requestUrl = "http://localhost:9002/auth/jwt/parse";
 
+    private static String requestUrl;
+
+    @Value("${pjt2_request_url}")
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
+    }
+
+    public static Long requestParingToken(String token){
         try{
+            log.info("url : {}", requestUrl);
             URL url = new URL(requestUrl);  // URL 객체
 
             // KAKAO 서버에 HTTP 요청

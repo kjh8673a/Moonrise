@@ -24,6 +24,7 @@ public class Board {
     private Long id;
 
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String content;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -67,9 +68,7 @@ public class Board {
         board.setMovie(movie);
         return board;
     }
-//    public void addBoardInfo(BoardInfo boardInfo){
-//        this.boardInfo = boardInfo;
-//    }
+
 
     //  게시글 삭제
     public void deleted(){

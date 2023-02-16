@@ -14,9 +14,10 @@ public class PartyCreateDto {
     private boolean meetOnline;
     private LocalDateTime partyDate;
     private LocalDateTime deadLine;
+    private String imagePath;
     public PartyCreateDto(Long movieId, String title, String content,
                           int partyPeople, String location, boolean meetOnline,
-                          LocalDateTime partyDate, LocalDateTime deadLine) {
+                          LocalDateTime partyDate, LocalDateTime deadLine,String imagePath) {
         this.movieId = movieId;
         this.title = title;
         this.content = content;
@@ -25,5 +26,6 @@ public class PartyCreateDto {
         this.meetOnline = meetOnline;
         this.partyDate = partyDate;
         this.deadLine = deadLine;
+        this.imagePath = imagePath;
     }
 }
