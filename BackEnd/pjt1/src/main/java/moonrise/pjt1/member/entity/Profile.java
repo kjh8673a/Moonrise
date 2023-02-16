@@ -12,20 +12,13 @@ import javax.persistence.*;
 public class Profile {
     @Id @GeneratedValue
     @Column(name = "profile_id")
-    private Long id;
-
-    @Column(name = "user_name")
-    private String username;
+    private Long profile_id;
 
     @Column(name = "nickname")
     private String nickname;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    private String phone;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "profile")
-    private Member member;
 
     private String profile_image_path;
 
@@ -33,27 +26,13 @@ public class Profile {
         this.profile_image_path = profile_image_path;
     }
 
-    public Profile(String username, String nickname, String gender, String phone) {
-        this.username = username;
+    public Profile(String nickname, String gender) {
+
         this.nickname = nickname;
         if(gender.equals("M")){
             this.gender = Gender.남;
         }else{
             this.gender = Gender.여;
         }
-        this.phone = phone;
-    }
-
-    @Override
-    public String toString() {
-        return "Profile{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", nickname='" + nickname + '\'' +
-                ", gender=" + gender +
-                ", phone='" + phone + '\'' +
-                ", member=" + member +
-                ", profile_image_path='" + profile_image_path + '\'' +
-                '}';
     }
 }

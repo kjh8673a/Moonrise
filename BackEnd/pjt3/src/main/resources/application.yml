@@ -1,0 +1,37 @@
+spring:
+  redis:
+    host: 3.35.149.202
+    port: 6379
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #url: jdbc:mysql://mysql-container:3306/moonrise
+    url: jdbc:mysql://3.35.149.202:3306/moonrise
+    username: ssafy
+    password: qwer1234
+  jpa:
+    database: mysql   # 추가 해준 부분
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect # 추가 해준 부분
+
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 1000
+logging.level:
+  org.hibernate.SQL: debug
+  #org.hibernate.type: trace
+  # org.hibernate.type: trace #스프링 부트 2.x, hibernate5
+  # org.hibernate.orm.jdbc.bind: trace #스프링 부트 3.x, hibernate6
+server:
+  port: 9003
+  servlet:
+    context-path: /chat
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true

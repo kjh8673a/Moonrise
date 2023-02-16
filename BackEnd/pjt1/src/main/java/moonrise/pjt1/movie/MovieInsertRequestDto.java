@@ -14,17 +14,16 @@ public class MovieInsertRequestDto {
     private String originalTitle;
     private String title;
     private double popularity;
-    private String release_date;
-    private List<String> genre;
+    private String releaseDate;
+    private List<Integer> genreIds;
 
     public Movie movieBuilder(){
         Movie movie = new Movie();
         movie.setId(this.id);
         movie.setTitle(this.title);
         movie.setOriginalTitle(this.originalTitle);
-        movie.setReleaseDate(this.release_date);
+        movie.setReleaseDate(this.releaseDate);
         movie.setPopularity(this.popularity);
-
         return movie;
     }
 }

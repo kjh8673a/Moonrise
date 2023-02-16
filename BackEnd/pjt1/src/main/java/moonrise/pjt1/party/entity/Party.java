@@ -29,6 +29,7 @@ public class Party {
     private int partyPeople;
     private String location;
     private boolean meetOnline;
+    private String imagePath;
 
     @Enumerated(EnumType.STRING)
     private PartyStatus partyStatus;
@@ -51,7 +52,7 @@ public class Party {
     @OneToMany(mappedBy = "party")
     private List<PartyComment> partyComments = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "party_info_id")
     private PartyInfo partyInfo;
     public void setMovie(Movie movie){
@@ -71,6 +72,7 @@ public class Party {
         party.setMember(member);
         party.setMovie(movie);
         party.setPartyInfo(partyInfo);
+        party.setImagePath(partyCreateDto.getImagePath());
         return party;
     }
     public void modifyParty(PartyModifyDto partyModifyDto){
@@ -81,7 +83,5 @@ public class Party {
         this.meetOnline = partyModifyDto.isMeetOnline();
         this.partyDate = partyModifyDto.getPartyDate();
         this.deadLine = partyModifyDto.getDeadLine();
-
-
     }
 }
