@@ -9,11 +9,9 @@ function BoardList() {
   const movieId = useSelector((state) => state.movie.movieId);
 
   useEffect(() => {
-    axios
-      .get("http://3.35.149.202:80/api/board/list/" + movieId)
-      .then((response) => {
-        setBoards(response.data.findBoards);
-      });
+    axios.get("/api/board/list/" + movieId).then((response) => {
+      setBoards(response.data.findBoards);
+    });
   });
 
   return (

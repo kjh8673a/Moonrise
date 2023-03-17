@@ -14,7 +14,7 @@ function BoardDetail() {
   const id = parseInt(params.get("id"));
 
   useEffect(() => {
-    axios.get("http://3.35.149.202/api/board/" + id).then((response) => {
+    axios.get("/api/board/" + id).then((response) => {
       setBoard(response.data.findBoard);
     });
   });
@@ -66,17 +66,18 @@ function BoardDetail() {
           </button>
         </form>
       </div>
-      {comments && comments.map((comment) => (
-        <BoardComment
-          id={comment.id}
-          groupId={comment.groupId}
-          isNestedComment={comment.isNestedComment}
-          writeDate={comment.writeDate}
-          boardCommentStatus={comment.boardCommentStatus}
-          content={comment.content}
-          writer={comment.writer}
-        />
-      ))}
+      {comments &&
+        comments.map((comment) => (
+          <BoardComment
+            id={comment.id}
+            groupId={comment.groupId}
+            isNestedComment={comment.isNestedComment}
+            writeDate={comment.writeDate}
+            boardCommentStatus={comment.boardCommentStatus}
+            content={comment.content}
+            writer={comment.writer}
+          />
+        ))}
     </div>
   );
 }
