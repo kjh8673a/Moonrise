@@ -1,6 +1,6 @@
 spring:
   redis:
-    host: 127.0.0.1
+    host: localhost
     port: 6379
   mvc:
     pathmatch:
@@ -24,5 +24,3 @@ logging.level:
   org.hibernate.type: trace
 server:
   port: 9001
-  servlet:
-    context-path: /api

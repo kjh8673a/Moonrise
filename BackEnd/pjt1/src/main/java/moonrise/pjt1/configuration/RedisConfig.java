@@ -25,12 +25,12 @@ public class RedisConfig extends CachingConfigurerSupport {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory(){
-        RedisSentinelConfiguration sentinelConfiguration = new RedisSentinelConfiguration()
-                .master("mymaster")
-                .sentinel(info.getHost(),26379)
-                .sentinel(info.getHost(),26380)
-                .sentinel(info.getHost(),26381);
-        return new LettuceConnectionFactory(sentinelConfiguration);
+        // RedisSentinelConfiguration sentinelConfiguration = new RedisSentinelConfiguration()
+        //         .master("mymaster")
+        //         .sentinel(info.getHost(),26379)
+        //         .sentinel(info.getHost(),26380)
+        //         .sentinel(info.getHost(),26381);
+        return new LettuceConnectionFactory(info.getHost(), info.getPort());
     }
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {

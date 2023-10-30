@@ -1,5 +1,6 @@
 package moonrise.pjt1.board.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import moonrise.pjt1.board.entity.BoardComment;
 
@@ -15,14 +16,15 @@ public class BoardDetailDto {
     private String content;
     private LocalDateTime dateTime;
     private String writer;
-    private List<BoardComment> boardComments = new ArrayList<>();
-    private int viewCnt;
-    private int commentCnt;
-    private int likeCnt;
+    private List<CommentForDetailProjectionDto> boardComments = new ArrayList<>();
+    private Long viewCnt;
+    private Long commentCnt;
+    private Long likeCnt;
     private Boolean isLike;
     private Boolean isBookmark;
 
-    public BoardDetailDto(Long movieId, String title, String content, LocalDateTime dateTime, String writer, List<BoardComment> boardComments, int viewCnt, int commentCnt, int likeCnt, Boolean isLike, Boolean isBookmark) {
+    @Builder
+    public BoardDetailDto(Long movieId, String title, String content, LocalDateTime dateTime, String writer, List<CommentForDetailProjectionDto> boardComments, Long viewCnt, Long commentCnt, Long likeCnt, Boolean isLike, Boolean isBookmark) {
         this.movieId = movieId;
         this.title = title;
         this.content = content;
@@ -35,6 +37,5 @@ public class BoardDetailDto {
         this.isLike = isLike;
         this.isBookmark = isBookmark;
     }
-
 
 }

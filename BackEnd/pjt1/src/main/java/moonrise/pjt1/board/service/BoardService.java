@@ -9,15 +9,19 @@ import moonrise.pjt1.board.entity.BoardInfo;
 import moonrise.pjt1.board.repository.BoardCommentRepository;
 import moonrise.pjt1.board.repository.BoardInfoRepository;
 import moonrise.pjt1.board.repository.BoardRepository;
+import moonrise.pjt1.board.request.BoardBookmarkReq;
+import moonrise.pjt1.board.request.BoardLikeReq;
 import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.util.HttpUtil;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
@@ -51,9 +55,9 @@ public class BoardService {
         List<BoardListResponseDto> findBoards = new ArrayList<>();
 
         for (Board b : boardList) {
-            int viewCnt = b.getBoardInfo().getViewCnt();
+            Long viewCnt = b.getBoardInfo().getViewCnt();
             int commentsCnt = b.getBoardComments().size();
-            int likeCnt = b.getBoardInfo().getLikeCnt();
+            Long likeCnt = b.getBoardInfo().getLikeCnt();
             String nickname = b.getMember().getProfile().getNickname();
             BoardListResponseDto boardListResponseDto = new BoardListResponseDto(b.getId(), b.getTitle(), b.getContent(), b.getDateTime(), likeCnt, commentsCnt, viewCnt, nickname);
             findBoards.add(boardListResponseDto);
@@ -67,87 +71,66 @@ public class BoardService {
         return responseDto;
     }
 
-    public ResponseDto detailBoard(String access_token, Long boardId) {
-        ValueOperations valueOperations = redisTemplate.opsForValue();
-        Map<String, Object> result = new HashMap<>();
+    /**
+     * 게시글 상세보기
+     */
+    public ResponseDto detailBoard(Long userId, Long boardId) {
         ResponseDto responseDto = new ResponseDto();
-        // token parsing 요청
-        Long user_id = HttpUtil.requestParingToken(access_token);
-        if (user_id.equals(0L)) {
-            responseDto.setStatus_code(400);
-            responseDto.setMessage("회원 정보가 없습니다.");
-            return responseDto;
-        }
-        Optional<Board> findBoard = boardRepository.findById(boardId);
-        Optional<Member> findMember = memberRepository.findById(user_id);
-        //************ 좋아요 여부 ************
-        String likeBoardList;
-        String likeListKey = "UserBoardLikeList::" + user_id;
-        if (valueOperations.get(likeListKey) == null) {
-            likeBoardList = findMember.get().getMemberInfo().getLikeBoard();
-        } else {
-            likeBoardList = (String) valueOperations.get(likeListKey);
-        }
-        boolean isLike;
-        if (likeBoardList == null) {
-            isLike = false;
-        } else {
-            isLike = likeBoardList.contains(boardId + "");
-        }
-        //************ 북마크 여부  ************
-        String bookmarkBoardList;
-        String bookmarkListKey = "UserBoardBookMarkList::" + user_id;
-        if (valueOperations.get(bookmarkListKey) == null) {
-            bookmarkBoardList = findMember.get().getMemberInfo().getBookmarkBoard();
-        } else {
-            bookmarkBoardList = (String) valueOperations.get(bookmarkListKey);
-        }
-        boolean isBookmark;
-        if (bookmarkBoardList == null) {
-            isBookmark = false;
-        } else {
-            isBookmark = bookmarkBoardList.contains(boardId + "");
-        }
-        //***************조회수 캐시 서버**********************
-        String key = "boardViewCnt::" + boardId;
-        Long boardInfoId = findBoard.get().getBoardInfo().getId();
-        if (valueOperations.get(key) == null) {
-            valueOperations.set(key, String.valueOf(boardInfoRepository.findBoardViewCnt(boardInfoId) + 1), 20, TimeUnit.MINUTES);
-        } else {
-            valueOperations.increment(key);
-        }
-        int viewCnt = Integer.parseInt((String) valueOperations.get(key));
-        System.out.println("서버에서 가져온 조회수 viewCnt = " + viewCnt);
-        //***************좋아요 수 캐시서버 **********************
-        String likeCntKey = "boardLikeCnt::" + boardId;
-        int likeCnt = 0;
-        if (valueOperations.get(likeCntKey) == null) {
-            System.out.println("db에서 좋아요 값을 가져오는 중 ");
-            likeCnt = findBoard.get().getBoardInfo().getLikeCnt();
-            System.out.println("likeCnt = " + likeCnt);
 
-        } else {
-            System.out.println("실시간 좋아요 값을 가져오는 중 ");
-            likeCnt = Integer.parseInt((String) valueOperations.get(likeCntKey));
-            System.out.println("likeCnt = " + likeCnt);
+        MemberForDetailProjectionDto member = boardRepository.getMemberForDetail(userId);
+        BoardForDetailProjectionDto board = boardRepository.getBoardForDetail(boardId);
+
+        if(board != null) {
+            // 조회수
+            String keyViewCnt = "boardViewCnt::" + boardId;
+            ValueOperations valueOperations = redisTemplate.opsForValue();
+            Long viewCnt = board.getViewCnt();
+            if(valueOperations.setIfAbsent(keyViewCnt, String.valueOf(0)));
+            viewCnt += valueOperations.increment(keyViewCnt);
+
+            // 댓글
+            Long commentCnt = board.getCommentCnt();
+            List<CommentForDetailProjectionDto> comments = boardRepository.getCommentsForDetail(boardId);
+
+            // 좋아요
+            boolean isLike = false;
+            if(member != null) {
+                isLike = checkLikeStatus(member.getLikeBoard(), member.getUserId(), boardId);
+            }
+            String keyAdd = "boardLikeAdd::" + boardId;
+            String keyDel = "boardLikeDel::" + boardId;
+            SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+            Long likeCnt = board.getLikeCnt();
+            likeCnt += setOperations.size(keyAdd);
+            likeCnt -= setOperations.size(keyDel);
+
+            // 북마크
+            boolean isBookmark = false;
+            if(member != null) {
+                isBookmark = checkBookmarkStatus(member.getBookmarkBoard(), member.getUserId(), boardId);
+            }
+
+            BoardDetailDto boardDetailDto = BoardDetailDto.builder()
+                .movieId(board.getMovieId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .dateTime(board.getDateTime())
+                .writer(board.getWriter())
+                .boardComments(comments)
+                .viewCnt(viewCnt)
+                .commentCnt(commentCnt)
+                .likeCnt(likeCnt)
+                .isLike(isLike)
+                .isBookmark(isBookmark)
+                .build();
+
+            responseDto.setStatus_code(200);
+            responseDto.setMessage("게시글 상세보기 성공.");
+            responseDto.setData(boardDetailDto);
+        }else {
+            throw new IllegalStateException("존재하지 않는 게시글 입니다.");
         }
-        //***************DB 조회**********************
-        if (!findBoard.isPresent()) throw new IllegalStateException("존재하지 않는 게시글 입니다");
-        Board board = findBoard.get();
-        String writer = board.getMember().getProfile().getNickname();
-        List<BoardComment> commentList = boardCommentRepository.getCommentList(boardId);
-        int commentCnt = commentList.size();
-        BoardDetailDto boardDetailDto = new BoardDetailDto(board.getMovie().getId(), board.getTitle(), board.getContent(), board.getDateTime(), writer, commentList, viewCnt, commentCnt, likeCnt, isLike, isBookmark);
-
-        //responseDto 작성
-        if (user_id.equals(board.getMember().getId())) {
-            result.put("isWriter", true);
-        } else result.put("isWriter", false);
-
-        result.put("findBoard", boardDetailDto);
-        responseDto.setMessage("게시글 상세보기 리턴");
-        responseDto.setData(result);
-        responseDto.setStatus_code(200);
+        
         return responseDto;
     }
 
@@ -250,163 +233,124 @@ public class BoardService {
         return responseDto;
     }
 
-    @Transactional
-    public ResponseDto likeBoard(String access_token, BoardLikeDto boardLikeDto) {
-        Map<String, Object> result = new HashMap<>();
+    /**
+     * 게시글 좋아요
+     */
+    public ResponseDto likeBoard(BoardLikeReq boardLikeReq) {
         ResponseDto responseDto = new ResponseDto();
 
-        // token parsing 요청
-        Long user_id = HttpUtil.requestParingToken(access_token);
-        if (user_id.equals(0L)) {
-            responseDto.setStatus_code(400);
-            responseDto.setMessage("회원 정보가 없습니다.");
-            return responseDto;
-        }
-        // DB
-        Long boardId = boardLikeDto.getBoardId();
-        Optional<Member> findMember = memberRepository.findById(user_id);
-        Optional<Board> findBoard = boardRepository.findById(boardId);
-        int status = boardLikeDto.getStatus();
-        String cntKey = "boardLikeCnt::" + boardId;
-        String listKey = "UserBoardLikeList::" + user_id;
-        ValueOperations valueOperations = redisTemplate.opsForValue();
+        MemberForLikeProjectionDto member = boardRepository.getMemberForLike(boardLikeReq.getUserId());
+        Long board = boardRepository.getBoardId(boardLikeReq.getBoardId());
 
-        // 좋아요 -> LIKECNT ++, LIKEBOARD 에 boardid 추가
-        if (status == 1) {
-            // cnt 캐시
-            if (valueOperations.get(cntKey) == null) { // 캐시에 값이 없을 경우 레포지토리에서 조회 후 저장
-                valueOperations.set(cntKey, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt() + 1), 20, TimeUnit.MINUTES);
-            } else { // 캐시에 값이 있는 경우
-                valueOperations.increment(cntKey);
-            }
-            // list 캐시
-            if (valueOperations.get(listKey) == null) { // 캐시에 값없는 경우 레포지토리에서 조회 후 저장
-                if (findMember.get().getMemberInfo().getLikeBoard() == null) {
-                    String s = boardId + ",";
-                    valueOperations.set(listKey, s);
-                } else {
-                    String s = findMember.get().getMemberInfo().getLikeBoard() + boardId + ",";
-                    valueOperations.set(listKey, s);
+        if(member != null && board != null) {
+            String keyAdd = "boardLikeAdd::" + board;
+            String keyDel = "boardLikeDel::" + board;
+            SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+
+            // 좋아요를 한 상태라면 좋아요 취소
+            if(checkLikeStatus(member.getLikeBoard(), member.getUserId(), board)) {
+                // 캐시에 좋아요 등록한 상태면 캐시에서 제거
+                if(setOperations.isMember(keyAdd, String.valueOf(member.getUserId()))) {
+                    setOperations.remove(keyAdd, String.valueOf(member.getUserId()));
                 }
-
-            } else { // 캐시에서 값 가져온 다음 변경 후 저장
-                String s = valueOperations.get(listKey) + String.valueOf(boardId) + ",";
-                valueOperations.set(listKey, s, 20, TimeUnit.MINUTES);
-
+                // 캐시에 좋아요 정보가 없다면 RDB에 있다는 것이므로 좋아요 취소 캐시에 저장
+                else {
+                    setOperations.add(keyDel, String.valueOf(member.getUserId()));
+                }
+                responseDto.setMessage("게시물 좋아요 취소.");
             }
 
-        } else { // 좋아요취소
-
-            // cnt 캐시
-            if (valueOperations.get(cntKey) == null) { // 캐시에 값이 없을 경우 레포지토리에서 조회 후 저장
-                valueOperations.set(cntKey, String.valueOf(findBoard.get().getBoardInfo().getLikeCnt() - 1), 20, TimeUnit.MINUTES);
-
-            } else { // 캐시에 값이 있는 경우
-                valueOperations.decrement(cntKey);
+            // 좋아요를 안한 상태라면 좋아요 등록
+            else {
+                // 캐시에 좋아요 취소 상태라면 캐시에서 제거
+                if(setOperations.isMember(keyDel, String.valueOf(member.getUserId()))) {
+                    setOperations.remove(keyDel, String.valueOf(member.getUserId()));
+                }
+                // 캐시에 취소 정보가 없다면 좋아요 등록 캐시에 저장
+                else {
+                    setOperations.add(keyAdd, String.valueOf(member.getUserId()));
+                }
+                responseDto.setMessage("게시물 좋아요 등록.");
             }
-            // list 캐시
-            if (valueOperations.get(listKey) == null) { // 캐시에 값없는 경우 레포지토리에서 조회 후 저장
-                String s = findMember.get().getMemberInfo().getLikeBoard();
-                StringBuilder sb = new StringBuilder(s);
-                String boardIdString = boardId + ",";
-                int boardIdIndex = sb.indexOf(boardIdString);
-                System.out.println("boardIdIndex = " + boardIdIndex);
-                int boardIdStringLen = boardIdString.length();
-                sb.delete(boardIdIndex, boardIdIndex + boardIdStringLen);
-                valueOperations.set(listKey, sb.toString(), 20, TimeUnit.MINUTES);
-            } else {
-                System.out.println("캐시에 값있음   ----------------------------------------");
-                String s = (String) valueOperations.get(listKey);
-                StringBuilder sb = new StringBuilder(s);
-                String boardIdString = boardId + ",";
-                int boardIdIndex = sb.indexOf(boardIdString);
-                int boardIdStringLen = boardIdString.length();
-                sb.delete(boardIdIndex, boardIdIndex + boardIdStringLen);
-                valueOperations.set(listKey, sb.toString(), 20, TimeUnit.MINUTES);
-
-            }
+            responseDto.setStatus_code(200);
+        }else if(member == null){
+            throw new IllegalStateException("존재하지 않는 회원 입니다.");
+        }else {
+            throw new IllegalStateException("존재하지 않는 게시글 입니다.");
         }
-        int likeCnt = Integer.parseInt((String) valueOperations.get(cntKey));
-        String likeList = (String) valueOperations.get(listKey);
-        result.put("boardId", boardId);
-        result.put("likeCnt", likeCnt);
-        result.put("likeList", likeList);
-        responseDto.setData(result);
-        responseDto.setMessage("게시글 좋아요 성공");
-        responseDto.setStatus_code(200);
+
         return responseDto;
     }
 
-    public ResponseDto bookmarkBoard(String access_token, BoardBookmarkDto boardBookmarkDto) {
-        Map<String, Object> result = new HashMap<>();
+    /**
+     * 게시글 좋아요 여부 확인
+     */
+    private boolean checkLikeStatus(String boardLike, Long userId, Long boardId) {
+        String keyAdd = "boardLikeAdd::" + boardId;
+        String keyDel = "boardLikeDel::" + boardId;
+        SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+
+        if(setOperations.isMember(keyAdd, String.valueOf(userId))) {
+            return true;
+        }else if(setOperations.isMember(keyDel, String.valueOf(userId))) {
+            return false;
+        }else if(boardLike != null && boardLike.contains(String.valueOf(boardId))) {
+            return true;
+        }
+        return false;
+    }
+
+    public ResponseDto bookmarkBoard(BoardBookmarkReq boardBookmarkReq) {
         ResponseDto responseDto = new ResponseDto();
 
-        // token parsing 요청
-        Long user_id = HttpUtil.requestParingToken(access_token);
-        System.out.println("user_id = " + user_id);
-        if (user_id.equals(0L)) {
-            responseDto.setStatus_code(400);
-            responseDto.setMessage("회원 정보가 없습니다.");
-            return responseDto;
-        }
-        // DB
-        Long boardId = boardBookmarkDto.getBoardId();
-        Optional<Member> findMember = memberRepository.findById(user_id);
-        Optional<Board> findBoard = boardRepository.findById(boardId);
-        int status = boardBookmarkDto.getStatus();
-        String listKey = "UserBoardBookMarkList::" + user_id;
-        ValueOperations valueOperations = redisTemplate.opsForValue();
+        MemberForBookmarkProjectionDto member = boardRepository.getMemberForBookmark(boardBookmarkReq.getUserId());
+        Long board = boardRepository.getBoardId(boardBookmarkReq.getBoardId());
 
+        if(member != null && board != null) {
+            String keyAdd = "boardBookmarkAdd::" + board;
+            String keyDel = "boardBookmarkDel::" + board;
+            SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 
-        if (status == 1) {  // 북마크 -> bookMarkBoard 에 boardid 추가
-            // list 캐시
-            if (valueOperations.get(listKey) == null) { // 1 캐시에 값없는 경우 레포지토리에서 DB 조회 후 저장
-                if (findMember.get().getMemberInfo().getBookmarkBoard() == null) { //1-1 DB 에 처음 값(NULL)일때 null+id 방지
-                    String s = boardId + ",";
-                    valueOperations.set(listKey, s);
-                } else { // 1-2 DB 에 값이 존재할때
-                    String s = findMember.get().getMemberInfo().getBookmarkBoard() + boardId + ",";
-                    valueOperations.set(listKey, s);
+            if(checkBookmarkStatus(member.getBookmarkBoard(), member.getUserId(), board)) {
+                // 캐시에 값이 있다면 있는 값만 없애주면 된다.
+                if(setOperations.isMember(keyAdd, String.valueOf(member.getUserId()))) {
+                    setOperations.remove(keyAdd, String.valueOf(member.getUserId()));
+                }else {
+                    setOperations.add(keyDel, String.valueOf(member.getUserId()));
                 }
-
-
-            } else { // 2 캐시에서 값 가져온 다음 변경 후 저장
-                String s = valueOperations.get(listKey) + String.valueOf(boardId) + ",";
-                valueOperations.set(listKey, s, 20, TimeUnit.MINUTES);
-
+                responseDto.setMessage("게시물 북마크 취소.");
             }
-
-        } else { // 북마크 취소
-
-            // list 캐시
-            if (valueOperations.get(listKey) == null) { // 캐시에 값없는 경우 레포지토리에서 조회 후 저장
-                String s = findMember.get().getMemberInfo().getBookmarkBoard();
-                StringBuilder sb = new StringBuilder(s);
-                String boardIdString = boardId + ",";
-                int boardIdIndex = sb.indexOf(boardIdString);
-                System.out.println("boardIdIndex = " + boardIdIndex);
-                int boardIdStringLen = boardIdString.length();
-                sb.delete(boardIdIndex, boardIdIndex + boardIdStringLen);
-                valueOperations.set(listKey, sb.toString(), 20, TimeUnit.MINUTES);
-            } else {
-                System.out.println("캐시에 값있음   ----------------------------------------");
-                String s = (String) valueOperations.get(listKey);
-                StringBuilder sb = new StringBuilder(s);
-                String boardIdString = boardId + ",";
-                int boardIdIndex = sb.indexOf(boardIdString);
-                int boardIdStringLen = boardIdString.length();
-                sb.delete(boardIdIndex, boardIdIndex + boardIdStringLen);
-                valueOperations.set(listKey, sb.toString(), 20, TimeUnit.MINUTES);
+            else {
+                if(setOperations.isMember(keyDel, String.valueOf(member.getUserId()))) {
+                    setOperations.remove(keyDel, String.valueOf(member.getUserId()));
+                }else {
+                    setOperations.add(keyAdd, String.valueOf(member.getUserId()));
+                }
+                responseDto.setMessage("게시물 북마크 등록.");
             }
+            responseDto.setStatus_code(200);
+        }else if(member == null){
+            throw new IllegalStateException("존재하지 않는 회원 입니다.");
+        }else {
+            throw new IllegalStateException("존재하지 않는 게시글 입니다.");
         }
-        String bookmarkList = (String) valueOperations.get(listKey);
-        result.put("boardId", boardId);
-        result.put("bookmarkList", bookmarkList);
-        responseDto.setData(result);
-        responseDto.setMessage("게시글 북마크 성공");
-        responseDto.setStatus_code(200);
-        return responseDto;
 
+        return responseDto;
+    }
+
+    private boolean checkBookmarkStatus(String boardBookmark, Long userId, Long boardId) {
+        String keyAdd = "boardBookmarkAdd::" + boardId;
+        String keyDel = "boardBookmarkDel::" + boardId;
+        SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+
+        if(setOperations.isMember(keyAdd, String.valueOf(userId))) {
+            return true;
+        }else if(setOperations.isMember(keyDel, String.valueOf(userId))) {
+            return false;
+        }else if(boardBookmark != null && boardBookmark.contains(String.valueOf(boardId))) {
+            return true;
+        }
+        return false;
     }
 
     public ResponseDto bookmarkMypage(String access_token) {
@@ -516,4 +460,6 @@ public class BoardService {
         responseDto.setStatus_code(200);
         return responseDto;
     }
+
+
 }

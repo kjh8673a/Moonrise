@@ -23,11 +23,18 @@ public class BoardInfo {
     private Board board;
     @Enumerated(EnumType.STRING)
     private BoardStatus boardStatus = NORMAL;
-    private int likeCnt;
-    private int viewCnt;
+    private Long likeCnt;
+    private Long viewCnt;
 
     public BoardInfo() {
-        this.likeCnt = 0;
-        this.viewCnt = 0;
+        this.likeCnt = 0L;
+        this.viewCnt = 0L;
+    }
+
+    public void addLikeCnt(Long cnt) {
+        this.likeCnt += cnt;
+    }
+    public void subtractLikeCnt(Long cnt) {
+        this.likeCnt -= cnt;
     }
 }

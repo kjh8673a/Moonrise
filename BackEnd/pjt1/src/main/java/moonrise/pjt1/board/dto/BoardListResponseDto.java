@@ -18,14 +18,14 @@ public class BoardListResponseDto {
 
     //  작성자 프로필 이미지
 //    private String userImg;
-    private int likeCnt;
+    private Long likeCnt;
     private int commentCnt;
-    private int viewCnt;
+    private Long viewCnt;
 //    private int mark;
     // 사용자 이름? 모르겠음
     private String writer;
 
-    public BoardListResponseDto(Long id, String title, String content, LocalDateTime dateTime, int likeCnt, int commentCnt, int viewCnt, String writer) {
+    public BoardListResponseDto(Long id, String title, String content, LocalDateTime dateTime, Long likeCnt, int commentCnt, Long viewCnt, String writer) {
         this.id = id;
         this.title = title;
         this.content = content;

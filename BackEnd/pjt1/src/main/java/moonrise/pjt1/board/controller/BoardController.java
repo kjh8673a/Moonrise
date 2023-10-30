@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import moonrise.pjt1.board.dto.*;
+import moonrise.pjt1.board.request.BoardBookmarkReq;
+import moonrise.pjt1.board.request.BoardLikeReq;
 import moonrise.pjt1.board.service.BoardService;
 import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.util.GetResponse;
@@ -42,15 +44,12 @@ public class BoardController {
 
 
     // 게시글 상세보기 (0순위)
-    @GetMapping("/{boardId}")
-    public ResponseEntity<?> boardDetail(@RequestHeader HttpHeaders headers,
-                                         @PathVariable("boardId") Long boardId){
-        // Http Header 에서 Access-Token 받기
-        String access_token = headers.get("access_token").toString();
-        log.info("access_token : {}", access_token);
-        ResponseDto responseDto = boardService.detailBoard(access_token, boardId);
-        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    @GetMapping("/detail/{boardId}")
+    public ResponseEntity boardDetail(@RequestParam(name="userId", defaultValue = "0", required = false) Long userId, @PathVariable("boardId") Long boardId) {
+        ResponseDto responseDto = boardService.detailBoard(userId, boardId);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+
     // 게시글 생성 (0순위)
     @PostMapping("/create")
     public ResponseEntity<?> boardCreate(@RequestHeader HttpHeaders headers,
@@ -86,22 +85,20 @@ public class BoardController {
         return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
     }
 
-
     // 게시글 좋아요 (1순위)
     @PostMapping("/like")
-    public ResponseEntity<?> boardLike(@RequestHeader HttpHeaders headers, @RequestBody BoardLikeDto boardLikeDto){
-        String access_token = headers.get("access_token").toString();
-        ResponseDto responseDto = boardService.likeBoard(access_token, boardLikeDto);
-        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    public ResponseEntity boardLike(@RequestBody BoardLikeReq boardLikeReq) {
+        ResponseDto responseDto = boardService.likeBoard(boardLikeReq);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
-    // 게시글 인기목록 (1순위)
+
     // 게시글 북마크 (1순위)
-    @PostMapping("/bookmark")
-    public ResponseEntity<?> boardBookmark(@RequestHeader HttpHeaders headers, @RequestBody BoardBookmarkDto boardBookmarkDto){
-        String access_token = headers.get("access_token").toString();
-        ResponseDto responseDto = boardService.bookmarkBoard(access_token, boardBookmarkDto);
-        return new ResponseEntity<ResponseDto>(responseDto, HttpStatus.OK);
+    @PostMapping("/bookMark")
+    public ResponseEntity boardBookmark(@RequestBody BoardBookmarkReq boardBookmarkReq) {
+        ResponseDto responseDto = boardService.bookmarkBoard(boardBookmarkReq);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+
     // 마이페이지 내 북마크 글 목록받기
     @GetMapping("/mypage/bookmark")
     public ResponseEntity<?> mypageBookmark(@RequestHeader HttpHeaders headers) {
