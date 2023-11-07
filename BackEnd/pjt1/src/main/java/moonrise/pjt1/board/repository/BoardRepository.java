@@ -32,7 +32,7 @@ public interface BoardRepository extends JpaRepository<Board,Long> {
     @Query("select b.id from Board b where b.id = :boardId and b.boardInfo.boardStatus ='NORMAL'")
     Long getBoardId(@Param("boardId") Long boardId);
 
-    @Query(value = "select b.board_id as boardId, b.movie_id as movieId, b.title, b.content, b.write_date as dateTime, p.nickname as writer, i.view_cnt, ifnull(c.comment_cnt, 0) as commentCnt, i.like_cnt "
+    @Query(value = "select b.board_id as boardId, b.movie_id as movieId, b.title, b.content, b.write_date as dateTime, p.nickname as writer, ifnull(i.view_cnt, 0) as viewCnt, ifnull(c.comment_cnt, 0) as commentCnt, ifnull(i.like_cnt, 0) as likeCnt "
         + "from board as b "
         + "join (select member.member_id, profile.nickname from member join profile on member.profile_id = profile.profile_id) as p "
         + "on b.member_id = p.member_id "
@@ -44,10 +44,9 @@ public interface BoardRepository extends JpaRepository<Board,Long> {
         , nativeQuery = true)
     BoardForDetailProjectionDto getBoardForDetail(@Param("boardId") Long boardId);
 
-    @Query(value = "select comment_id as commentId, member_id as memberId, content, writer, write_date as dateTime"
-        + "from board_comment"
-        + "where board_id = :boardId "
-        + "and board_comment_status = 'NORMAL'"
+    @Query(value = "select comment_id as commentId, member_id as memberId, content, writer, write_date as dateTime "
+        + "from board_comment "
+        + "where board_comment_status = 'NORMAL' and board_id = :boardId"
         , nativeQuery = true)
     List<CommentForDetailProjectionDto> getCommentsForDetail(@Param("boardId") Long boardId);
 

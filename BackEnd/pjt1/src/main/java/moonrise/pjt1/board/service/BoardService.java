@@ -7,6 +7,7 @@ import moonrise.pjt1.board.entity.Board;
 import moonrise.pjt1.board.entity.BoardComment;
 import moonrise.pjt1.board.entity.BoardInfo;
 import moonrise.pjt1.board.repository.BoardCommentRepository;
+import moonrise.pjt1.board.repository.BoardCustomRepository;
 import moonrise.pjt1.board.repository.BoardInfoRepository;
 import moonrise.pjt1.board.repository.BoardRepository;
 import moonrise.pjt1.board.request.BoardBookmarkReq;
@@ -40,6 +41,7 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final BoardInfoRepository boardInfoRepository;
     private final BoardCommentRepository boardCommentRepository;
+    private final BoardCustomRepository boardCustomRepository;
     private final RedisTemplate redisTemplate;
 
 
@@ -78,15 +80,17 @@ public class BoardService {
         ResponseDto responseDto = new ResponseDto();
 
         MemberForDetailProjectionDto member = boardRepository.getMemberForDetail(userId);
-        BoardForDetailProjectionDto board = boardRepository.getBoardForDetail(boardId);
+        BoardForDetailProjectionDto board = boardCustomRepository.getBoardForDetail(boardId);
 
         if(board != null) {
             // 조회수
             String keyViewCnt = "boardViewCnt::" + boardId;
             ValueOperations valueOperations = redisTemplate.opsForValue();
             Long viewCnt = board.getViewCnt();
-            if(valueOperations.setIfAbsent(keyViewCnt, String.valueOf(0)));
-            viewCnt += valueOperations.increment(keyViewCnt);
+            valueOperations.setIfAbsent(keyViewCnt, String.valueOf(0));
+            Long redisViewCnt = Long.parseLong(valueOperations.get(keyViewCnt).toString()) + 1L;
+            viewCnt += redisViewCnt;
+            valueOperations.set(keyViewCnt, String.valueOf(redisViewCnt));
 
             // 댓글
             Long commentCnt = board.getCommentCnt();

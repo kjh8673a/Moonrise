@@ -43,6 +43,7 @@ public class RedisSchedule {
     @Transactional
     @Scheduled(cron = "0 0/3 * * * ?")
     public void deleteViewCntCacheFromRedis() {
+        log.info("캐시에서 게시글 조회수 정보 DB로 저장");
         Set<String> redisKeys = redisTemplate.keys("boardViewCnt*");
         Objects.requireNonNull(redisKeys).forEach(data -> {
             Long boardId = Long.parseLong(data.split("::")[1]);
@@ -60,6 +61,7 @@ public class RedisSchedule {
     @Transactional
     @Scheduled(cron = "0 0/10 * * * ?")
     public void deleteLikeCacheFromRedis() {
+        log.info("캐시에서 게시글 좋아요 정보 DB로 저장");
         Set<String> redisLikeKeys = redisTemplate.keys("boardLikeAdd*");
         Objects.requireNonNull(redisLikeKeys).forEach(data -> {
             Long boardId = Long.parseLong(data.split("::")[1]);
@@ -103,6 +105,7 @@ public class RedisSchedule {
     @Transactional
     @Scheduled(cron = "0 0/10 * * * ?")
     public void deleteBookmarkCacheFromRedis() {
+        log.info("캐시에서 게시글 북마크 정보 DB로 저장");
         Set<String> redisBookmarkKeys = redisTemplate.keys("boardBookmarkAdd*");
         Objects.requireNonNull(redisBookmarkKeys).forEach(data -> {
             Long boardId = Long.parseLong(data.split("::")[1]);

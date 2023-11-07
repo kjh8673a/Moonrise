@@ -13,12 +13,22 @@ import static moonrise.pjt1.board.entity.QBoardComment.*;
 import static moonrise.pjt1.board.entity.QBoardInfo.*;
 import static moonrise.pjt1.member.entity.QMember.*;
 
-@RequiredArgsConstructor
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 @Repository
 public class BoardCustomRepository {
 	private final JPAQueryFactory queryFactory;
 
-	public BoardForDetailProjectionDto getBoardForDetailProjectionDto(Long boardId) {
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	public BoardCustomRepository(EntityManager entityManager) {
+		this.queryFactory = new JPAQueryFactory(entityManager);
+		this.entityManager = entityManager;
+	}
+
+	public BoardForDetailProjectionDto getBoardForDetail(Long boardId) {
 		return queryFactory
 			.select(Projections.constructor(BoardForDetailProjectionDto.class,
 				board.id.as("boardId"),
@@ -27,9 +37,9 @@ public class BoardCustomRepository {
 				board.content,
 				board.dateTime,
 				member.profile.nickname.as("writer"),
-				boardInfo.viewCnt,
-				boardComment.id.count().as("commentCnt"),
-				boardInfo.likeCnt
+				boardInfo.viewCnt.coalesce(0L).as("viewCnt"),
+				boardComment.id.count().coalesce(0L).as("commentCnt"),
+				boardInfo.likeCnt.coalesce(0L).as("likeCnt")
 				))
 			.from(board)
 			.join(board.member, member)

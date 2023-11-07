@@ -2,14 +2,21 @@ package moonrise.pjt1.board.dto;
 
 import java.time.LocalDateTime;
 
-public interface BoardForDetailProjectionDto {
-	Long getBoardId();
-	Long getMovieId();
-	String getTitle();
-	String getContent();
-	LocalDateTime getDateTime();
-	String getWriter();
-	Long getViewCnt();
-	Long getCommentCnt();
-	Long getLikeCnt();
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class BoardForDetailProjectionDto {
+	Long boardId;
+	Long movieId;
+	String title;
+	String content;
+	LocalDateTime dateTime;
+	String writer;
+	Long viewCnt;
+	Long commentCnt;
+	Long likeCnt;
 }
