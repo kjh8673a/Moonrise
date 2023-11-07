@@ -21,6 +21,7 @@ import moonrise.pjt1.util.HttpUtil;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
@@ -87,10 +88,12 @@ public class BoardService {
             String keyViewCnt = "boardViewCnt::" + boardId;
             ValueOperations valueOperations = redisTemplate.opsForValue();
             Long viewCnt = board.getViewCnt();
-            valueOperations.setIfAbsent(keyViewCnt, String.valueOf(0));
-            Long redisViewCnt = Long.parseLong(valueOperations.get(keyViewCnt).toString()) + 1L;
-            viewCnt += redisViewCnt;
-            valueOperations.set(keyViewCnt, String.valueOf(redisViewCnt));
+            try {
+                valueOperations.setIfAbsent(keyViewCnt, String.valueOf(0));
+                viewCnt += valueOperations.increment(keyViewCnt);
+            }catch (RedisConnectionFailureException e) {
+                log.error(e.getMessage());
+            }
 
             // 댓글
             Long commentCnt = board.getCommentCnt();
@@ -99,7 +102,11 @@ public class BoardService {
             // 좋아요
             boolean isLike = false;
             if(member != null) {
-                isLike = checkLikeStatus(member.getLikeBoard(), member.getUserId(), boardId);
+                try {
+                    isLike = checkLikeStatus(member.getLikeBoard(), member.getUserId(), boardId);
+                }catch (RedisConnectionFailureException e) {
+                    log.error(e.getMessage());
+                }
             }
             String keyAdd = "boardLikeAdd::" + boardId;
             String keyDel = "boardLikeDel::" + boardId;
@@ -111,7 +118,11 @@ public class BoardService {
             // 북마크
             boolean isBookmark = false;
             if(member != null) {
-                isBookmark = checkBookmarkStatus(member.getBookmarkBoard(), member.getUserId(), boardId);
+                try {
+                    isBookmark = checkBookmarkStatus(member.getBookmarkBoard(), member.getUserId(), boardId);
+                }catch (RedisConnectionFailureException e) {
+                    log.error(e.getMessage());
+                }
             }
 
             BoardDetailDto boardDetailDto = BoardDetailDto.builder()
