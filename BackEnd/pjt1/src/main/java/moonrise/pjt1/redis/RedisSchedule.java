@@ -11,17 +11,23 @@ import moonrise.pjt1.debate.repository.DebateInfoRepository;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.entity.MemberInfo;
 import moonrise.pjt1.member.repository.MemberRepository;
+import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.party.entity.PartyInfo;
 import moonrise.pjt1.party.repository.PartyInfoRepository;
+import moonrise.pjt1.rating.entity.RatingEntity;
+import moonrise.pjt1.rating.repository.RatingRepository;
 
 import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -30,6 +36,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Log4j2
 public class RedisSchedule {
+    private final RatingRepository ratingRepository;
+    private final MovieRepository movieRepository;
     private final DebateInfoRepository debateInfoRepository;
     private final PartyInfoRepository partyInfoRepository;
     private final BoardInfoRepository boardInfoRepository;
@@ -133,6 +141,31 @@ public class RedisSchedule {
                 redisTemplate.opsForSet().remove(data, user);
             });
         });
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 0/7 * * * ?")
+    public void deleteRatingCacheFromRedis() {
+        log.info("캐시에서 평점 정보 DB로 저장");
+        List<RatingEntity> ratingList = new ArrayList<>();
+        Set<String> redisRatingKeys = redisTemplate.keys("ratingAdd*");
+        ListOperations listOperations = redisTemplate.opsForList();
+        redisRatingKeys.forEach(data -> {
+            Long movieId = Long.parseLong(data.split("::")[1]);
+            Long userId = Long.parseLong(data.split("::")[2]);
+            RatingEntity myRating = RatingEntity.builder()
+                .story(Long.parseLong(listOperations.leftPop(data).toString()))
+                .acting(Long.parseLong(listOperations.leftPop(data).toString()))
+                .sound(Long.parseLong(listOperations.leftPop(data).toString()))
+                .visual(Long.parseLong(listOperations.leftPop(data).toString()))
+                .direction(Long.parseLong(listOperations.leftPop(data).toString()))
+                .movie(movieRepository.findById(movieId).get())
+                .member(memberRepository.findById(userId).get())
+                .build();
+            ratingList.add(myRating);
+        });
+
+        ratingRepository.saveAll(ratingList);
     }
 
 }

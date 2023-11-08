@@ -55,5 +55,6 @@ public class RatingEntity implements Serializable {
         this.member = member;
         this.movie = movie;
     }
+
 }
 
