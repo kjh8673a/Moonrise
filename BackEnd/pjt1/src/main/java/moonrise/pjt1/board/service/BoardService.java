@@ -81,70 +81,68 @@ public class BoardService {
         ResponseDto responseDto = new ResponseDto();
 
         MemberForDetailProjectionDto member = boardRepository.getMemberForDetail(userId);
-        BoardForDetailProjectionDto board = boardCustomRepository.getBoardForDetail(boardId);
+        Optional<BoardForDetailProjectionDto> board = Optional.of(boardCustomRepository.getBoardForDetail(boardId));
+        board.orElseThrow(() -> new IllegalStateException("존재하지 않는 게시글 입니다."));
 
-        if(board != null) {
-            // 조회수
-            String keyViewCnt = "boardViewCnt::" + boardId;
-            ValueOperations valueOperations = redisTemplate.opsForValue();
-            Long viewCnt = board.getViewCnt();
+        // 조회수
+        String keyViewCnt = "boardViewCnt::" + boardId;
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        Long viewCnt = board.get().getViewCnt();
+        try {
+            valueOperations.setIfAbsent(keyViewCnt, String.valueOf(0));
+            viewCnt += valueOperations.increment(keyViewCnt);
+        }catch (RedisConnectionFailureException e) {
+            log.error(e.getMessage());
+        }
+
+        // 댓글
+        Long commentCnt = board.get().getCommentCnt();
+        List<CommentForDetailProjectionDto> comments = boardRepository.getCommentsForDetail(boardId);
+
+        // 좋아요
+        boolean isLike = false;
+        if(member != null) {
             try {
-                valueOperations.setIfAbsent(keyViewCnt, String.valueOf(0));
-                viewCnt += valueOperations.increment(keyViewCnt);
+                isLike = checkLikeStatus(member.getLikeBoard(), member.getUserId(), boardId);
             }catch (RedisConnectionFailureException e) {
                 log.error(e.getMessage());
             }
-
-            // 댓글
-            Long commentCnt = board.getCommentCnt();
-            List<CommentForDetailProjectionDto> comments = boardRepository.getCommentsForDetail(boardId);
-
-            // 좋아요
-            boolean isLike = false;
-            if(member != null) {
-                try {
-                    isLike = checkLikeStatus(member.getLikeBoard(), member.getUserId(), boardId);
-                }catch (RedisConnectionFailureException e) {
-                    log.error(e.getMessage());
-                }
-            }
-            String keyAdd = "boardLikeAdd::" + boardId;
-            String keyDel = "boardLikeDel::" + boardId;
-            SetOperations<String, String> setOperations = redisTemplate.opsForSet();
-            Long likeCnt = board.getLikeCnt();
-            likeCnt += setOperations.size(keyAdd);
-            likeCnt -= setOperations.size(keyDel);
-
-            // 북마크
-            boolean isBookmark = false;
-            if(member != null) {
-                try {
-                    isBookmark = checkBookmarkStatus(member.getBookmarkBoard(), member.getUserId(), boardId);
-                }catch (RedisConnectionFailureException e) {
-                    log.error(e.getMessage());
-                }
-            }
-
-            BoardDetailDto boardDetailDto = BoardDetailDto.builder()
-                .movieId(board.getMovieId())
-                .title(board.getTitle())
-                .content(board.getContent())
-                .dateTime(board.getDateTime())
-                .writer(board.getWriter())
-                .boardComments(comments)
-                .viewCnt(viewCnt)
-                .commentCnt(commentCnt)
-                .likeCnt(likeCnt)
-                .isLike(isLike)
-                .isBookmark(isBookmark)
-                .build();
-
-            responseDto.setStatus_code(200);
-            responseDto.setMessage("게시글 상세보기 성공.");
-            responseDto.setData(boardDetailDto);
-        }else {
-            throw new IllegalStateException("존재하지 않는 게시글 입니다.");
         }
+        String keyAdd = "boardLikeAdd::" + boardId;
+        String keyDel = "boardLikeDel::" + boardId;
+        SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+        Long likeCnt = board.get().getLikeCnt();
+        likeCnt += setOperations.size(keyAdd);
+        likeCnt -= setOperations.size(keyDel);
+
+        // 북마크
+        boolean isBookmark = false;
+        if(member != null) {
+            try {
+                isBookmark = checkBookmarkStatus(member.getBookmarkBoard(), member.getUserId(), boardId);
+            }catch (RedisConnectionFailureException e) {
+                log.error(e.getMessage());
+            }
+        }
+
+        BoardDetailDto boardDetailDto = BoardDetailDto.builder()
+            .movieId(board.get().getMovieId())
+            .title(board.get().getTitle())
+            .content(board.get().getContent())
+            .dateTime(board.get().getDateTime())
+            .writer(board.get().getWriter())
+            .boardComments(comments)
+            .viewCnt(viewCnt)
+            .commentCnt(commentCnt)
+            .likeCnt(likeCnt)
+            .isLike(isLike)
+            .isBookmark(isBookmark)
+            .build();
+
+        responseDto.setStatus_code(200);
+        responseDto.setMessage("게시글 상세보기 성공.");
+        responseDto.setData(boardDetailDto);
+
         
         return responseDto;
     }

@@ -19,4 +19,5 @@ public class BoardForDetailProjectionDto {
 	Long viewCnt;
 	Long commentCnt;
 	Long likeCnt;
+
 }

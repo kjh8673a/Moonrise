@@ -6,7 +6,9 @@ import moonrise.pjt1.rating.entity.RatingEntity;
 import java.util.List;
 
 public interface RatingService {
-    //평점 생성
+	RatingEntity createRating(RatingDto dto);
+
+	//평점 생성
     RatingEntity createRating(long movieId, long memberId, RatingDto ratingDto);
 
     //평점 수정

@@ -9,6 +9,7 @@ import moonrise.pjt1.movie.entity.Movie;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Data
@@ -56,5 +57,13 @@ public class RatingEntity implements Serializable {
         this.movie = movie;
     }
 
+    public void changeRating(List<String> ratingList) {
+        this.story = Long.parseLong(ratingList.get(0).toString());
+        this.acting = Long.parseLong(ratingList.get(1).toString());
+        this.direction = Long.parseLong(ratingList.get(2).toString());
+        this.visual = Long.parseLong(ratingList.get(3).toString());
+        this.sound = Long.parseLong(ratingList.get(4).toString());
+        this.total = Long.parseLong(ratingList.get(5).toString());
+    }
 }
 

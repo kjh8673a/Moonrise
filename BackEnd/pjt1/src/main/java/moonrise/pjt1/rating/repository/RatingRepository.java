@@ -18,4 +18,5 @@ public interface RatingRepository extends JpaRepository<RatingEntity, Long> {
 
     @Query(value = "select r from RatingEntity r where r.movie.id = :movieId and r.member.id= :memberId")
     boolean booleanPersonal(@Param("movieId") long movieId, @Param("memberId") long memberId);
+
 }

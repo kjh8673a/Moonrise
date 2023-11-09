@@ -149,20 +149,28 @@ public class RedisSchedule {
         log.info("캐시에서 평점 정보 DB로 저장");
         List<RatingEntity> ratingList = new ArrayList<>();
         Set<String> redisRatingKeys = redisTemplate.keys("ratingAdd*");
-        ListOperations listOperations = redisTemplate.opsForList();
         redisRatingKeys.forEach(data -> {
             Long movieId = Long.parseLong(data.split("::")[1]);
             Long userId = Long.parseLong(data.split("::")[2]);
-            RatingEntity myRating = RatingEntity.builder()
-                .story(Long.parseLong(listOperations.leftPop(data).toString()))
-                .acting(Long.parseLong(listOperations.leftPop(data).toString()))
-                .sound(Long.parseLong(listOperations.leftPop(data).toString()))
-                .visual(Long.parseLong(listOperations.leftPop(data).toString()))
-                .direction(Long.parseLong(listOperations.leftPop(data).toString()))
-                .movie(movieRepository.findById(movieId).get())
-                .member(memberRepository.findById(userId).get())
-                .build();
-            ratingList.add(myRating);
+            List<String> ratingFromRedis = redisTemplate.opsForList().range(data, 0, 5);
+            RatingEntity myRating = ratingRepository.findPersonal(movieId, userId);
+            if(myRating == null) {
+                RatingEntity newRating = RatingEntity.builder()
+                    .story(Long.parseLong(ratingFromRedis.get(0).toString()))
+                    .acting(Long.parseLong(ratingFromRedis.get(1).toString()))
+                    .direction(Long.parseLong(ratingFromRedis.get(2).toString()))
+                    .visual(Long.parseLong(ratingFromRedis.get(3).toString()))
+                    .sound(Long.parseLong(ratingFromRedis.get(4).toString()))
+                    .total(Long.parseLong(ratingFromRedis.get(5).toString()))
+                    .movie(movieRepository.findById(movieId).get())
+                    .member(memberRepository.findById(userId).get())
+                    .build();
+                ratingList.add(newRating);
+            }else {
+                myRating.changeRating(ratingFromRedis);
+            }
+
+            redisTemplate.delete(data);
         });
 
         ratingRepository.saveAll(ratingList);
