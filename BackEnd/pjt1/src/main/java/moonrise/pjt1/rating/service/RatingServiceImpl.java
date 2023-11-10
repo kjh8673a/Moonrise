@@ -36,6 +36,9 @@ public class RatingServiceImpl implements RatingService {
 		this.ratingCustomRepository = ratingCustomRepository;
 	}
 
+	/**
+	 * 평점 입력
+	 */
 	@Override
 	public RatingEntity createRating(RatingDto dto) {
 		Movie movie = movieRepository.findById(dto.getMovieId())
@@ -44,21 +47,25 @@ public class RatingServiceImpl implements RatingService {
 			.orElseThrow(() -> new IllegalStateException("존재하지 않는 회원 입니다."));
 
 		ListOperations listOperations = redisTemplate.opsForList();
+		// 해당 영화의 조회용 전체 평점이 캐시에 없다면 캐시 생성
 		String totalKey = "ratingTotal::" + movie.getId();
 		if (!redisTemplate.hasKey(totalKey)) {
 			createTotalRatingCache(movie.getId());
 		}
 
+		// 해당 영화의 해당 유저에 대한 조회용 평점이 캐시에 없다면 캐시 생성
 		String personalKey = "ratingPersonal::" + movie.getId() + "::" + member.getId();
 		if (!redisTemplate.hasKey(personalKey)) {
 			createPersonalRatingCache(movie.getId(), member.getId());
 		}
 
+		// 새로 입력한 평점 캐시에 등록
 		String key = "ratingAdd::" + movie.getId() + "::" + member.getId();
 		if (redisTemplate.hasKey(key)) {
 			updateRatingCache(key, totalKey, dto);
 		} else {
-			createRatingCache(key, totalKey, dto);
+			// 캐시에 평점 등록 정보가 없다면 위에서 만든 조회용 평점을 이용해 새로 등록한다.
+			createRatingCache(key, personalKey, totalKey, dto);
 		}
 
 		return new RatingEntity();
@@ -81,6 +88,8 @@ public class RatingServiceImpl implements RatingService {
 	private void createPersonalRatingCache(Long movieId, Long memberId) {
 		RatingEntity myRatingFromDB = ratingRepository.findPersonal(movieId, memberId);
 
+		// DB에서 해당 유저의 해당 영화에 대한 평점을 가져와 조회용 평점을 만든다.
+		// DB에 정보가 없다면 각 항목을 0으로 초기화하여 만든다.
 		ListOperations listOperations = redisTemplate.opsForList();
 		String key = "ratingPersonal::" + movieId + "::" + memberId;
 		if (myRatingFromDB != null) {
@@ -91,8 +100,8 @@ public class RatingServiceImpl implements RatingService {
 			listOperations.rightPush(key, myRatingFromDB.getSound());
 			listOperations.rightPush(key, myRatingFromDB.getTotal());
 		} else {
-			listOperations.rightPushAll(key, String.valueOf(0), String.valueOf(0), String.valueOf(0), String.valueOf(0),
-				String.valueOf(0), String.valueOf(0));
+			listOperations.rightPushAll(key, String.valueOf(-1), String.valueOf(-1), String.valueOf(-1), String.valueOf(-1),
+				String.valueOf(-1), String.valueOf(-1));
 		}
         listOperations.getOperations().expire(key, Duration.ofMinutes(5));
 	}
@@ -100,6 +109,9 @@ public class RatingServiceImpl implements RatingService {
 	private void createTotalRatingCache(long movieId) {
 		Long[] result = new Long[7];
 
+		// 해당 영화의 평점 등록으로 캐시에 대기중인 유저를 list에 담는다.
+		// list에 있는 유저를 제외한 평점 정보를 db에서 가져온다.
+		// 가져온 db의 정보와 캐시에 있는 정보를 합쳐 조회용 전체 평점을 만든다.
 		Set<String> redisRatingKeys = redisTemplate.keys("ratingAdd::" + String.valueOf(movieId));
 		List<Long> memberList = new ArrayList<>();
 		redisRatingKeys.forEach(data -> {
@@ -132,6 +144,7 @@ public class RatingServiceImpl implements RatingService {
 	}
 
 	private void updateRatingCache(String key, String totalKey, RatingDto dto) {
+		// 캐시에 등록된 평점을 이용하여 전체 평점을 갱신한다.
 		ListOperations listOperations = redisTemplate.opsForList();
 		List<String> myRating = listOperations.range(key, 0, 5);
 		List<String> totalRating = listOperations.range(totalKey, 0, 6);
@@ -140,6 +153,7 @@ public class RatingServiceImpl implements RatingService {
 		}
 		listOperations.getOperations().expire(totalKey, Duration.ofMinutes(5));
 
+		// 평점 입력을 위한 캐시를 등록한다.
 		listOperations.set(key, 0, dto.getStory());
 		listOperations.set(key, 1, dto.getActing());
 		listOperations.set(key, 2, dto.getDirection());
@@ -147,22 +161,24 @@ public class RatingServiceImpl implements RatingService {
 		listOperations.set(key, 4, dto.getSound());
 		listOperations.set(key, 5, dto.getTotal());
 
+		// 개인 평점을 업데이트한다.
         updatePersonalRatingCache(dto);
 	}
 
-    private void createRatingCache(String key, String totalKey, RatingDto dto) {
+    private void createRatingCache(String key, String personalKey, String totalKey, RatingDto dto) {
 		ListOperations listOperations = redisTemplate.opsForList();
 		List<String> totalRating = listOperations.range(totalKey, 0, 6);
+		List<String> personalRating = listOperations.range(personalKey, 0, 5);
 
-		RatingEntity myRatingFromDB = ratingRepository.findPersonal(dto.getMovieId(), dto.getMemberId());
+		// 캐시의 조회용 개인 평점에 등록된 데이터가 유효한 데이터인지 판단하여 전체 평점을 수정한다.
 		List<String> myRating = new ArrayList<>();
-		if (myRatingFromDB != null) {
-			myRating.add(String.valueOf(myRatingFromDB.getStory()));
-			myRating.add(String.valueOf(myRatingFromDB.getActing()));
-			myRating.add(String.valueOf(myRatingFromDB.getDirection()));
-			myRating.add(String.valueOf(myRatingFromDB.getVisual()));
-			myRating.add(String.valueOf(myRatingFromDB.getSound()));
-			myRating.add(String.valueOf(myRatingFromDB.getTotal()));
+		if (Long.parseLong(personalRating.get(0).toString()) >= 0) {
+			myRating.add(personalRating.get(0).toString());
+			myRating.add(personalRating.get(1).toString());
+			myRating.add(personalRating.get(2).toString());
+			myRating.add(personalRating.get(3).toString());
+			myRating.add(personalRating.get(4).toString());
+			myRating.add(personalRating.get(5).toString());
 		} else {
 			for (int i = 0; i < 6; i++) {
 				myRating.add(String.valueOf(0));
@@ -170,11 +186,13 @@ public class RatingServiceImpl implements RatingService {
 			listOperations.set(totalKey, 6, String.valueOf(Long.valueOf(totalRating.get(6).toString()) + 1));
 		}
 
+		// 새로 입력받은 정보로 갱신한다.
 		for (int i = 0; i < 6; i++) {
 			listOperations.set(totalKey, i, calcNewRating(myRating, totalRating, dto, i));
 		}
 		listOperations.getOperations().expire(totalKey, Duration.ofMinutes(5));
 
+		// 평점 등록을 위한 캐시에 등록한다.
 		listOperations.rightPush(key, dto.getStory());
 		listOperations.rightPush(key, dto.getActing());
 		listOperations.rightPush(key, dto.getDirection());
