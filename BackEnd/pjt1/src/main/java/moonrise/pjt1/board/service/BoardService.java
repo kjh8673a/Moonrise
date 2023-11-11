@@ -143,7 +143,6 @@ public class BoardService {
         responseDto.setMessage("게시글 상세보기 성공.");
         responseDto.setData(boardDetailDto);
 
-        
         return responseDto;
     }
 

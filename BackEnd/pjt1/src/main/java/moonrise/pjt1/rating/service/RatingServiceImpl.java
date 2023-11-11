@@ -1,9 +1,11 @@
 package moonrise.pjt1.rating.service;
 
+import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
+import moonrise.pjt1.rating.dto.RatingCreateResponseDto;
 import moonrise.pjt1.rating.dto.RatingDto;
 import moonrise.pjt1.rating.entity.RatingEntity;
 import moonrise.pjt1.rating.repository.RatingCustomRepository;
@@ -37,16 +39,15 @@ public class RatingServiceImpl implements RatingService {
 	}
 
 	/**
-	 * 평점 입력
+	 * 평점 등록
 	 */
 	@Override
-	public RatingEntity createRating(RatingDto dto) {
+	public ResponseDto createRating(RatingDto dto) {
 		Movie movie = movieRepository.findById(dto.getMovieId())
 			.orElseThrow(() -> new IllegalStateException("존재하지 않는 영화 입니다."));
 		Member member = memberRepository.findById(dto.getMemberId())
 			.orElseThrow(() -> new IllegalStateException("존재하지 않는 회원 입니다."));
 
-		ListOperations listOperations = redisTemplate.opsForList();
 		// 해당 영화의 조회용 전체 평점이 캐시에 없다면 캐시 생성
 		String totalKey = "ratingTotal::" + movie.getId();
 		if (!redisTemplate.hasKey(totalKey)) {
@@ -68,10 +69,59 @@ public class RatingServiceImpl implements RatingService {
 			createRatingCache(key, personalKey, totalKey, dto);
 		}
 
-		return new RatingEntity();
+		ResponseDto responseDto = new ResponseDto();
+
+		RatingCreateResponseDto ratingCreateResponseDto = RatingCreateResponseDto.builder()
+			.movieId(movie.getId())
+			.memberId(member.getId())
+			.ratingTotal(getRatingTotal(movie.getId()))
+			.ratingPersonal(getRatingPersonal(movie.getId(), member.getId()))
+			.build();
+
+		responseDto.setStatus_code(200);
+		responseDto.setMessage("평점 등록 성공.");
+		responseDto.setData(ratingCreateResponseDto);
+
+		return responseDto;
 	}
 
-    private void updatePersonalRatingCache(RatingDto dto) {
+	private RatingDto getRatingPersonal(Long movieId, Long memberId) {
+		ListOperations listOperations = redisTemplate.opsForList();
+		String key = "ratingPersonal::" + movieId + "::" + memberId;
+		List<String> ratingFromRedis = listOperations.range(key, 0, 5);
+		RatingDto ratingPersonalDto = RatingDto.builder()
+			.movieId(movieId)
+			.memberId(memberId)
+			.story(Long.parseLong(ratingFromRedis.get(0).toString()))
+			.acting(Long.parseLong(ratingFromRedis.get(1).toString()))
+			.direction(Long.parseLong(ratingFromRedis.get(2).toString()))
+			.visual(Long.parseLong(ratingFromRedis.get(3).toString()))
+			.sound(Long.parseLong(ratingFromRedis.get(4).toString()))
+			.total(Long.parseLong(ratingFromRedis.get(5).toString()))
+			.build();
+
+		return ratingPersonalDto;
+	}
+
+	private RatingDto getRatingTotal(Long movieId) {
+		ListOperations listOperations = redisTemplate.opsForList();
+		String key = "ratingTotal::" + movieId;
+		List<String> ratingFromRedis = listOperations.range(key, 0, 6);
+		RatingDto ratingTotalDto = RatingDto.builder()
+			.movieId(movieId)
+			.story(Long.parseLong(ratingFromRedis.get(0).toString()))
+			.acting(Long.parseLong(ratingFromRedis.get(1).toString()))
+			.direction(Long.parseLong(ratingFromRedis.get(2).toString()))
+			.visual(Long.parseLong(ratingFromRedis.get(3).toString()))
+			.sound(Long.parseLong(ratingFromRedis.get(4).toString()))
+			.total(Long.parseLong(ratingFromRedis.get(5).toString()))
+			.cnt(Long.parseLong(ratingFromRedis.get(6).toString()))
+			.build();
+
+		return ratingTotalDto;
+	}
+
+	private void updatePersonalRatingCache(RatingDto dto) {
         String key = "ratingPersonal::" + dto.getMovieId() + "::" + dto.getMemberId();
 
         ListOperations listOperations = redisTemplate.opsForList();

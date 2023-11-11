@@ -18,9 +18,11 @@ public class RatingDto {
     private long total;
     private long memberId; //fk
     private long movieId; //index
+    //인원수
+    private long cnt;
 
     @Builder
-    public RatingDto(long ratingId, long direction, long sound, long story, long acting, long visual, long total, long memberId, long movieId) {
+    public RatingDto(long ratingId, long direction, long sound, long story, long acting, long visual, long total, long memberId, long movieId, long cnt) {
         this.ratingId = ratingId;
         this.direction = direction;
         this.sound = sound;
@@ -30,5 +32,6 @@ public class RatingDto {
         this.total = total;
         this.memberId = memberId;
         this.movieId = movieId;
+        this.cnt = cnt;
     }
 }

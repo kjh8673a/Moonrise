@@ -1,6 +1,7 @@
 package moonrise.pjt1.rating.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.rating.dto.RatingDto;
 import moonrise.pjt1.rating.service.RatingService;
 import moonrise.pjt1.util.HttpUtil;
@@ -22,6 +23,12 @@ public class RatingController {
     @Autowired
     public RatingController(RatingService ratingService) {
         this.ratingService = ratingService;
+    }
+
+    @PostMapping("/create/{movieId}")
+    public ResponseEntity createRating(@RequestBody RatingDto dto) {
+        ResponseDto responseDto = ratingService.createRating(dto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @PostMapping("/create/{movieId}")
