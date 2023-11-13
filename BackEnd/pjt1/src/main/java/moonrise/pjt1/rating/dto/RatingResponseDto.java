@@ -6,14 +6,14 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RatingCreateResponseDto {
+public class RatingResponseDto {
 	private Long movieId;
 	private Long memberId;
 	private RatingDto ratingTotal;
 	private RatingDto ratingPersonal;
 
 	@Builder
-	public RatingCreateResponseDto(Long movieId, Long memberId, RatingDto ratingTotal, RatingDto ratingPersonal) {
+	public RatingResponseDto(Long movieId, Long memberId, RatingDto ratingTotal, RatingDto ratingPersonal) {
 		this.memberId = memberId;
 		this.movieId = movieId;
 		this.ratingTotal = ratingTotal;

@@ -3,11 +3,14 @@ package moonrise.pjt1.rating.service;
 import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.rating.dto.RatingDto;
 import moonrise.pjt1.rating.entity.RatingEntity;
+import moonrise.pjt1.rating.request.RatingFindReq;
 
 import java.util.List;
 
 public interface RatingService {
 	ResponseDto createRating(RatingDto dto);
+
+    ResponseDto findRating(RatingFindReq req);
 
 	//평점 생성
     RatingEntity createRating(long movieId, long memberId, RatingDto ratingDto);

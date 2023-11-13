@@ -5,11 +5,12 @@ import moonrise.pjt1.member.entity.Member;
 import moonrise.pjt1.member.repository.MemberRepository;
 import moonrise.pjt1.movie.entity.Movie;
 import moonrise.pjt1.movie.repository.MovieRepository;
-import moonrise.pjt1.rating.dto.RatingCreateResponseDto;
 import moonrise.pjt1.rating.dto.RatingDto;
+import moonrise.pjt1.rating.dto.RatingResponseDto;
 import moonrise.pjt1.rating.entity.RatingEntity;
 import moonrise.pjt1.rating.repository.RatingCustomRepository;
 import moonrise.pjt1.rating.repository.RatingRepository;
+import moonrise.pjt1.rating.request.RatingFindReq;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
@@ -70,22 +71,50 @@ public class RatingServiceImpl implements RatingService {
 		}
 
 		ResponseDto responseDto = new ResponseDto();
-
-		RatingCreateResponseDto ratingCreateResponseDto = RatingCreateResponseDto.builder()
-			.movieId(movie.getId())
-			.memberId(member.getId())
-			.ratingTotal(getRatingTotal(movie.getId()))
-			.ratingPersonal(getRatingPersonal(movie.getId(), member.getId()))
-			.build();
-
 		responseDto.setStatus_code(200);
 		responseDto.setMessage("평점 등록 성공.");
-		responseDto.setData(ratingCreateResponseDto);
 
 		return responseDto;
 	}
 
-	private RatingDto getRatingPersonal(Long movieId, Long memberId) {
+	/**
+	 * 평점 조회
+	 */
+	@Override
+	public ResponseDto findRating(RatingFindReq req) {
+		Movie movie = movieRepository.findById(req.getMovieId())
+			.orElseThrow(() -> new IllegalStateException("존재하지 않는 영화 입니다."));
+		Optional<Member> member = memberRepository.findById(req.getMemberId());
+
+		RatingResponseDto ratingResponseDto = new RatingResponseDto();
+
+		ratingResponseDto.setMovieId(movie.getId());
+		// 해당 영화의 조회용 전체 평점이 캐시에 없다면 캐시 생성
+		String totalKey = "ratingTotal::" + movie.getId();
+		if (!redisTemplate.hasKey(totalKey)) {
+			createTotalRatingCache(movie.getId());
+		}
+		ratingResponseDto.setRatingTotal(getRatingTotalFromCache(movie.getId()));
+
+		if (member.isPresent()) {
+			ratingResponseDto.setMemberId(member.get().getId());
+			// 해당 영화의 해당 유저에 대한 조회용 평점이 캐시에 없다면 캐시 생성
+			String personalKey = "ratingPersonal::" + movie.getId() + "::" + member.get().getId();
+			if (!redisTemplate.hasKey(personalKey)) {
+				createPersonalRatingCache(movie.getId(), member.get().getId());
+			}
+			ratingResponseDto.setRatingPersonal(getRatingPersonalFromCache(movie.getId(), member.get().getId()));
+		}
+
+		ResponseDto responseDto = new ResponseDto();
+		responseDto.setData(200);
+		responseDto.setMessage("평점 조회 성공");
+		responseDto.setData(ratingResponseDto);
+
+		return responseDto;
+	}
+
+	private RatingDto getRatingPersonalFromCache(Long movieId, Long memberId) {
 		ListOperations listOperations = redisTemplate.opsForList();
 		String key = "ratingPersonal::" + movieId + "::" + memberId;
 		List<String> ratingFromRedis = listOperations.range(key, 0, 5);
@@ -103,7 +132,7 @@ public class RatingServiceImpl implements RatingService {
 		return ratingPersonalDto;
 	}
 
-	private RatingDto getRatingTotal(Long movieId) {
+	private RatingDto getRatingTotalFromCache(Long movieId) {
 		ListOperations listOperations = redisTemplate.opsForList();
 		String key = "ratingTotal::" + movieId;
 		List<String> ratingFromRedis = listOperations.range(key, 0, 6);
@@ -122,18 +151,18 @@ public class RatingServiceImpl implements RatingService {
 	}
 
 	private void updatePersonalRatingCache(RatingDto dto) {
-        String key = "ratingPersonal::" + dto.getMovieId() + "::" + dto.getMemberId();
+		String key = "ratingPersonal::" + dto.getMovieId() + "::" + dto.getMemberId();
 
-        ListOperations listOperations = redisTemplate.opsForList();
-        listOperations.set(key, 0, dto.getStory());
-        listOperations.set(key, 1, dto.getActing());
-        listOperations.set(key, 2, dto.getDirection());
-        listOperations.set(key, 3, dto.getVisual());
-        listOperations.set(key, 4, dto.getSound());
-        listOperations.set(key, 5, dto.getTotal());
+		ListOperations listOperations = redisTemplate.opsForList();
+		listOperations.set(key, 0, dto.getStory());
+		listOperations.set(key, 1, dto.getActing());
+		listOperations.set(key, 2, dto.getDirection());
+		listOperations.set(key, 3, dto.getVisual());
+		listOperations.set(key, 4, dto.getSound());
+		listOperations.set(key, 5, dto.getTotal());
 
 		listOperations.getOperations().expire(key, Duration.ofMinutes(5));
-    }
+	}
 
 	private void createPersonalRatingCache(Long movieId, Long memberId) {
 		RatingEntity myRatingFromDB = ratingRepository.findPersonal(movieId, memberId);
@@ -150,10 +179,11 @@ public class RatingServiceImpl implements RatingService {
 			listOperations.rightPush(key, myRatingFromDB.getSound());
 			listOperations.rightPush(key, myRatingFromDB.getTotal());
 		} else {
-			listOperations.rightPushAll(key, String.valueOf(-1), String.valueOf(-1), String.valueOf(-1), String.valueOf(-1),
+			listOperations.rightPushAll(key, String.valueOf(-1), String.valueOf(-1), String.valueOf(-1),
+				String.valueOf(-1),
 				String.valueOf(-1), String.valueOf(-1));
 		}
-        listOperations.getOperations().expire(key, Duration.ofMinutes(5));
+		listOperations.getOperations().expire(key, Duration.ofMinutes(5));
 	}
 
 	private void createTotalRatingCache(long movieId) {
@@ -212,10 +242,10 @@ public class RatingServiceImpl implements RatingService {
 		listOperations.set(key, 5, dto.getTotal());
 
 		// 개인 평점을 업데이트한다.
-        updatePersonalRatingCache(dto);
+		updatePersonalRatingCache(dto);
 	}
 
-    private void createRatingCache(String key, String personalKey, String totalKey, RatingDto dto) {
+	private void createRatingCache(String key, String personalKey, String totalKey, RatingDto dto) {
 		ListOperations listOperations = redisTemplate.opsForList();
 		List<String> totalRating = listOperations.range(totalKey, 0, 6);
 		List<String> personalRating = listOperations.range(personalKey, 0, 5);
@@ -250,7 +280,7 @@ public class RatingServiceImpl implements RatingService {
 		listOperations.rightPush(key, dto.getSound());
 		listOperations.rightPush(key, dto.getTotal());
 
-        updatePersonalRatingCache(dto);
+		updatePersonalRatingCache(dto);
 	}
 
 	private String calcNewRating(List<String> myRating, List<String> totalRating, RatingDto dto, int i) {

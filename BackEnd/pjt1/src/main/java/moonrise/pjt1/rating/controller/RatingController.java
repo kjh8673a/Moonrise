@@ -3,6 +3,7 @@ package moonrise.pjt1.rating.controller;
 import lombok.extern.slf4j.Slf4j;
 import moonrise.pjt1.commons.response.ResponseDto;
 import moonrise.pjt1.rating.dto.RatingDto;
+import moonrise.pjt1.rating.request.RatingFindReq;
 import moonrise.pjt1.rating.service.RatingService;
 import moonrise.pjt1.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,14 @@ public class RatingController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @PostMapping("/create/{movieId}")
+    @PostMapping("/find")
+    public ResponseEntity findRating(@RequestBody RatingFindReq req) {
+        ResponseDto responseDto = ratingService.findRating(req);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+
+    @PostMapping("/createOld/{movieId}")
     public ResponseEntity createRating(@RequestHeader HttpHeaders headers, @PathVariable long movieId, @RequestBody RatingDto ratingDto) {
         // Http Header 에서 Access-Token 받기
         String access_token = headers.get("access_token").toString();
