@@ -10,7 +10,7 @@ import moonrise.pjt1.rating.dto.RatingResponseDto;
 import moonrise.pjt1.rating.entity.RatingEntity;
 import moonrise.pjt1.rating.repository.RatingCustomRepository;
 import moonrise.pjt1.rating.repository.RatingRepository;
-import moonrise.pjt1.rating.request.RatingFindReq;
+import moonrise.pjt1.rating.request.RatingCreateReq;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
@@ -43,7 +43,7 @@ public class RatingServiceImpl implements RatingService {
 	 * 평점 등록
 	 */
 	@Override
-	public ResponseDto createRating(RatingDto dto) {
+	public ResponseDto createRating(RatingCreateReq dto) {
 		Movie movie = movieRepository.findById(dto.getMovieId())
 			.orElseThrow(() -> new IllegalStateException("존재하지 않는 영화 입니다."));
 		Member member = memberRepository.findById(dto.getMemberId())
@@ -81,10 +81,10 @@ public class RatingServiceImpl implements RatingService {
 	 * 평점 조회
 	 */
 	@Override
-	public ResponseDto findRating(RatingFindReq req) {
-		Movie movie = movieRepository.findById(req.getMovieId())
+	public ResponseDto findRating(Long memberId, Long movieId) {
+		Movie movie = movieRepository.findById(movieId)
 			.orElseThrow(() -> new IllegalStateException("존재하지 않는 영화 입니다."));
-		Optional<Member> member = memberRepository.findById(req.getMemberId());
+		Optional<Member> member = memberRepository.findById(memberId);
 
 		RatingResponseDto ratingResponseDto = new RatingResponseDto();
 
@@ -150,16 +150,16 @@ public class RatingServiceImpl implements RatingService {
 		return ratingTotalDto;
 	}
 
-	private void updatePersonalRatingCache(RatingDto dto) {
+	private void updatePersonalRatingCache(RatingCreateReq dto) {
 		String key = "ratingPersonal::" + dto.getMovieId() + "::" + dto.getMemberId();
 
 		ListOperations listOperations = redisTemplate.opsForList();
-		listOperations.set(key, 0, dto.getStory());
-		listOperations.set(key, 1, dto.getActing());
-		listOperations.set(key, 2, dto.getDirection());
-		listOperations.set(key, 3, dto.getVisual());
-		listOperations.set(key, 4, dto.getSound());
-		listOperations.set(key, 5, dto.getTotal());
+		listOperations.set(key, 0, String.valueOf(dto.getStory()));
+		listOperations.set(key, 1, String.valueOf(dto.getActing()));
+		listOperations.set(key, 2, String.valueOf(dto.getDirection()));
+		listOperations.set(key, 3, String.valueOf(dto.getVisual()));
+		listOperations.set(key, 4, String.valueOf(dto.getSound()));
+		listOperations.set(key, 5, String.valueOf(dto.getTotal()));
 
 		listOperations.getOperations().expire(key, Duration.ofMinutes(5));
 	}
@@ -172,12 +172,12 @@ public class RatingServiceImpl implements RatingService {
 		ListOperations listOperations = redisTemplate.opsForList();
 		String key = "ratingPersonal::" + movieId + "::" + memberId;
 		if (myRatingFromDB != null) {
-			listOperations.rightPush(key, myRatingFromDB.getStory());
-			listOperations.rightPush(key, myRatingFromDB.getActing());
-			listOperations.rightPush(key, myRatingFromDB.getDirection());
-			listOperations.rightPush(key, myRatingFromDB.getVisual());
-			listOperations.rightPush(key, myRatingFromDB.getSound());
-			listOperations.rightPush(key, myRatingFromDB.getTotal());
+			listOperations.rightPush(key, String.valueOf(myRatingFromDB.getStory()));
+			listOperations.rightPush(key, String.valueOf(myRatingFromDB.getActing()));
+			listOperations.rightPush(key, String.valueOf(myRatingFromDB.getDirection()));
+			listOperations.rightPush(key, String.valueOf(myRatingFromDB.getVisual()));
+			listOperations.rightPush(key, String.valueOf(myRatingFromDB.getSound()));
+			listOperations.rightPush(key, String.valueOf(myRatingFromDB.getTotal()));
 		} else {
 			listOperations.rightPushAll(key, String.valueOf(-1), String.valueOf(-1), String.valueOf(-1),
 				String.valueOf(-1),
@@ -187,7 +187,7 @@ public class RatingServiceImpl implements RatingService {
 	}
 
 	private void createTotalRatingCache(long movieId) {
-		Long[] result = new Long[7];
+		long[] result = new long[7];
 
 		// 해당 영화의 평점 등록으로 캐시에 대기중인 유저를 list에 담는다.
 		// list에 있는 유저를 제외한 평점 정보를 db에서 가져온다.
@@ -202,6 +202,7 @@ public class RatingServiceImpl implements RatingService {
 				result[i] += Long.parseLong(ratingFromRedis.get(5 - i));
 			}
 		});
+		System.out.println(redisRatingKeys.size());
 		result[6] += redisRatingKeys.size();
 
 		List<RatingEntity> dbList = ratingCustomRepository.getRatingNotInList(movieId, memberList);
@@ -223,7 +224,7 @@ public class RatingServiceImpl implements RatingService {
 		listOperations.getOperations().expire(totalKey, Duration.ofMinutes(5));
 	}
 
-	private void updateRatingCache(String key, String totalKey, RatingDto dto) {
+	private void updateRatingCache(String key, String totalKey, RatingCreateReq dto) {
 		// 캐시에 등록된 평점을 이용하여 전체 평점을 갱신한다.
 		ListOperations listOperations = redisTemplate.opsForList();
 		List<String> myRating = listOperations.range(key, 0, 5);
@@ -234,18 +235,18 @@ public class RatingServiceImpl implements RatingService {
 		listOperations.getOperations().expire(totalKey, Duration.ofMinutes(5));
 
 		// 평점 입력을 위한 캐시를 등록한다.
-		listOperations.set(key, 0, dto.getStory());
-		listOperations.set(key, 1, dto.getActing());
-		listOperations.set(key, 2, dto.getDirection());
-		listOperations.set(key, 3, dto.getVisual());
-		listOperations.set(key, 4, dto.getSound());
-		listOperations.set(key, 5, dto.getTotal());
+		listOperations.set(key, 0, String.valueOf(dto.getStory()));
+		listOperations.set(key, 1, String.valueOf(dto.getActing()));
+		listOperations.set(key, 2, String.valueOf(dto.getDirection()));
+		listOperations.set(key, 3, String.valueOf(dto.getVisual()));
+		listOperations.set(key, 4, String.valueOf(dto.getSound()));
+		listOperations.set(key, 5, String.valueOf(dto.getTotal()));
 
 		// 개인 평점을 업데이트한다.
 		updatePersonalRatingCache(dto);
 	}
 
-	private void createRatingCache(String key, String personalKey, String totalKey, RatingDto dto) {
+	private void createRatingCache(String key, String personalKey, String totalKey, RatingCreateReq dto) {
 		ListOperations listOperations = redisTemplate.opsForList();
 		List<String> totalRating = listOperations.range(totalKey, 0, 6);
 		List<String> personalRating = listOperations.range(personalKey, 0, 5);
@@ -273,17 +274,17 @@ public class RatingServiceImpl implements RatingService {
 		listOperations.getOperations().expire(totalKey, Duration.ofMinutes(5));
 
 		// 평점 등록을 위한 캐시에 등록한다.
-		listOperations.rightPush(key, dto.getStory());
-		listOperations.rightPush(key, dto.getActing());
-		listOperations.rightPush(key, dto.getDirection());
-		listOperations.rightPush(key, dto.getVisual());
-		listOperations.rightPush(key, dto.getSound());
-		listOperations.rightPush(key, dto.getTotal());
+		listOperations.rightPush(key, String.valueOf(dto.getStory()));
+		listOperations.rightPush(key, String.valueOf(dto.getActing()));
+		listOperations.rightPush(key, String.valueOf(dto.getDirection()));
+		listOperations.rightPush(key, String.valueOf(dto.getVisual()));
+		listOperations.rightPush(key, String.valueOf(dto.getSound()));
+		listOperations.rightPush(key, String.valueOf(dto.getTotal()));
 
 		updatePersonalRatingCache(dto);
 	}
 
-	private String calcNewRating(List<String> myRating, List<String> totalRating, RatingDto dto, int i) {
+	private String calcNewRating(List<String> myRating, List<String> totalRating, RatingCreateReq dto, int i) {
 		Long total = Long.parseLong(totalRating.get(i).toString());
 		Long prev = Long.parseLong(myRating.get(i).toString());
 		Long change = 0L;
@@ -311,153 +312,4 @@ public class RatingServiceImpl implements RatingService {
 		return String.valueOf(total - prev + change);
 	}
 
-	/**
-	 * 평점입력
-	 */
-	@Override
-	public RatingEntity createRating(long movieId, long memberId, RatingDto dto) {
-		Optional<Movie> movie = movieRepository.findById(movieId);
-		Optional<Member> member = memberRepository.findById(memberId);
-		//DB에 저장
-		RatingEntity ratingEntity = RatingEntity.builder()
-			.acting(dto.getActing())
-			.direction(dto.getDirection())
-			.sound(dto.getSound())
-			.story(dto.getStory())
-			.visual(dto.getVisual())
-			.total(dto.getTotal())
-			.movie(movie.get())
-			.member(member.get())
-			.build();
-		ratingRepository.save(ratingEntity);
-		String key = "rating::" + movieId;
-		ListOperations listOperations = redisTemplate.opsForList();
-		if (listOperations.size(key) == 0) {
-			createToCache(movieId);
-		} else {
-			addToCache(key, dto);
-		}
-		return ratingEntity;
-	}
-
-	/**
-	 * DB update
-	 */
-	@Override
-	public long[] updateRating(long ratingId, RatingDto dto) {
-		long sum = dto.getActing() + dto.getDirection() + dto.getSound() + dto.getStory() + dto.getVisual();
-		Optional<RatingEntity> rating = ratingRepository.findById(ratingId);
-		RatingEntity ratingEntity = rating.get();
-		ratingEntity.setActing(dto.getActing());
-		ratingEntity.setDirection(dto.getDirection());
-		ratingEntity.setSound(dto.getSound());
-		ratingEntity.setStory(dto.getStory());
-		ratingEntity.setVisual(dto.getVisual());
-		ratingEntity.setTotal(sum);
-		ratingRepository.save(ratingEntity);
-		dto.setTotal(sum);
-		String key = "rating::" + dto.getMovieId();
-		redisTemplate.delete(key);
-		return createToCache(dto.getMovieId());
-	}
-
-	/**
-	 * 캐시에서 찾기
-	 */
-	@Override
-	public List<Long> findRating(long movieId) {
-		try {
-			List<RatingEntity> db = ratingRepository.findRatingList(movieId);
-			String key = "rating::" + movieId;
-			ListOperations listOperations = redisTemplate.opsForList();
-			if (redisTemplate.hasKey(key)) { //캐시에 값있으면
-				Object[] obj = listOperations.range(key, 0, 6).toArray();
-				List<Long> result = new ArrayList<>();
-				for (int i = 0; i < 7; i++) {
-					result.add(Long.parseLong(obj[i].toString()));
-				}
-				return result;
-			} else { //없으면 만들기
-				long[] arr = createToCache(movieId);
-				List<Long> result = new ArrayList<>();
-				for (int i = 0; i < 7; i++) {
-					result.add(arr[i]);
-				}
-				return result;
-			}
-
-		} catch (NullPointerException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * 개인별 평점조회
-	 */
-	@Override
-	public List<Long> findPersonal(long movieId, long memberId) {
-		try {
-			RatingEntity db = ratingRepository.findPersonal(movieId, memberId);
-			List<Long> result = new ArrayList<>();
-			result.add(db.getId());
-			result.add(db.getStory());
-			result.add(db.getActing());
-			result.add(db.getDirection());
-			result.add(db.getVisual());
-			result.add(db.getSound());
-			return result;
-		} catch (NullPointerException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * 캐시에 추가
-	 */
-	@Override
-	public long[] createToCache(long movieId) {
-		long[] result = new long[7];
-		List<RatingEntity> db = ratingRepository.findRatingList(movieId);
-		for (int i = 0; i < db.size(); i++) {
-			result[0] += db.get(i).getTotal();
-			result[1] += db.get(i).getStory();
-			result[2] += db.get(i).getActing();
-			result[3] += db.get(i).getDirection();
-			result[4] += db.get(i).getVisual();
-			result[5] += db.get(i).getSound();
-		}
-		result[6] = ratingRepository.countByMovieIdEquals(movieId); //개수
-		String key = "rating::" + movieId;
-		ListOperations listOperations = redisTemplate.opsForList();
-		listOperations.leftPush(key, String.valueOf(result[0]));
-		listOperations.leftPush(key, String.valueOf(result[1]));
-		listOperations.leftPush(key, String.valueOf(result[2]));
-		listOperations.leftPush(key, String.valueOf(result[3]));
-		listOperations.leftPush(key, String.valueOf(result[4]));
-		listOperations.leftPush(key, String.valueOf(result[5]));
-		listOperations.leftPush(key, String.valueOf(result[6]));
-		return result;
-	}
-
-	/**
-	 * 캐시에서 수정
-	 */
-	@Override
-	public List<Long> addToCache(String key, RatingDto dto) {
-		ListOperations listOperations = redisTemplate.opsForList();
-		List<Long> result = new ArrayList<>();
-		for (int n = 0; n < 7; n++) {
-			String str = listOperations.rightPop(key).toString();
-			Long num = Long.parseLong(str);
-			result.add(num);
-		}
-		listOperations.leftPush(key, String.valueOf(result.get(0) + dto.getTotal()));
-		listOperations.leftPush(key, String.valueOf(result.get(1) + dto.getStory()));
-		listOperations.leftPush(key, String.valueOf(result.get(2) + dto.getActing()));
-		listOperations.leftPush(key, String.valueOf(result.get(3) + dto.getDirection()));
-		listOperations.leftPush(key, String.valueOf(result.get(4) + dto.getVisual()));
-		listOperations.leftPush(key, String.valueOf(result.get(5) + dto.getSound()));
-		listOperations.leftPush(key, String.valueOf(result.get(6) + 1));
-		return result;
-	}
 }

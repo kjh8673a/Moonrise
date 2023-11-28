@@ -143,6 +143,9 @@ public class RedisSchedule {
         });
     }
 
+    /**
+     * 캐시에서 평점 정보 DB로 저장
+     */
     @Transactional
     @Scheduled(cron = "0 0/7 * * * ?")
     public void deleteRatingCacheFromRedis() {
