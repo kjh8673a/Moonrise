@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.*;
@@ -310,6 +311,12 @@ public class RatingServiceImpl implements RatingService {
 		}
 
 		return String.valueOf(total - prev + change);
+	}
+
+	@Transactional
+	public void updateRating(long movieId, long memberId, List<String> ratingList) {
+		RatingEntity myRating = ratingRepository.findPersonal(movieId, memberId);
+		myRating.changeRating(ratingList);
 	}
 
 }

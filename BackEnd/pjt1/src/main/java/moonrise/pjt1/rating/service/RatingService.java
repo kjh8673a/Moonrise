@@ -11,4 +11,7 @@ public interface RatingService {
 	ResponseDto createRating(RatingCreateReq dto);
 
     ResponseDto findRating(Long memberId, Long movieId);
+
+	void updateRating(long movieId, long memberId, List<String> ratingList);
+
 }

@@ -10,6 +10,8 @@ import java.util.List;
 public interface RatingRepository extends JpaRepository<RatingEntity, Long> {
     long countByMovieIdEquals(Long movieId);
 
+    long countByMovieIdAndTotalEquals(Long movieId, Long total);
+
     @Query(value = "select r from RatingEntity r where r.movie.id = :movieId")
     List<RatingEntity> findRatingList(@Param("movieId") long movieId);
 
