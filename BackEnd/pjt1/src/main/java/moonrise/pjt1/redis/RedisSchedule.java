@@ -15,6 +15,7 @@ import moonrise.pjt1.movie.repository.MovieRepository;
 import moonrise.pjt1.party.entity.PartyInfo;
 import moonrise.pjt1.party.repository.PartyInfoRepository;
 import moonrise.pjt1.rating.entity.RatingEntity;
+import moonrise.pjt1.rating.repository.RatingCustomRepository;
 import moonrise.pjt1.rating.repository.RatingRepository;
 
 import org.springframework.data.redis.core.Cursor;
@@ -37,6 +38,7 @@ import java.util.Set;
 @Log4j2
 public class RedisSchedule {
     private final RatingRepository ratingRepository;
+    private final RatingCustomRepository ratingCustomRepository;
     private final MovieRepository movieRepository;
     private final DebateInfoRepository debateInfoRepository;
     private final PartyInfoRepository partyInfoRepository;
@@ -150,33 +152,35 @@ public class RedisSchedule {
     @Scheduled(cron = "0 0/7 * * * ?")
     public void deleteRatingCacheFromRedis() {
         log.info("캐시에서 평점 정보 DB로 저장");
-        List<RatingEntity> ratingList = new ArrayList<>();
+        List<RatingEntity> ratingInsertList = new ArrayList<>();
+        List<RatingEntity> ratingUpdateList = new ArrayList<>();
         Set<String> redisRatingKeys = redisTemplate.keys("ratingAdd*");
         redisRatingKeys.forEach(data -> {
             Long movieId = Long.parseLong(data.split("::")[1]);
             Long userId = Long.parseLong(data.split("::")[2]);
             List<String> ratingFromRedis = redisTemplate.opsForList().range(data, 0, 5);
             RatingEntity myRating = ratingRepository.findPersonal(movieId, userId);
+            RatingEntity newRating = RatingEntity.builder()
+                .story(Long.parseLong(ratingFromRedis.get(0).toString()))
+                .acting(Long.parseLong(ratingFromRedis.get(1).toString()))
+                .direction(Long.parseLong(ratingFromRedis.get(2).toString()))
+                .visual(Long.parseLong(ratingFromRedis.get(3).toString()))
+                .sound(Long.parseLong(ratingFromRedis.get(4).toString()))
+                .total(Long.parseLong(ratingFromRedis.get(5).toString()))
+                .movie(movieRepository.findById(movieId).get())
+                .member(memberRepository.findById(userId).get())
+                .build();
             if(myRating == null) {
-                RatingEntity newRating = RatingEntity.builder()
-                    .story(Long.parseLong(ratingFromRedis.get(0).toString()))
-                    .acting(Long.parseLong(ratingFromRedis.get(1).toString()))
-                    .direction(Long.parseLong(ratingFromRedis.get(2).toString()))
-                    .visual(Long.parseLong(ratingFromRedis.get(3).toString()))
-                    .sound(Long.parseLong(ratingFromRedis.get(4).toString()))
-                    .total(Long.parseLong(ratingFromRedis.get(5).toString()))
-                    .movie(movieRepository.findById(movieId).get())
-                    .member(memberRepository.findById(userId).get())
-                    .build();
-                ratingList.add(newRating);
+                ratingInsertList.add(newRating);
             }else {
-                myRating.changeRating(ratingFromRedis);
+                ratingUpdateList.add(newRating);
             }
 
             redisTemplate.delete(data);
         });
 
-        ratingRepository.saveAll(ratingList);
+        ratingCustomRepository.batchInsert(ratingInsertList);
+        ratingCustomRepository.batchUpdate(ratingUpdateList);
     }
 
 }

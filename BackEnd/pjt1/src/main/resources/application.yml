@@ -7,7 +7,7 @@ spring:
       matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/moonrise
+    url: jdbc:mysql://localhost:3306/moonrise?rewriteBatchedStatements=true
     username: root
     password: ssafyssafy
   jpa:
@@ -19,6 +19,9 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 1000
+        jdbc.batch_size: 1000
+        order_inserts: true
+        order_updates: true
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
