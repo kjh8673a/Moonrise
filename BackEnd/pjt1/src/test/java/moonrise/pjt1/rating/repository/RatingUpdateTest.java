@@ -33,84 +33,103 @@ public class RatingUpdateTest {
 	private RatingRepository ratingRepository;
 
 	/**
-	 * JdbcTemplate batchUpdate() 결과 - 292ms
+	 * JdbcTemplate batchUpdate() 결과 - 299ms
 	 */
-	@DisplayName("평점 수정 batchUpdate")
+	@DisplayName("batchUpdate()를 이용한 평점 수정")
 	@Test
 	public void batchUpdateTest() {
 		// given
 		long movieIdFirst = 51608;
 		long movieIdSecond = 705996;
+		long movieIdThird = 597;
 		Movie movieFirst = movieRepository.findById(movieIdFirst).orElseThrow();
 		Movie movieSecond = movieRepository.findById(movieIdSecond).orElseThrow();
+		Movie movieThird = movieRepository.findById(movieIdThird).orElseThrow();
 		List<RatingEntity> ratingEntityList = new ArrayList<>();
 		for(long memberId : memberList) {
 			Member member = memberRepository.findById(memberId).orElseThrow();
 			RatingEntity newRatingFirst = RatingEntity.builder()
-				.story(1)
+				.story(2)
 				.acting(2)
-				.direction(3)
-				.visual(4)
-				.sound(5)
-				.total(15)
+				.direction(2)
+				.visual(2)
+				.sound(2)
+				.total(10)
 				.movie(movieFirst)
 				.member(member)
 				.build();
 			ratingEntityList.add(newRatingFirst);
 
 			RatingEntity newRatingSecond = RatingEntity.builder()
-				.story(1)
+				.story(2)
 				.acting(2)
-				.direction(3)
-				.visual(4)
-				.sound(5)
-				.total(15)
+				.direction(2)
+				.visual(2)
+				.sound(2)
+				.total(10)
 				.movie(movieSecond)
 				.member(member)
 				.build();
 			ratingEntityList.add(newRatingSecond);
+
+			RatingEntity newRatingThird = RatingEntity.builder()
+				.story(2)
+				.acting(2)
+				.direction(2)
+				.visual(2)
+				.sound(2)
+				.total(10)
+				.movie(movieThird)
+				.member(member)
+				.build();
+			ratingEntityList.add(newRatingThird);
 		}
 
 		// when
 		ratingCustomRepository.batchUpdate(ratingEntityList);
-		long count = ratingRepository.countByMovieIdAndTotalEquals(movieIdFirst, 15L);
-		count += ratingRepository.countByMovieIdAndTotalEquals(movieIdSecond, 15L);
+		long count = ratingRepository.countByMovieIdAndTotalEquals(movieIdFirst, 10L);
+		count += ratingRepository.countByMovieIdAndTotalEquals(movieIdSecond, 10L);
+		count += ratingRepository.countByMovieIdAndTotalEquals(movieIdThird, 10L);
 
 		// then
-		Assertions.assertEquals(memberList.length * 2, count);
+		Assertions.assertEquals(memberList.length * 3, count);
 	}
 
 	/**
-	 * JPA dirtyChecking 결과 - 457ms
+	 * JPA dirtyChecking 결과 - 465ms
 	 */
-	@DisplayName("평점 수정 dirtyChecking")
+	@DisplayName("dirtyChecking을 이용한 평점 수정")
 	@Test
 	public void dirtyCheckingTest() {
 		// given
 		long movieIdFirst = 51608;
 		long movieIdSecond = 705996;
+		long movieIdThird = 597;
 		Movie movieFirst = movieRepository.findById(movieIdFirst).orElseThrow();
 		Movie movieSecond = movieRepository.findById(movieIdSecond).orElseThrow();
-
+		Movie movieThird = movieRepository.findById(movieIdThird).orElseThrow();
 		List<String> ratingList = new ArrayList<>();
-		ratingList.add("2");
 		ratingList.add("3");
-		ratingList.add("4");
-		ratingList.add("5");
-		ratingList.add("6");
-		ratingList.add("20");
+		ratingList.add("3");
+		ratingList.add("3");
+		ratingList.add("3");
+		ratingList.add("3");
+		ratingList.add("15");
 
 		// when
 		for(long memberId : memberList) {
 			Member member = memberRepository.findById(memberId).orElseThrow();
-			ratingService.updateRating(movieIdFirst, memberId, ratingList);
-			ratingService.updateRating(movieIdSecond, memberId, ratingList);
+			ratingService.updateRating(movieFirst.getId(), member.getId(), ratingList);
+			ratingService.updateRating(movieSecond.getId(), member.getId(), ratingList);
+			ratingService.updateRating(movieThird.getId(), member.getId(), ratingList);
 		}
 
-		long count = ratingRepository.countByMovieIdAndTotalEquals(movieIdFirst, 20L);
-		count += ratingRepository.countByMovieIdAndTotalEquals(movieIdSecond, 20L);
+		long count = ratingRepository.countByMovieIdAndTotalEquals(movieIdFirst, 15L);
+		count += ratingRepository.countByMovieIdAndTotalEquals(movieIdSecond, 15L);
+		count += ratingRepository.countByMovieIdAndTotalEquals(movieIdThird, 15L);
+
 		// then
-		Assertions.assertEquals(memberList.length * 2, count);
+		Assertions.assertEquals(memberList.length * 3, count);
 	}
 
 

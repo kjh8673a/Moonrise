@@ -31,9 +31,9 @@ public class RatingInsertTest {
 	private RatingRepository ratingRepository;
 
 	/**
-	 * JdbcTemplate batchUpdate() 결과 - 90ms
+	 * JdbcTemplate batchUpdate() 결과 - 91ms
 	 */
-	@DisplayName("평점 등록 batchUpdate")
+	@DisplayName("batchUpdate()를 이용한 평점 등록")
 	@Test
 	public void batchInsertTest() {
 		// given
@@ -64,9 +64,9 @@ public class RatingInsertTest {
 	}
 
 	/**
-	 * JPA saveAll() 결과 - 361ms
+	 * JPA saveAll() 결과 - 137ms
 	 */
-	@DisplayName("평점 등록 saveAll")
+	@DisplayName("saveAll()을 이용한 평점 등록")
 	@Test
 	public void saveAllTest() {
 		// given
@@ -90,6 +90,39 @@ public class RatingInsertTest {
 
 		// when
 		ratingRepository.saveAll(ratingEntityList);
+		long count = ratingRepository.countByMovieIdEquals(movieId);
+
+		// then
+		Assertions.assertEquals(memberList.length, count);
+	}
+
+	/**
+	 * JPA save() 결과 - 671ms
+	 */
+	@DisplayName("save()을 이용한 평점 등록")
+	@Test
+	public void saveTest() {
+		// given
+		long movieId = 597;
+		Movie movie = movieRepository.findById(movieId).orElseThrow();
+		List<RatingEntity> ratingEntityList = new ArrayList<>();
+		for(long memberId : memberList) {
+			Member member = memberRepository.findById(memberId).orElseThrow();
+			RatingEntity newRating = RatingEntity.builder()
+				.story(1)
+				.acting(1)
+				.direction(1)
+				.visual(1)
+				.sound(1)
+				.total(5)
+				.movie(movie)
+				.member(member)
+				.build();
+			ratingEntityList.add(newRating);
+			ratingRepository.save(newRating);
+		}
+
+		// when
 		long count = ratingRepository.countByMovieIdEquals(movieId);
 
 		// then
